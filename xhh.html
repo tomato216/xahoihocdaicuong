@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Ôn Tập Xã Hội Học Đại Cương</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --bg: #f4f6f9;
+            --card: #ffffff;
+            --text: #333333;
+            --success: #2ecc71;
+            --error: #e74c3c;
+            --warning: #e67e22;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            padding: 30px 15px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+        }
+
+        /* ------------------ GIAO DIỆN MENU CHÍNH ------------------ */
+        .main-menu h1 {
+            text-align: center;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
+        .main-menu .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 30px;
+        }
+
+        .chapter-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .chapter-card {
+            background: var(--card);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border-left: 5px solid #bdc3c7;
+        }
+
+        .chapter-card.active {
+            border-left-color: var(--accent);
+        }
+
+        .chapter-title {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+
+        /* Danh sách bộ đề con bên trong chương */
+        .quiz-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .quiz-btn {
+            background: #edf2f7;
+            color: var(--primary);
+            border: 1px solid #cbd5e1;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .quiz-btn:hover {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        .status-badge {
+            font-size: 0.8rem;
+            background: #fef3c7;
+            color: #d97706;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        /* ------------------ GIAO DIỆN LÀM BÀI ------------------ */
+        .quiz-screen {
+            display: none;
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .quiz-header {
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-header h2 {
+            color: var(--primary);
+            font-size: 1.4rem;
+        }
+
+        .timer-box {
+            background: #edf2f7;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+
+        .result-box {
+            display: none;
+            background: #e8f8f5;
+            border: 2px solid var(--success);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .question-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #f8fafc;
+            border-left: 5px solid var(--accent);
+        }
+
+        .question-text {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+        }
+
+        .answer-option {
+            margin-bottom: 8px;
+            padding: 10px 15px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            background: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .answer-option:hover {
+            background: #f1f5f9;
+        }
+
+        .answer-option input {
+            margin-right: 12px;
+            transform: scale(1.1);
+        }
+
+        /* Màu kết quả đúng/sai */
+        .answer-option.correct {
+            background: #d4edda !important;
+            border-color: var(--success) !important;
+            color: #155724;
+            font-weight: 600;
+        }
+
+        .answer-option.wrong {
+            background: #f8d7da !important;
+            border-color: var(--error) !important;
+            color: #721c24;
+        }
+
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #e0f2fe;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            color: #0369a1;
+            display: none;
+            line-height: 1.4;
+        }
+
+        /* Nhóm điều hướng nút bấm */
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .btn:hover {
+            opacity: 0.9;
+        }
+
+        .btn-back { background: #95a5a6; color: white; flex: 1; }
+        .btn-submit { background: var(--success); color: white; flex: 2; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <!-- ================= MÀN HÌNH CHÍNH (MENU) ================= -->
+        <div id="menuScreen" class="main-menu">
+            <h1>Hệ Thống Trắc Nghiệm Xã Hội Học Đại Cương</h1>
+            <p class="subtitle">Học tập và đánh giá năng lực theo cấu trúc chương mục giáo trình chuẩn</p>
+            
+            <div class="chapter-list" id="chapterContainer"></div>
+        </div>
+
+        <!-- ================= MÀN HÌNH LÀM BÀI TRẮC NGHIỆM ================= -->
+        <div id="quizScreen" class="quiz-screen">
+            <div class="quiz-header">
+                <div>
+                    <h2 id="currentQuizTitle">Bộ đề trắc nghiệm</h2>
+                    <p style="color: #7f8c8d; font-size: 0.85rem; margin-top:3px;" id="currentChapterTitle">Chương học</p>
+                </div>
+                <div class="timer-box" id="timer">Thời gian: 50:00</div>
+            </div>
+
+            <div class="result-box" id="resultBox"></div>
+
+            <form id="quizForm">
+                <div id="questionsContainer"></div>
+                <div class="btn-group">
+                    <button type="button" class="btn btn-back" onclick="exitQuiz()">Quay về Menu</button>
+                    <button type="button" class="btn btn-submit" id="submitBtn" onclick="submitQuiz()">Nộp bài chấm điểm</button>
+                </div>
+            </form>
+        </div>
+
+    </div>
+
+    <script>
+        // CẤU HÌNH DỮ LIỆU CHƯƠNG MỤC THEO ĐÚNG GIÁO TRÌNH
+        const SYSTEM_DATA = [
+            {
+                id: "chuong-1",
+                title: "Chương 1: Đối tượng, cơ cấu, chức năng của xã hội học",
+                fileUrl: "chuong-1.html",
+                status: "developing",
+                quizzes: [
+                    { name: "AUGUSTE COMTE", file: "c1-comte.js" },
+                    { name: "KARL MARX", file: "c1-marx.js" },
+                    { name: "HERBERT SPENCER", file: "c1-spencer.js" },
+                    { name: "ÉMILE DURKHEIM", file: "c1-durkheim.js" },
+                    { name: "MAX WEBER", file: "c1-weber.js" }
+                ]
+            },
+            {
+                id: "chuong-2",
+                title: "Chương 2: Sơ lược lịch sử và lý thuyết xã hội học",
+                fileUrl: "chuong-2.html",
+                status: "active",
+                quizzes: [
+                    { name: "AUGUSTE COMTE", file: "de-bai-1.js" },
+                    { name: "KARL MARX", file: "de-bai-2.js" },
+                    { name: "HERBERT SPENCER", file: "de-bai-3.js" },
+                    { name: "ÉMILE DURKHEIM", file: "de-bai-4.js" },
+                    { name: "MAX WEBER", file: "de-bai-5.js" }
+                ]
+            },
+            { id: "chuong-3", title: "Chương 3: Phương pháp nghiên cứu xã hội học", fileUrl: "chuong-3.html", status: "developing" },
+            { id: "chuong-4", title: "Chương 4: Hành động xã hội, tương tác xã hội, quan hệ xã hội", fileUrl: "chuong-4.html", status: "developing" },
+            { id: "chuong-5", title: "Chương 5: Cấu trúc xã hội và một số thuật ngữ liên quan", fileUrl: "chuong-5.html", status: "developing" },
+            { id: "chuong-6", title: "Chương 6: Quyền lực, bất bình đẳng, phân tầng xã hội, di động xã hội", fileUrl: "chuong-6.html", status: "developing" },
+            { id: "chuong-7", title: "Chương 7: Lệch chuẩn, tuân thủ và kiểm soát xã hội", fileUrl: "chuong-7.html", status: "developing" },
+            { id: "chuong-8", title: "Chương 8: Văn hóa", fileUrl: "chuong-8.html", status: "developing" },
+            { id: "chuong-9", title: "Chương 9: Xã hội hóa", fileUrl: "chuong-9.html", status: "developing" },
+            { id: "chuong-10", title: "Chương 10: Biến đổi xã hội", fileUrl: "chuong-10.html", status: "developing" }
+        ];
+
+        let loadedQuestions = [];
+        let timerInterval;
+        let timeRemaining = 50 * 60;
+
+        // Tự động dựng giao diện mục lục khi tải trang
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById("chapterContainer");
+            container.innerHTML = "";
+
+            SYSTEM_DATA.forEach(ch => {
+                const card = document.createElement("div");
+                card.className = `chapter-card ${ch.status === 'active' ? 'active' : ''}`;
+                
+                let quizButtonsHtml = "";
+                
+                // Nếu chương đang kích hoạt (Chương 2) -> Hiển thị các nút làm bài
+                if (ch.status === "active" && ch.quizzes) {
+                    quizButtonsHtml = `<div class="quiz-options">`;
+                    ch.quizzes.forEach(q => {
+                        quizButtonsHtml += `<button class="quiz-btn" onclick="loadQuizData('${q.file}', '${q.name}', '${ch.title}')">Đề: ${q.name}</button>`;
+                    });
+                    quizButtonsHtml += `</div>`;
+                } else if (ch.id === "chuong-1" && ch.status === "developing") {
+                    // Dựng sẵn cấu trúc 5 tác giả cho Chương 1 theo yêu cầu để sau này không phải sửa giao diện
+                    quizButtonsHtml = `
+                        <div style="margin-bottom: 8px;"><span class="status-badge">Nội dung đang phát triển</span></div>
+                        <div class="quiz-options" style="opacity: 0.6; pointer-events: none;">
+                            <button class="quiz-btn">AUGUSTE COMTE</button>
+                            <button class="quiz-btn">KARL MARX</button>
+                            <button class="quiz-btn">HERBERT SPENCER</button>
+                            <button class="quiz-btn">ÉMILE DURKHEIM</button>
+                            <button class="quiz-btn">MAX WEBER</button>
+                        </div>`;
+                } else {
+                    quizButtonsHtml = `<div><span class="status-badge">Đang phát triển thiết chế dữ liệu...</span></div>`;
+                }
+
+                card.innerHTML = `
+                    <div class="chapter-title">${ch.title}</div>
+                    ${quizButtonsHtml}
+                `;
+                container.appendChild(card);
+            });
+        });
+
+        // HÀM NẠP ĐỘNG DỮ LIỆU CÂU HỎI
+        function loadQuizData(fileName, authorName, chapterTitle) {
+            // Xóa thẻ script cũ nếu có để tránh xung đột dữ liệu
+            const oldScript = document.getElementById("dynamicQuizScript");
+            if (oldScript) oldScript.remove();
+
+            // Tạo thẻ script mới để tải file .js tương ứng
+            const script = document.createElement("script");
+            script.id = "dynamicQuizScript";
+            script.src = fileName;
+
+            script.onload = function () {
+                // Kiểm tra xem biến QUIZ_QUESTIONS trong file js đã được nạp chưa
+                if (typeof QUIZ_QUESTIONS !== "undefined") {
+                    loadedQuestions = QUIZ_QUESTIONS;
+                    setupQuizScreen(authorName, chapterTitle);
+                } else {
+                    alert(`Không thể đọc được mảng câu hỏi từ file: ${fileName}`);
+                }
+            };
+
+            script.onerror = function() {
+                alert(`Lỗi hệ thống: Không tìm thấy hoặc chưa tạo tệp tin dữ liệu câu hỏi [${fileName}]. Hãy đảm bảo tệp nằm chung thư mục.`);
+            };
+
+            document.body.appendChild(script);
+        }
+
+        // Khởi động màn hình làm bài
+        function setupQuizScreen(author, chapter) {
+            document.getElementById("menuScreen").style.display = "none";
+            document.getElementById("quizScreen").style.display = "block";
+            document.getElementById("currentQuizTitle").innerText = `Bộ đề trắc nghiệm: ${author}`;
+            document.getElementById("currentChapterTitle").innerText = chapter;
+            
+            // Khôi phục trạng thái nút nộp bài
+            document.getElementById("submitBtn").disabled = false;
+            document.getElementById("submitBtn").style.opacity = "1";
+            document.getElementById("submitBtn").innerText = "Nộp bài chấm điểm";
+            document.getElementById("resultBox").style.display = "none";
+
+            renderQuestions(loadedQuestions);
+            
+            timeRemaining = 50 * 60; // 50 phút
+            clearInterval(timerInterval);
+            startTimer();
+        }
+
+        // Vẽ câu hỏi ra form
+        function renderQuestions(questions) {
+            const container = document.getElementById("questionsContainer");
+            container.innerHTML = "";
+
+            questions.forEach((q, index) => {
+                const idx = index + 1;
+                const item = document.createElement("div");
+                item.className = "question-item";
+
+                let answersHtml = "";
+                for (let key in q.answers) {
+                    answersHtml += `
+                        <label class="answer-option" onclick="highlightSelection(this)">
+                            <input type="radio" name="q_${idx}" value="${key}">
+                            <span><strong>${key}.</strong> ${q.answers[key]}</span>
+                        </label>
+                    `;
+                }
+
+                item.innerHTML = `
+                    <div class="question-text">Câu ${idx}: ${q.question}</div>
+                    <div class="answers-list">${answersHtml}</div>
+                    <div class="explanation" id="exp_${idx}">
+                        <strong>Đáp án chính xác: ${q.correct}</strong><br>
+                        <em>Giải thích kiến thức:</em> ${q.explain}
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function highlightSelection(element) {
+            const wrapper = element.closest(".answers-list");
+            wrapper.querySelectorAll(".answer-option").forEach(opt => {
+                opt.style.background = "white";
+                opt.style.borderColor = "#cbd5e1";
+            });
+            element.style.background = "#e0f2fe";
+            element.style.borderColor = "var(--accent)";
+            const input = element.querySelector("input");
+            if (input) input.checked = true;
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                if (timeRemaining <= 0) {
+                    clearInterval(timerInterval);
+                    alert("Thời gian làm bài đã hết! Hệ thống tự động thu bài.");
+                    submitQuiz();
+                } else {
+                    timeRemaining--;
+                    const m = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
+                    const s = (timeRemaining % 60).toString().padStart(2, '0');
+                    document.getElementById("timer").innerText = `Thời gian: ${m}:${s}`;
+                }
+            }, 1000);
+        }
+
+        // Chấm điểm bài làm
+        function submitQuiz() {
+            clearInterval(timerInterval);
+            let correctCount = 0;
+            const total = loadedQuestions.length;
+
+            loadedQuestions.forEach((q, index) => {
+                const idx = index + 1;
+                const radios = document.getElementsByName(`q_${idx}`);
+                let userChoice = "";
+
+                for (let r of radios) {
+                    if (r.checked) { userChoice = r.value; break; }
+                }
+
+                for (let r of radios) {
+                    const label = r.closest(".answer-option");
+                    label.style.background = "white"; // Reset màu chọn tạm thời
+                    
+                    if (r.value === q.correct) label.classList.add("correct");
+                    if (r.checked && userChoice !== q.correct) label.classList.add("wrong");
+                }
+
+                if (userChoice === q.correct) correctCount++;
+                document.getElementById(`exp_${idx}`).style.display = "block";
+            });
+
+            const resBox = document.getElementById("resultBox");
+            resBox.style.display = "block";
+            resBox.innerHTML = `
+                <h3 style="font-size: 1.5rem; color: var(--primary);">Kết quả đạt được: ${correctCount}/${total} Câu</h3>
+                <p style="margin-top: 5px;">Điểm số quy đổi: <strong>${((correctCount / total) * 10).toFixed(2)}</strong> điểm. Xem nội dung giải thích chi tiết ở từng câu dưới đây.</p>
+            `;
+
+            document.getElementById("submitBtn").disabled = true;
+            document.getElementById("submitBtn").style.opacity = "0.5";
+            document.getElementById("submitBtn").innerText = "Đã nộp bài thành công";
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Thoát giao diện làm bài quay về Menu chính
+        function exitQuiz() {
+            clearInterval(timerInterval);
+            document.getElementById("quizScreen").style.display = "none";
+            document.getElementById("menuScreen").style.display = "block";
+            window.scrollTo({ top: 0 });
+        }
+    </script>
+</body>
+</html>
