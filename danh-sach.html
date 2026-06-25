@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Bộ Đề & Chương Học</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .grid-container {
+            display: block;
+            text-align: left;
+            margin-top: 20px;
+        }
+        .section-title {
+            color: var(--accent-color);
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+            border-left: 4px solid var(--accent-color);
+            padding-left: 10px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            margin-bottom: 20px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>CẤU HÌNH BÀI HỌC</h1>
+        <p class="subtitle">Chọn bộ đề và chương học muốn ôn tập</p>
+
+        <div class="grid-container">
+            <div class="section-title">1. Chọn Bộ Đề</div>
+            <select id="select-bode"></select>
+
+            <div class="section-title">2. Chọn Chương Học</div>
+            <select id="select-chuong"></select>
+        </div>
+
+        <button id="btn-next" class="btn">TIẾP TỤC</button>
+    </div>
+
+    <script src="data.js"></script>
+    <script>
+        // Tự động render danh sách từ data.js
+        const selectBode = document.getElementById('select-bode');
+        const selectChuong = document.getElementById('select-chuong');
+        const btnNext = document.getElementById('btn-next');
+
+        // Render bộ đề
+        Object.keys(QUIZ_DATA.bode).forEach(key => {
+            const item = QUIZ_DATA.bode[key];
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = item.name + (item.active ? '' : ' - (Đang cập nhật...)');
+            if(!item.active) opt.disabled = true;
+            selectBode.appendChild(opt);
+        });
+
+        // Render chương
+        Object.keys(QUIZ_DATA.chuong).forEach(key => {
+            const item = QUIZ_DATA.chuong[key];
+            const opt = document.createElement('option');
+            opt.value = key;
+            opt.textContent = item.name + (item.active ? '' : ' - (Đang cập nhật...)');
+            if(!item.active) opt.disabled = true;
+            selectChuong.appendChild(opt);
+        });
+
+        // Xử lý chuyển tiếp, lưu lựa chọn vào SessionStorage
+        btnNext.addEventListener('click', () => {
+            const bd = selectBode.value;
+            const ch = selectChuong.value;
+            
+            if(QUIZ_DATA.bode[bd].active && QUIZ_DATA.chuong[ch].active) {
+                sessionStorage.setItem('selected_bode', bd);
+                sessionStorage.setItem('selected_chuong', ch);
+                window.location.href = 'lam-bai.html';
+            } else {
+                alert('Vui lòng chọn bộ đề và chương đã được cập nhật dữ liệu!');
+            }
+        });
+    </script>
+</body>
+</html>
