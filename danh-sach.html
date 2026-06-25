@@ -3,90 +3,209 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chọn Bộ Đề & Chương Học</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Danh Sách Bộ Đề Trắc Nghiệm Xã Hội Học</title>
     <style>
-        .grid-container {
-            display: block;
-            text-align: left;
-            margin-top: 20px;
+        :root {
+            --bg-color: #f4f6f9;
+            --text-color: #333;
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --card-bg: #ffffff;
+            --shadow: 0 4px 6px rgba(0,0,0,0.05);
         }
-        .section-title {
-            color: var(--accent-color);
-            margin: 20px 0 10px 0;
-            font-size: 1.2rem;
-            border-left: 4px solid var(--accent-color);
-            padding-left: 10px;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-        select {
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
             width: 100%;
-            padding: 12px;
-            background-color: #2a2a2a;
-            color: #fff;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+            max-width: 900px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        header h1 {
+            color: var(--primary-color);
+            font-size: 2rem;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        header p {
+            color: #7f8c8d;
             font-size: 1rem;
-            margin-bottom: 20px;
+        }
+
+        /* Vùng chứa danh sách bộ đề tự động sinh ra */
+        .quiz-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 25px;
+            width: 100%;
+        }
+
+        .quiz-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
             cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--accent-color);
+        }
+
+        .quiz-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-color: var(--accent-color);
+        }
+
+        .quiz-meta {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .quiz-title {
+            font-size: 1.25rem;
+            color: var(--primary-color);
+            margin-bottom: 12px;
+            font-weight: 600;
+            line-height: 1.4;
+        }
+
+        .quiz-difficulty {
+            font-size: 0.85rem;
+            color: #e67e22;
+            background: #fdf5e6;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            font-weight: 500;
+            align-self: flex-start;
+        }
+
+        .start-btn {
+            margin-top: 20px;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-align: center;
+            font-size: 0.95rem;
+            transition: background 0.2s;
+        }
+
+        .quiz-card:hover .start-btn {
+            background: var(--accent-color);
+        }
+
+        /* Thông báo lỗi nếu thiếu data.js */
+        .error-message {
+            grid-column: 1 / -1;
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #f5c6cb;
         }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>CẤU HÌNH BÀI HỌC</h1>
-        <p class="subtitle">Chọn bộ đề và chương học muốn ôn tập</p>
+        <header>
+            <h1>Hệ Thống Trắc Nghiệm Xã Hội Học</h1>
+            <p>Chọn một bộ đề dưới đây để bắt đầu ôn tập cấu trúc kiến thức nền tảng</p>
+        </header>
 
-        <div class="grid-container">
-            <div class="section-title">1. Chọn Bộ Đề</div>
-            <select id="select-bode"></select>
-
-            <div class="section-title">2. Chọn Chương Học</div>
-            <select id="select-chuong"></select>
-        </div>
-
-        <button id="btn-next" class="btn">TIẾP TỤC</button>
+        <div class="quiz-grid" id="quizContainer"></div>
     </div>
 
     <script src="data.js"></script>
+
     <script>
-        // Tự động render danh sách từ data.js
-        const selectBode = document.getElementById('select-bode');
-        const selectChuong = document.getElementById('select-chuong');
-        const btnNext = document.getElementById('btn-next');
+        document.addEventListener("DOMContentLoaded", function () {
+            const container = document.getElementById("quizContainer");
 
-        // Render bộ đề
-        Object.keys(QUIZ_DATA.bode).forEach(key => {
-            const item = QUIZ_DATA.bode[key];
-            const opt = document.createElement('option');
-            opt.value = key;
-            opt.textContent = item.name + (item.active ? '' : ' - (Đang cập nhật...)');
-            if(!item.active) opt.disabled = true;
-            selectBode.appendChild(opt);
-        });
-
-        // Render chương
-        Object.keys(QUIZ_DATA.chuong).forEach(key => {
-            const item = QUIZ_DATA.chuong[key];
-            const opt = document.createElement('option');
-            opt.value = key;
-            opt.textContent = item.name + (item.active ? '' : ' - (Đang cập nhật...)');
-            if(!item.active) opt.disabled = true;
-            selectChuong.appendChild(opt);
-        });
-
-        // Xử lý chuyển tiếp, lưu lựa chọn vào SessionStorage
-        btnNext.addEventListener('click', () => {
-            const bd = selectBode.value;
-            const ch = selectChuong.value;
-            
-            if(QUIZ_DATA.bode[bd].active && QUIZ_DATA.chuong[ch].active) {
-                sessionStorage.setItem('selected_bode', bd);
-                sessionStorage.setItem('selected_chuong', ch);
-                window.location.href = 'lam-bai.html';
-            } else {
-                alert('Vui lòng chọn bộ đề và chương đã được cập nhật dữ liệu!');
+            // Kiểm tra xem file data.js đã được tải thành công và có chứa biến DATA_QUIZ không
+            if (typeof DATA_QUIZ === "undefined" || !Array.isArray(DATA_QUIZ)) {
+                container.innerHTML = `
+                    <div class="error-message">
+                        <strong>Lỗi cấu trúc dữ liệu!</strong> Không tìm thấy danh sách bộ đề. 
+                        Vui lòng kiểm tra lại file <code>data.js</code> đã được khai báo chính xác chưa.
+                    </div>
+                `;
+                return;
             }
+
+            // Xóa dữ liệu tĩnh (nếu có) trước khi render đồng bộ
+            container.innerHTML = "";
+
+            // Vòng lặp tự động đọc dữ liệu từ data.js và render ra màn hình
+            DATA_QUIZ.forEach(quiz => {
+                // Tạo phần tử thẻ card cho mỗi bộ đề
+                const card = document.createElement("div");
+                card.className = "quiz-card";
+                
+                // Khi người dùng click vào thẻ card, lưu ID bộ đề đã chọn và nhảy tới trang index.html
+                card.onclick = function() {
+                    localStorage.setItem("selectedQuizId", quiz.id);
+                    window.location.href = "index.html";
+                };
+
+                card.innerHTML = `
+                    <div>
+                        <div class="quiz-meta">${quiz.bodeTitle}</div>
+                        <div class="quiz-title">${quiz.chuongTitle}</div>
+                    </div>
+                    <div style="display: flex; flex-direction: column;">
+                        <span class="quiz-difficulty">${quiz.difficulty}</span>
+                        <button class="start-btn">Bắt đầu làm bài</button>
+                    </div>
+                `;
+
+                container.appendChild(card);
+            });
         });
     </script>
 </body>
