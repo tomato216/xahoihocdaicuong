@@ -151,6 +151,7 @@
             border-left: 5px solid var(--accent);
         }
 
+        /* Khi đã trả lời xong câu đó, đổi màu viền để dễ nhận biết */
         .question-item.answered {
             border-left-color: #cbd5e1;
         }
@@ -183,11 +184,13 @@
             transform: scale(1.1);
         }
 
+        /* Khóa tương tác sau khi đã chọn đáp án ở câu đó */
         .answers-list.disabled .answer-option {
             pointer-events: none;
             cursor: not-allowed;
         }
 
+        /* Hiệu ứng màu sắc trực quan ngay lập tức */
         .answer-option.correct {
             background: #d4edda !important;
             border-color: var(--success) !important;
@@ -236,6 +239,7 @@
 
     <div class="container">
         
+        <!-- ================= MÀN HÌNH CHÍNH (MENU) ================= -->
         <div id="menuScreen" class="main-menu">
             <h1>Hệ Thống Trắc Nghiệm Xã Hội Học Đại Cương</h1>
             <p class="subtitle">Chế độ luyện tập: Chọn đáp án xem kết quả giải thích ngay lập tức</p>
@@ -243,12 +247,14 @@
             <div class="chapter-list" id="chapterContainer"></div>
         </div>
 
+        <!-- ================= MÀN HÌNH LÀM BÀI TRẮC NGHIỆM ================= -->
         <div id="quizScreen" class="quiz-screen">
             <div class="quiz-header">
                 <div>
                     <h2 id="currentQuizTitle">Bộ đề trắc nghiệm</h2>
                     <p style="color: #7f8c8d; font-size: 0.85rem; margin-top:3px;" id="currentChapterTitle">Chương học</p>
                 </div>
+                <!-- Thanh thống kê số câu đúng/sai trực tiếp -->
                 <div class="stats-box" id="scoreStats">Đã làm: 0/0 câu | Đúng: 0</div>
             </div>
 
@@ -270,6 +276,13 @@
                 title: "Chương 1: Đối tượng, cơ cấu, chức năng của xã hội học",
                 fileUrl: "chuong-1.html",
                 status: "developing",
+                quizzes: [
+                    { name: "AUGUSTE COMTE", file: "c1-comte.js" },
+                    { name: "KARL MARX", file: "c1-marx.js" },
+                    { name: "HERBERT SPENCER", file: "c1-spencer.js" },
+                    { name: "ÉMILE DURKHEIM", file: "c1-durkheim.js" },
+                    { name: "MAX WEBER", file: "c1-weber.js" }
+                ]
             },
             {
                 id: "chuong-2",
@@ -337,36 +350,26 @@
             });
         });
 
-        // Tải động file JS chứa câu hỏi và giải phóng biến toàn cục để tránh xung đột dữ liệu cũ
+        // Tải động file JS chứa câu hỏi
         function loadQuizData(fileName, authorName, chapterTitle) {
-            // Xóa thẻ script cũ nếu có
             const oldScript = document.getElementById("dynamicQuizScript");
             if (oldScript) oldScript.remove();
 
-            // GIẢI PHÁP SỬA LỖI: Xóa bỏ định nghĩa cũ của hằng số QUIZ_QUESTIONS trong phạm vi window trước khi nạp bài mới
-            try {
-                window.QUIZ_QUESTIONS = undefined;
-            } catch(e) {}
-
             const script = document.createElement("script");
             script.id = "dynamicQuizScript";
-            // Kỹ thuật thêm tham số cache-busting (?v=...) giúp trình duyệt luôn đọc dữ liệu file mới nhất thay vì lưu cache cũ
-            script.src = fileName + "?v=" + new Date().getTime();
+            script.src = fileName;
 
             script.onload = function () {
                 if (typeof QUIZ_QUESTIONS !== "undefined") {
                     loadedQuestions = QUIZ_QUESTIONS;
                     setupQuizScreen(authorName, chapterTitle);
-                } else if (typeof window.QUIZ_QUESTIONS !== "undefined") {
-                    loadedQuestions = window.QUIZ_QUESTIONS;
-                    setupQuizScreen(authorName, chapterTitle);
                 } else {
-                    alert(`Không tìm thấy dữ liệu mảng QUIZ_QUESTIONS trong file: ${fileName}. Vui lòng kiểm tra lại cấu trúc file.`);
+                    alert(`Không tìm thấy mảng QUIZ_QUESTIONS trong file: ${fileName}`);
                 }
             };
 
             script.onerror = function() {
-                alert(`Lỗi kết nối: Không tìm thấy file bài tập [${fileName}] trong cùng thư mục gốc.`);
+                alert(`Lỗi: Không tìm thấy file [${fileName}] trong cùng thư mục.`);
             };
 
             document.body.appendChild(script);
@@ -379,6 +382,7 @@
             document.getElementById("currentQuizTitle").innerText = `Bộ đề ôn tập: ${author}`;
             document.getElementById("currentChapterTitle").innerText = chapter;
             
+            // Khởi tạo lại bộ đếm thống kê
             answeredCount = 0;
             correctCount = 0;
             updateStatsBar();
@@ -423,19 +427,26 @@
         function checkAnswerImmediately(selectedLabel, userChoice, correctAnswer, questionIndex) {
             const listWrapper = document.getElementById(`ans_list_${questionIndex}`);
             
+            // Nếu câu này đã được click trả lời rồi thì bỏ qua không xử lý lại
             if (listWrapper.classList.contains("disabled")) return;
 
-            listWrapper.classList.add("disabled");
+            // Khóa vùng chọn của câu này lại
+            listWrapper.classList.contains("disabled") || listWrapper.classList.add("disabled");
+            
+            // Đổi style hộp câu hỏi để báo hiệu đã làm xong
             document.getElementById(`q_box_${questionIndex}`).classList.add("answered");
 
+            // Tick chọn radio ngầm
             const input = selectedLabel.querySelector("input");
             if (input) input.checked = true;
 
+            // Kiểm tra Đúng / Sai để tô màu trực tiếp
             if (userChoice === correctAnswer) {
                 selectedLabel.classList.add("correct");
                 correctCount++;
             } else {
                 selectedLabel.classList.add("wrong");
+                // Tìm option đúng để tô màu xanh lên cho người học thấy đối chiếu
                 const options = listWrapper.querySelectorAll(".answer-option");
                 options.forEach(opt => {
                     const radio = opt.querySelector("input");
@@ -445,8 +456,10 @@
                 });
             }
 
+            // Hiện khung giải thích kiến thức ngay lập tức dưới câu hỏi
             document.getElementById(`exp_${questionIndex}`).style.display = "block";
 
+            // Cập nhật điểm số thời gian thực lên thanh tiêu đề
             answeredCount++;
             updateStatsBar();
         }
