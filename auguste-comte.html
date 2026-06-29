@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1: Auguste Comte - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #ffffff;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* --- MÀN HÌNH THIẾT LẬP --- */
+        #setup-screen {
+            background-color: #121216;
+            border: 2px solid #6f42c1;
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            margin-top: 10vh;
+            box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2);
+        }
+        #setup-screen h1 {
+            color: #b388ff;
+            margin-bottom: 10px;
+        }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        
+        .setting-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #1a1a24;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border: 1px solid #3a2366;
+            text-align: left;
+        }
+        .setting-label { font-weight: 500; }
+        
+        /* Custom Checkbox / Input */
+        input[type="number"] {
+            width: 70px; padding: 8px;
+            background: #0a0a0c; color: white;
+            border: 1px solid #6f42c1; border-radius: 6px;
+            text-align: center; font-family: 'Inter';
+        }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        
+        .btn-start {
+            display: inline-block; width: 100%;
+            background-color: #6f42c1; color: white;
+            font-size: 1.2rem; font-weight: 600;
+            padding: 15px; border: none; border-radius: 8px;
+            margin-top: 20px; cursor: pointer; transition: 0.3s;
+        }
+        .btn-start:hover { background-color: #5a32a3; }
+
+        /* --- MÀN HÌNH LÀM BÀI --- */
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header {
+            position: sticky; top: 0;
+            background-color: rgba(10, 10, 12, 0.95);
+            padding: 15px 0; border-bottom: 1px solid #3a2366;
+            display: flex; justify-content: space-between;
+            align-items: center; z-index: 100;
+        }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .question-card {
+            background-color: #121216;
+            border: 1px solid #3a2366; border-radius: 12px;
+            padding: 25px; margin-top: 25px;
+        }
+        .question-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 20px; color: #ffffff; }
+        
+        .options { display: flex; flex-direction: column; gap: 12px; }
+        .option-label {
+            display: flex; align-items: center; gap: 15px;
+            background: #1a1a24; padding: 15px;
+            border-radius: 8px; border: 1px solid #2a2a36;
+            cursor: pointer; transition: 0.2s;
+        }
+        .option-label:hover:not(.disabled) { background: #232333; border-color: #6f42c1; }
+        .option-label input { display: none; }
+        
+        /* Trạng thái đáp án */
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.15); color: #00e676; }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.15); color: #ff5252; }
+        .option-label.disabled { cursor: default; pointer-events: none; opacity: 0.7; }
+
+        .explanation {
+            margin-top: 20px; padding: 15px;
+            background: rgba(111, 66, 193, 0.1);
+            border-left: 4px solid #b388ff; border-radius: 4px;
+            font-size: 0.95rem; color: #d1c4e9;
+            display: none; /* Ẩn mặc định */
+        }
+
+        .btn-submit {
+            display: block; width: 100%; max-width: 300px;
+            margin: 40px auto 0; background-color: #00e676;
+            color: #000; font-size: 1.2rem; font-weight: 700;
+            padding: 15px; border: none; border-radius: 8px;
+            cursor: pointer; transition: 0.3s;
+        }
+        .btn-submit:hover { background-color: #00c853; }
+        
+        #result-box {
+            text-align: center; padding: 30px; margin-top: 30px;
+            background: #121216; border: 2px solid #00e676;
+            border-radius: 12px; display: none;
+        }
+        #result-box h2 { color: #00e676; margin-bottom: 10px; }
+        
+        .back-link { display: inline-block; margin-top: 20px; color: #8c8c93; text-decoration: none; }
+        .back-link:hover { color: #fff; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- MÀN HÌNH THIẾT LẬP -->
+    <div id="setup-screen">
+        <h1>Bộ đề 1: Auguste Comte</h1>
+        <p>Chọn các thiết lập trước khi bắt đầu làm bài</p>
+        
+        <div class="setting-group">
+            <span class="setting-label">Tính thời gian làm bài</span>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" id="enable-timer">
+                <input type="number" id="time-limit" value="30" min="1" disabled> <span style="color:#b3b3b8">phút</span>
+            </div>
+        </div>
+        
+        <div class="setting-group">
+            <span class="setting-label">Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+        <a href="chuong-2.html" class="back-link">← Quay lại danh sách đề</a>
+    </div>
+
+    <!-- MÀN HÌNH LÀM BÀI -->
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2 style="font-size: 1.2rem; color: #b388ff;">Auguste Comte (50 Câu)</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+
+        <div id="questions-container"></div>
+
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        
+        <div id="result-box">
+            <h2 id="score-text">Bạn đã hoàn thành!</h2>
+            <p id="score-details"></p>
+            <a href="chuong-2.html" class="btn-start" style="text-decoration:none; display:inline-block; width:auto; padding:10px 30px; margin-top:20px;">Trở về danh sách đề</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Dữ liệu 50 câu hỏi
+    const questionsData = [
+        { q: "Câu 1. Auguste Comte sống trong giai đoạn nào?", opts: { A: "1760 – 1825", B: "1798 – 1857", C: "1818 – 1883", D: "1858 – 1917" }, ans: "B", exp: "Auguste Comte sinh năm 1798 và mất năm 1857." },
+        { q: "Câu 2. Auguste Comte là nhà khoa học người nước nào?", opts: { A: "Đức", B: "Anh", C: "Mỹ", D: "Pháp" }, ans: "D", exp: "Auguste Comte là nhà toán học, vật lý học, thiên văn học, triết học thực chứng và nhà xã hội học người Pháp." },
+        { q: "Câu 3. Ngoài vai trò là nhà xã hội học, Auguste Comte còn được biết đến là nhà khoa học thuộc những lĩnh vực nào?", opts: { A: "Toán học, vật lý học, thiên văn học, triết học thực chứng", B: "Hóa học, địa chất học, triết học tự nhiên, lịch sử học", C: "Sinh học, y học, kinh tế học, tâm lý học nhân cách", D: "Văn học cổ điển, luật học, địa lý học, nhân chủng học" }, ans: "A", exp: "Auguste Comte là nhà toán học, vật lý học, thiên văn học, triết học thực chứng và nhà xã hội học người Pháp." },
+        { q: "Câu 4. Auguste Comte trưởng thành trong bối cảnh lịch sử nào của nước Pháp?", opts: { A: "Thời kỳ Phục hưng", B: "Thời kỳ Cách mạng Pháp", C: "Thời kỳ Chiến tranh thế giới thứ nhất", D: "Thời kỳ Trung cổ sụp đổ" }, ans: "B", exp: "Ông trưởng thành trong thời kỳ Cách mạng Pháp khi mà xã hội đang trải qua những biến động sâu sắc." },
+        { q: "Câu 5. Auguste Comte sinh ra và lớn lên trong một gia đình theo xu hướng tôn giáo và chính trị nào?", opts: { A: "Gia đình Tin lành theo xu hướng cộng hòa", B: "Gia đình Kitô giáo theo xu hướng quân chủ", C: "Gia đình Hồi giáo theo xu hướng quân phiệt", D: "Gia đình Phật giáo theo xu hướng trung lập" }, ans: "B", exp: "Ông sinh ra và lớn lên trong một gia đình Kitô giáo theo xu hướng quân chủ nhưng lại nung nấu tư tưởng tự do và cách mạng rất sớm." },
+        { q: "Câu 6. Mặc dù lớn lên trong gia đình có xu hướng quân chủ, Auguste Comte đã sớm nung nấu tư tưởng gì?", opts: { A: "Tư tưởng bảo thủ và trung lập", B: "Tư tưởng tự do và cách mạng", C: "Tư tưởng tôn giáo thần bí", D: "Tư tưởng quân phiệt chuyên chế" }, ans: "B", exp: "Tuy sinh ra và lớn lên trong một gia đình Kitô giáo theo xu hướng quân chủ nhưng ông lại nung nấu tư tưởng tự do và cách mạng rất sớm." },
+        { q: "Câu 7. Sau khi rời quê hương lên Paris, Auguste Comte đã dành phần lớn thời gian để làm gì?", opts: { A: "Tham gia trực tiếp vào các cuộc khởi nghĩa vũ trang", B: "Thành lập các doanh nghiệp sản xuất công nghiệp", C: "Quan sát và phản ánh kịch tính của đời sống con người diễn ra xung quanh", D: "Giảng dạy toán học tại các trường phổ thông nông thôn" }, ans: "C", exp: "Ông khăn gói lên Paris, nơi ông dành phần lớn thời gian để quan sát và phản ánh kịch tính của đời sống con người diễn ra xung quanh." },
+        { q: "Câu 8. Từ năm 1817 đến năm 1824, Auguste Comte đã làm công việc gì cho nhà tư tưởng Saint Simon?", opts: { A: "Cố vấn pháp luật", B: "Người đại diện truyền thông", C: "Trợ lý nghiên cứu thực địa", D: "Thư ký riêng" }, ans: "D", exp: "Từ năm 1817 đến năm 1824, ông là thư ký riêng cho Saint Simon, một trong những người sáng lập ra chủ nghĩa thực chứng." },
+        { q: "Câu 9. Auguste Comte là người đầu tiên đưa ra thuật ngữ “xã hội học” (sociologie) vào năm nào?", opts: { A: "1817", B: "1824", C: "1838", D: "1857" }, ans: "C", exp: "Năm 1838, ông là người đầu tiên đưa ra thuật ngữ “xã hội học” (sociologie)." },
+        { q: "Câu 10. Thuật ngữ “xã hội học” (sociologie) do Auguste Comte kiến tạo bắt nguồn từ những ngôn ngữ nào?", opts: { A: "Tiếng Hy Lạp và tiếng Đức", B: "Chữ Latinh và tiếng Hy Lạp", C: "Tiếng Pháp cổ và chữ Phạn", D: "Tiếng Anh và tiếng Tây Ban Nha" }, ans: "B", exp: "Thuật ngữ này bắt nguồn từ chữ Latinh, được kiến tạo từ hai thành phần: (1) xã hội (societas) và (2) “học thuyết, quy luật” (logos) của tiếng Hy Lạp." },
+        { q: "Câu 11. Trong cấu trúc thuật ngữ \"sociologie\" do Comte đưa ra, từ \"societas\" thuộc tiếng Latinh có nghĩa là gì?", opts: { A: "Cộng đồng", B: "Con người", C: "Xã hội", D: "Giao tiếp" }, ans: "C", exp: "Thành phần thứ nhất bắt nguồn từ chữ Latinh là \"societas\" có nghĩa là xã hội." },
+        { q: "Câu 12. Trong cấu trúc thuật ngữ \"sociologie\" của Comte, từ \"logos\" trong tiếng Hy Lạp có nghĩa là gì?", opts: { A: "Phương pháp luận, công cụ", B: "Học thuyết, quy luật", C: "Sự biến đổi, vận động", D: "Ý thức, tư tưởng" }, ans: "B", exp: "Thành phần thứ hai là \"logos\" của tiếng Hy Lạp, có nghĩa là \"học thuyết, quy luật\"." },
+        { q: "Câu 13. Theo ý nghĩa thuật ngữ mà Comte đưa ra, xã hội học được định nghĩa là gì?", opts: { A: "Khoa học kiến tạo các quan điểm, hệ thống thuật ngữ và lý thuyết nhằm phát hiện các quy luật, lôgic về xã hội loài người", B: "Khoa học nghiên cứu về tâm lý và hành vi của từng cá nhân riêng lẻ", C: "Khoa học nghiên cứu về sự phân bố địa lý của các dân tộc trên thế giới", D: "Khoa học nghiên cứu về lịch sử các cuộc chiến tranh phong kiến" }, ans: "A", exp: "Theo nghĩa này, xã hội học là khoa học kiến tạo các quan điểm, hệ thống thuật ngữ và lý thuyết nhằm phát hiện các quy luật, lôgic về xã hội loài người." },
+        { q: "Câu 14. Nhờ những đóng góp to lớn đặt nền móng cho một ngành khoa học mới, Auguste Comte được suy tôn là gì?", opts: { A: "Nhà triết học vĩ đại nhất thế giới", B: "Ông tổ của xã hội học", C: "Nhà cách mạng xã hội học Pháp", D: "Người sáng lập chủ nghĩa duy vật biện chứng" }, ans: "B", exp: "Với những cống hiến của ông cho một ngành khoa học mới, nhiều nhà khoa học sau này vẫn suy tôn ông là ông tổ của xã hội học." },
+        { q: "Câu 15. Ai là người đã kết nối hoàn thiện và lôgic những tư tưởng của Saint Simon để hình thành và đặt tên cho ngành xã hội học?", opts: { A: "Karl Marx", B: "Auguste Comte", C: "Herbert Spencer", D: "Émile Durkheim" }, ans: "B", exp: "Chỉ đến khi Auguste Comte kết nối hoàn thiện và lôgic những tư tưởng của Saint Simon thì một ngành khoa học xã hội mới được hình thành và đặt tên là xã hội học." },
+        { q: "Câu 16. Đâu là một trong ba tác phẩm chính thể hiện tư tưởng xã hội học cốt yếu của Auguste Comte?", opts: { A: "Bản thảo kinh tế - triết học", B: "Hệ thống chính trị thực chứng", C: "Sự phân công lao động xã hội", D: "Các nguyên lý của xã hội học" }, ans: "B", exp: "Những tư tưởng cốt yếu được thể hiện trong ba tác phẩm: Hệ thống chính trị thực chứng, Diễn ngôn về tinh thần thực chứng và Môn học triết học thực chứng." },
+        { q: "Câu 17. Tác phẩm nào dưới đây thuộc các công trình nghiên cứu cơ bản của Auguste Comte?", opts: { A: "Tư bản", B: "Quy tắc của phương pháp xã hội học", C: "Diễn ngôn về tinh thần thực chứng", D: "Đạo đức Tin lành và tinh thần chủ nghĩa tư bản" }, ans: "C", exp: "Các công trình gồm: Hệ thống chính trị thực chứng...; Diễn ngôn về tinh thần thực chứng và Môn học triết học thực chứng." },
+        { q: "Câu 18. Công trình nghiên cứu nào của Auguste Comte có độ dài gồm 04 tập?", opts: { A: "Diễn ngôn về tinh thần thực chứng", B: "Hệ thống chính trị thực chứng hay Chuyên luận xã hội học...", C: "Môn học triết học thực chứng", D: "Vật lý học xã hội đại cương" }, ans: "B", exp: "Công trình Hệ thống chính trị thực chứng hay Chuyên luận xã hội học về quá trình thiết chế hóa tôn giáo của nhân loại gồm có 04 tập." },
+        { q: "Câu 19. Xã hội học của Auguste Comte tuân thủ phương pháp luận nào?", opts: { A: "Phương pháp luận siêu hình", B: "Phương pháp luận thực chứng", C: "Phương pháp luận duy vật biện chứng", D: "Phương pháp luận lý giải chủ quan" }, ans: "B", exp: "Xã hội học của Comte tuân thủ phương pháp luận thực chứng." },
+        { q: "Câu 20. Theo phương pháp luận thực chứng, nhà nghiên cứu cần lý giải các hiện tượng xã hội bằng cách nào?", opts: { A: "Bằng các dữ liệu khách quan đồng thời giảm thiểu dữ liệu chủ quan", B: "Bằng các suy luận triết lý tự biện", C: "Bằng các tín điều tôn giáo", D: "Bằng việc áp đặt giá trị cá nhân" }, ans: "A", exp: "Tức là xem xét và lý giải các hiện tượng xã hội bằng các dữ liệu khách quan đồng thời giảm thiểu các dữ liệu chủ quan." },
+        { q: "Câu 21. Phương pháp luận thực chứng của Comte là sự tư duy về mối quan hệ giữa hai yếu tố nào?", opts: { A: "Lực lượng sản xuất và quan hệ sản xuất", B: "\"Hệ thống khái quát các quan niệm về con người\" và \"chính trị\"", C: "Niềm tin tôn giáo và khoa học", D: "Đạo đức và pháp luật" }, ans: "B", exp: "Là phương pháp luận tư duy về mối quan hệ không thể tách rời giữa một bên là “hệ thống khái quát các quan niệm về con người” và một bên là chính trị." },
+        { q: "Câu 22. Trong tư duy phương pháp luận thực chứng, yếu tố nào đóng vai trò là \"cơ sở tư duy\"?", opts: { A: "Chính trị", B: "Hệ thống khái quát các quan niệm về con người", C: "Kinh tế", D: "Luật pháp" }, ans: "B", exp: "Hệ thống khái quát các quan niệm về con người là cơ sở tư duy trong khi đó chính trị là mục đích." },
+        { q: "Câu 23. Comte cho rằng xã hội học giống các ngành khoa học tự nhiên nào vì đều vận dụng phương pháp nghiên cứu tự nhiên?", opts: { A: "Hóa học và địa chất học", B: "Vật lý và sinh vật học", C: "Toán học và tin học", D: "Thiên văn học và khí tượng học" }, ans: "B", exp: "Giống các ngành khoa học tự nhiên như vật lý, sinh vật học vì đều vận dụng các phương pháp luận nghiên cứu tự nhiên." },
+        { q: "Câu 24. Vì cho rằng xã hội tuân theo các quy luật giống tự nhiên, Comte còn gọi xã hội học là gì?", opts: { A: "Cơ học xã hội", B: "Tĩnh học xã hội", C: "Vật lý học xã hội", D: "Động học xã hội" }, ans: "C", exp: "Vì thế, ông còn gọi xã hội học là vật lý học xã hội." },
+        { q: "Câu 25. Nghiên cứu xã hội bằng phương pháp thực chứng là quá trình kiến tạo yếu tố nào?", opts: { A: "Kiến tạo giáo lý tôn giáo", B: "Kiến tạo thuật ngữ khoa học và lý luận", C: "Kiến tạo thiết chế cưỡng bức", D: "Kiến tạo triết học trừu tượng" }, ans: "B", exp: "Là quá trình kiến tạo thuật ngữ khoa học và lý luận để hiểu thực tế xã hội." },
+        { q: "Câu 26. Các phương pháp thu thập dữ liệu thực tiễn do Auguste Comte gợi ý bao gồm?", opts: { A: "Phỏng vấn sâu, thảo luận nhóm", B: "Trắc nghiệm tâm lý, nghiên cứu trường hợp", C: "Quan sát, thực nghiệm, so sánh, phân tích lịch sử", D: "Thống kê toán học, dự báo xã hội" }, ans: "C", exp: "Gợi ý bao gồm: quan sát; thực nghiệm; so sánh; phân tích lịch sử." },
+        { q: "Câu 27. Theo Comte, để giải thích các hiện tượng xã hội qua quan sát, người quan sát phải làm gì?", opts: { A: "Áp đặt suy luận triết lý", B: "Thoát ra khỏi tư tưởng giáo điều bằng cách đề ra các bước, quy trình cụ thể", C: "Chỉ tập trung vào hiện tượng siêu nhiên", D: "Ghi chép ngẫu nhiên" }, ans: "B", exp: "Ông yêu cầu người quan sát phải thoát ra khỏi tư tưởng giáo điều hay triết lý tự biện bằng cách đề ra các bước, quy trình cụ thể." },
+        { q: "Câu 28. Thực nghiệm xã hội theo gợi ý của Auguste Comte được hiểu là gì?", opts: { A: "Xây dựng phòng thí nghiệm tự nhiên", B: "Việc tạo ra những điều kiện nhân tạo để xem xét ảnh hưởng của chúng", C: "Áp dụng chính sách kinh tế mới", D: "Thay đổi thể chế chính trị ngẫu nhiên" }, ans: "B", exp: "Thực nghiệm xã hội là tạo ra những điều kiện nhân tạo để xem xét ảnh hưởng của chúng tới một hiện tượng." },
+        { q: "Câu 29. Để tìm hiểu sự kiện “bình thường” bằng thực nghiệm, Comte đã nghiên cứu trường hợp nào?", opts: { A: "Trường hợp siêu nhiên", B: "Các trường hợp “không bình thường”", C: "Trường hợp lịch sử cổ đại", D: "Trường hợp giới quý tộc" }, ans: "B", exp: "Comte nghiên cứu trải nghiệm các trường hợp “không bình thường” để tìm hiểu các sự kiện “bình thường”." },
+        { q: "Câu 30. Phương pháp so sánh trong xã hội học được thực hiện nhằm mục đích gì?", opts: { A: "Để tìm hiểu sự giống và khác nhau giữa các xã hội, từ đó khái quát đặc điểm chung", B: "Để so sánh sức mạnh quân sự", C: "Để xếp hạng văn minh", D: "Để so sánh giáo lý tôn giáo" }, ans: "A", exp: "Để tìm hiểu được sự giống nhau và khác nhau giữa các xã hội đang được nghiên cứu, từ đó khái quát các đặc điểm chung." },
+        { q: "Câu 31. Theo động học xã hội, nhà xã hội học có thể áp dụng phương pháp so sánh theo chiều nào?", opts: { A: "Chiều không gian địa lý", B: "Chiều lịch sử (hiện tại với quá khứ)", C: "Chiều phân tầng giai cấp", D: "Chiều tâm lý cá nhân" }, ans: "B", exp: "Nhà xã hội học có thể nghiên cứu theo chiều lịch sử, tức là so sánh xã hội hiện tại với xã hội trong quá khứ." },
+        { q: "Câu 32. Phương pháp phân tích lịch sử theo tiếp cận lịch đại của Comte hướng tới mục tiêu gì?", opts: { A: "Ghi chép truyền thuyết", B: "Chứng minh ý chí vĩ nhân", C: "Tìm hiểu sự vận động lịch sử để chỉ ra xu hướng và tiến trình biến đổi xã hội", D: "Khôi phục trật tự phong kiến" }, ans: "C", exp: "Nhắm đến việc tìm hiểu tỷ mỷ sự vận động lịch sử... để chỉ ra xu hướng và tiến trình biến đổi xã hội." },
+        { q: "Câu 33. Ý nghĩa quan trọng thứ nhất của phương pháp luận thực chứng đối với sự ra đời xã hội học là gì?", opts: { A: "Kết hợp vào thần học", B: "Lần đầu tiên phương pháp nghiên cứu được tách khỏi phương pháp siêu hình của triết học", C: "Chứng minh không thể nghiên cứu khách quan", D: "Đặt dưới sự kiểm soát của triết học tự nhiên" }, ans: "B", exp: "Thứ nhất, lần đầu tiên phương pháp nghiên cứu thực tế của xã hội học được tách khỏi phương pháp siêu hình của triết học." },
+        { q: "Câu 34. Auguste Comte gọi xã hội học là ngành khoa học gì trong hệ thống phân loại của ông?", opts: { A: "Khoa học công cụ", B: "Khoa học nữ hoàng", C: "Khoa học bổ trợ", D: "Khoa học cơ sở" }, ans: "B", exp: "Comte gọi xã hội học là ngành \"khoa học nữ hoàng\" và đứng đầu trong hệ thống thứ bậc khoa học của ông." },
+        { q: "Câu 35. Xã hội học (vật lý học xã hội) được hợp thành từ hai bộ phận chính nào?", opts: { A: "Vi mô và vĩ mô", B: "Tĩnh học xã hội và động học xã hội", C: "Lý thuyết và thực nghiệm", D: "Cơ cấu và phân tầng" }, ans: "B", exp: "Hợp thành từ hai bộ phận chính là tĩnh học xã hội và động học xã hội." },
+        { q: "Câu 36. Bộ phận \"tĩnh học xã hội\" có nhiệm vụ nghiên cứu khía cạnh nào?", opts: { A: "Sự tiến hóa lịch sử", B: "Các quy luật phổ biến về trật tự, điều kiện tồn tại, cân bằng và hài hòa xã hội", C: "Đấu tranh giai cấp", D: "Tăng trưởng kinh tế" }, ans: "B", exp: "Nhiệm vụ nghiên cứu các quy luật phổ biến về trật tự xã hội, về các điều kiện tồn tại, cân bằng và hài hòa xã hội." },
+        { q: "Câu 37. Theo tĩnh học xã hội, yếu tố nào đóng vai trò điều hòa, liên kết các bộ phận hệ thống xã hội?", opts: { A: "Thị trường tự do", B: "Nhà nước", C: "Giáo hội", D: "Công đoàn" }, ans: "B", exp: "Nhà nước đóng vai trò điều hòa, phối hợp và liên kết các bộ phận của hệ thống xã hội." },
+        { q: "Câu 38. Bộ phận \"động học xã hội\" nghiên cứu về nội dung gì?", opts: { A: "Quy luật duy trì sự ổn định tại một thời điểm", B: "Những biến đổi lịch sử, tiến triển và tiến bộ xã hội", C: "Sự phân bố dân cư", D: "Cơ cấu hành chính phong kiến" }, ans: "B", exp: "Nghiên cứu những biến đổi lịch sử... Động học xã hội được coi là khoa học nghiên cứu quy luật của sự tiến triển và tiến bộ xã hội." },
+        { q: "Câu 39. Auguste Comte sắp xếp các khoa học trên cơ sở phát hiện quy luật nào?", opts: { A: "Giá trị thặng dư", B: "Quy luật ba giai đoạn", C: "Đấu tranh sinh tồn", D: "Tiến hóa sinh học" }, ans: "B", exp: "Sắp xếp chúng trên cơ sở phát hiện \"quy luật ba giai đoạn\"." },
+        { q: "Câu 40. Quy luật ba giai đoạn của Auguste Comte bao gồm những giai đoạn nào?", opts: { A: "(1) Thần học - ảo; (2) Siêu hình - trừu tượng; (3) Khoa học - thực chứng", B: "(1) Chiếm hữu nô lệ; (2) Phong kiến; (3) Tư bản", C: "(1) Mông muội; (2) Dã man; (3) Văn minh", D: "(1) Bộ lạc; (2) Phong kiến; (3) Dân tộc hiện đại" }, ans: "A", exp: "Gồm: (1) giai đoạn thần học - ảo; (2) giai đoạn siêu hình - trừu tượng; (3) giai đoạn khoa học - thực chứng." },
+        { q: "Câu 41. Giai đoạn \"thần học - ảo\" được ví như thời kỳ nào của loài người?", opts: { A: "Tuổi trưởng thành", B: "Tuổi ấu thơ của loài người (giai đoạn ấu trĩ)", C: "Tuổi thiếu niên", D: "Giai đoạn suy thoái" }, ans: "B", exp: "Tương ứng với tuổi ấu thơ của loài người, là giai đoạn ấu trĩ của nhân loại." },
+        { q: "Câu 42. Giai đoạn thần học - ảo trải qua ba thời kỳ nhỏ nào?", opts: { A: "Ma thuật, bùa chú, tôn giáo", B: "Vật thần, đa thần, độc thần", C: "Sùng bái tự nhiên, thờ cúng tổ tiên, thờ thần tối cao", D: "Nguyên thủy, cổ đại, trung cổ" }, ans: "B", exp: "Trải qua ba thời kỳ: vật thần, đa thần và độc thần." },
+        { q: "Câu 43. Sự hiểu biết của loài người ở giai đoạn thần học - ảo thể hiện chính ở đại diện nào?", opts: { A: "Triết gia", B: "Thầy cúng, thầy mo, phù thủy", C: "Nhà vật lý học", D: "Kỹ sư" }, ans: "B", exp: "Thể hiện chính ở những đại diện như thầy cúng, thầy mo, phù thủy..." },
+        { q: "Câu 44. Giai đoạn \"siêu hình - trừu tượng\" được ví như tuổi nào của loài người?", opts: { A: "Tuổi thiếu niên, trung chuyển từ thần học sang thực chứng", B: "Tuổi ấu thơ", C: "Giai đoạn trưởng thành", D: "Tuổi già" }, ans: "A", exp: "Được ví như tuổi thiếu niên của loài người, là giai đoạn trung chuyển từ thần học sang thực chứng." },
+        { q: "Câu 45. Giai đoạn siêu hình giải thích xã hội bằng yếu tố nào và đại diện là ai?", opts: { A: "Ý chí thần linh; thầy cúng", B: "Bằng những ý niệm, tín điều; tiêu biểu là các triết gia siêu hình", C: "Bằng chứng thực nghiệm; nhà khoa học", D: "Số liệu toán học; nhà toán học" }, ans: "B", exp: "Giải thích bằng những ý niệm, tín điều, là con đẻ của tư biện. Tiêu biểu là các triết gia siêu hình." },
+        { q: "Câu 46. Giai đoạn \"thực chứng - khoa học\" được ví như thời kỳ nào?", opts: { A: "Tuổi ấu thơ", B: "Tuổi thiếu niên", C: "Giai đoạn trưởng thành của loài người", D: "Giai đoạn thoái trào" }, ans: "C", exp: "Được ví như giai đoạn trưởng thành của loài người." },
+        { q: "Câu 47. Tại sao giai đoạn thực chứng được coi là giai đoạn sau cùng và vĩnh viễn?", opts: { A: "Chấm dứt sự biến đổi", B: "Mọi lý giải đều dựa vào phương pháp luận chắc chắn, dựa vào dữ liệu để phát hiện quy luật", C: "Xóa bỏ nhà nước cũ", D: "Thiết lập tôn giáo độc thần" }, ans: "B", exp: "Bởi vì mọi lý giải đều dựa vào phương pháp luận chắc chắn, dựa vào dữ liệu... để phát hiện ra các quy luật xã hội." },
+        { q: "Câu 48. Theo con đường \"tích lũy tiến hóa\", điều gì xảy ra với các yếu tố cũ trong xã hội hiện đại?", opts: { A: "Bị xóa sạch hoàn toàn", B: "Chúng không bị mất đi mà các tư tưởng mới, cơ cấu mới được chắt lọc bổ sung vào", C: "Quay lại thống trị", D: "Biến đổi thành luật pháp" }, ans: "B", exp: "Các tư tưởng mới, hệ thống mới được chắt lọc, bổ sung từ/vào cái cũ. Do đó, dòng họ, tư tưởng thần bí không bị mất đi." },
+        { q: "Câu 49. Sự phát triển của xã hội, cơ cấu xã hội do hệ thống nào quy định?", opts: { A: "Công nghệ", B: "Hệ thống văn hóa, đạo đức và tinh thần quy định", C: "Cách mạng", D: "Quy mô dân số" }, ans: "B", exp: "Comte cho rằng sự phát triển của xã hội... là do hệ thống văn hóa, đạo đức và tinh thần quy định." },
+        { q: "Câu 50. Lý thuyết cấu trúc - chức năng sau này được gợi mở trực tiếp từ hướng nghiên cứu nào của Comte?", opts: { A: "Động học xã hội", B: "Tĩnh học xã hội", C: "Thực nghiệm xã hội", D: "Phân tích lịch sử" }, ans: "B", exp: "Ý tưởng được gợi mở từ hướng nghiên cứu tĩnh học xã hội của Auguste Comte." }
+    ];
+
+    let timerInterval;
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    
+    // Khởi tạo AudioContext cho âm thanh
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playSound(isCorrect) {
+        if(audioCtx.state === 'suspended') audioCtx.resume();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain); gain.connect(audioCtx.destination);
+        
+        if(isCorrect) {
+            // Tiếng "Ting tinh" (2 nốt nhạc cao)
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(659.25, audioCtx.currentTime); // Mi
+            osc.frequency.setValueAtTime(880.00, audioCtx.currentTime + 0.1); // La
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+            osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.4);
+        } else {
+            // Tiếng bíp sai (âm trầm)
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(150, audioCtx.currentTime);
+            gain.gain.setValueAtTime(0.3, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+            osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+        }
+    }
+
+    // Toggle Input Thời gian
+    document.getElementById('enable-timer').addEventListener('change', function() {
+        document.getElementById('time-limit').disabled = !this.checked;
+    });
+
+    // Hàm bắt đầu làm bài
+    function startQuiz() {
+        // Lấy cấu hình
+        const isTimerOn = document.getElementById('enable-timer').checked;
+        const timeMinutes = parseInt(document.getElementById('time-limit').value);
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        
+        // Chuyển màn hình
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        // Render câu hỏi
+        renderQuestions();
+
+        // Xử lý đồng hồ
+        if(isTimerOn && timeMinutes > 0) {
+            startTimer(timeMinutes * 60);
+        } else {
+            document.getElementById('timer-display').innerText = "Không giới hạn thời gian";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+        
+        // Ẩn/Hiện nút Nộp bài
+        if(isInstantFeedback) {
+            document.getElementById('submit-btn').style.display = 'none'; // Không cần nút nộp nếu hiện ngay
+        }
+    }
+
+    // Render danh sách câu hỏi
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        
+        questionsData.forEach((q, index) => {
+            const html = `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}">
+                        <b>Giải thích:</b> ${q.exp}
+                    </div>
+                </div>
+            `;
+            container.innerHTML += html;
+        });
+    }
+
+    // Xử lý khi click vào 1 đáp án
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${index}`);
+        const allLabels = document.querySelectorAll(`#q-${qIndex} .option-label`);
+        
+        if (isInstantFeedback) {
+            // Chế độ: Báo ngay
+            if(document.querySelector(`#q-${qIndex}`).classList.contains('answered')) return; // Đã trả lời thì cấm bấm lại
+            document.querySelector(`#q-${qIndex}`).classList.add('answered');
+
+            const correctAns = questionsData[qIndex].ans;
+            
+            // Khóa tất cả các lựa chọn
+            allLabels.forEach(lbl => lbl.classList.add('disabled'));
+            
+            if(selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+                playSound(true);
+                totalScore++;
+            } else {
+                labelElement.classList.add('wrong');
+                // Tìm nhãn chứa đáp án đúng để bôi xanh
+                allLabels.forEach(lbl => {
+                    if(lbl.querySelector('input').value === correctAns) {
+                        lbl.classList.add('correct');
+                    }
+                });
+                playSound(false);
+            }
+            // Hiện giải thích
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            
+            // Check nếu làm xong câu cuối cùng thì hiện Box kết quả
+            if(document.querySelectorAll('.question-card.answered').length === questionsData.length) {
+                showFinalResult();
+            }
+
+        } else {
+            // Chế độ: Bình thường (Chọn lại thoải mái)
+            allLabels.forEach(lbl => lbl.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    // Nút Nộp Bài (dành cho chế độ Không báo ngay)
+    window.submitQuiz = function() {
+        if(confirm("Bạn có chắc chắn muốn nộp bài?")) {
+            clearInterval(timerInterval);
+            totalScore = 0;
+            
+            questionsData.forEach((q, index) => {
+                const selectedInput = document.querySelector(`input[name="q${index}"]:checked`);
+                const allLabels = document.querySelectorAll(`#q-${index} .option-label`);
+                
+                // Khóa lựa chọn
+                allLabels.forEach(lbl => lbl.classList.add('disabled'));
+                
+                if(selectedInput) {
+                    const userAns = selectedInput.value;
+                    if(userAns === q.ans) {
+                        selectedInput.parentElement.classList.add('correct');
+                        totalScore++;
+                    } else {
+                        selectedInput.parentElement.classList.add('wrong');
+                        // Bôi xanh đáp án đúng
+                        allLabels.forEach(lbl => {
+                            if(lbl.querySelector('input').value === q.ans) lbl.classList.add('correct');
+                        });
+                    }
+                } else {
+                    // Nếu bỏ trống, bôi xanh đáp án đúng
+                    allLabels.forEach(lbl => {
+                        if(lbl.querySelector('input').value === q.ans) lbl.classList.add('correct');
+                    });
+                }
+                
+                // Hiện giải thích
+                document.getElementById(`exp-${index}`).style.display = 'block';
+            });
+            
+            playSound(totalScore >= 25); // Phát âm báo tùy điểm số
+            showFinalResult();
+            document.getElementById('submit-btn').style.display = 'none';
+        }
+    }
+
+    function showFinalResult() {
+        const resBox = document.getElementById('result-box');
+        resBox.style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    // Đếm ngược thời gian
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài!");
+                if(!isInstantFeedback) submitQuiz(); // Tự động nộp
+            }
+        }, 1000);
+    }
+</script>
+
+</body>
+</html>
