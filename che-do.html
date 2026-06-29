@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chọn Chế Độ Ôn Tập - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c; /* Nền đen */
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            padding: 40px 30px;
+            background-color: #121216;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 35px;
+            color: #ffffff;
+        }
+
+        /* Khung chứa các lựa chọn */
+        .options-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 20px; /* Khoảng cách giữa 2 nút */
+        }
+
+        /* Thiết kế khung lựa chọn màu tím */
+        .option-box {
+            display: block;
+            text-decoration: none;
+            background-color: transparent;
+            border: 2px solid #6f42c1; /* Viền tím */
+            border-radius: 12px;
+            padding: 25px 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-align: left;
+        }
+
+        .option-box h2 {
+            color: #b388ff; /* Tiêu đề màu tím nhạt */
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .option-box p {
+            color: #b3b3b8;
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.5;
+        }
+
+        /* Hiệu ứng khi di chuột vào khung lựa chọn */
+        .option-box:hover {
+            background-color: rgba(111, 66, 193, 0.15); /* Nền tím trong suốt khi hover */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(111, 66, 193, 0.3);
+        }
+
+        .option-box:hover h2 {
+            color: #ffffff; /* Đổi màu tiêu đề sang trắng cho nổi bật */
+        }
+
+        .option-box:active {
+            transform: translateY(0);
+        }
+
+        /* Nút quay lại trang trước */
+        .back-link {
+            display: inline-block;
+            margin-top: 30px;
+            color: #8c8c93;
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            text-decoration: underline;
+        }
+
+        /* Tối ưu cho điện thoại */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            h1 {
+                font-size: 1.6rem;
+                margin-bottom: 25px;
+            }
+            .option-box {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Chọn Chế Độ Ôn Tập</h1>
+        
+        <div class="options-wrapper">
+            <a href="lua-chon.html?mode=chuong" class="option-box">
+                <h2>Ôn tập theo chương</h2>
+                <p>Nắm vững kiến thức lý thuyết và bài tập trắc nghiệm chi tiết theo từng chương trong giáo trình.</p>
+            </a>
+            
+            <a href="lua-chon.html?mode=tonghop" class="option-box">
+                <h2>Ôn tập tổng hợp</h2>
+                <p>Thử sức với các đề thi tổng hợp nhiều chương, mô phỏng cấu trúc bài thi thực tế để đánh giá năng lực.</p>
+            </a>
+        </div>
+
+        <a href="xhhdc.html" class="back-link">← Quay lại trang chủ</a>
+    </div>
+
+</body>
+</html>
