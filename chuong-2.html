@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 2 - Xã Hội Học Đại Cương</title>
+    <!-- Phông chữ không chân Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Phần Tiêu đề trang */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff 60%, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        p.subtitle {
+            color: #b3b3b8;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Lưới hiển thị các ô lựa chọn */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        /* Để ô thứ 5 nằm giữa nếu ở giao diện 2 cột */
+        .grid-item:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+            max-width: 50%;
+            margin: 0 auto;
+            width: calc(100% - 10px);
+        }
+
+        /* Thiết kế từng ô lựa chọn */
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            background-color: #121216;
+            border: 1px solid #3a2366;
+            border-radius: 12px;
+            padding: 25px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+
+        .grid-item h3 {
+            color: #b388ff;
+            font-size: 1.3rem;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        /* Hiệu ứng rê chuột vào ô */
+        .grid-item:hover {
+            background-color: rgba(111, 66, 193, 0.1);
+            border-color: #6f42c1;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.25);
+        }
+
+        .grid-item:hover h3 {
+            color: #ffffff;
+        }
+
+        /* Nút quay lại */
+        .back-nav {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: #8c8c93;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border: 1px solid #8c8c93;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Tối ưu cho màn hình điện thoại */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+            .grid-item:last-child:nth-child(odd) {
+                grid-column: auto;
+                max-width: 100%;
+                margin: 0;
+                width: 100%;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Chương 2</h1>
+            <p class="subtitle">Sơ lược lịch sử và lý thuyết Xã hội học</p>
+        </div>
+        
+        <!-- Khung lưới chứa 5 ô -->
+        <div class="grid-container">
+            <a href="auguste-comte.html" class="grid-item">
+                <h3>Bộ đề 1. Auguste Comte</h3>
+            </a>
+            
+            <a href="karl-marx.html" class="grid-item">
+                <h3>Bộ đề 1. Karl Marx</h3>
+            </a>
+            
+            <a href="emile-durkheim.html" class="grid-item">
+                <h3>Bộ đề 1. Emile Durkheim</h3>
+            </a>
+            
+            <a href="herbert-spencer.html" class="grid-item">
+                <h3>Bộ đề 1. Herbert Spencer</h3>
+            </a>
+            
+            <a href="max-weber.html" class="grid-item">
+                <h3>Bộ đề 1. Max Weber</h3>
+            </a>
+        </div>
+
+        <div class="back-nav">
+            <!-- Link quay trở lại trang danh sách các chương -->
+            <a href="lua-chon.html?mode=chuong" class="back-link">← Quay lại danh sách chương</a>
+        </div>
+    </div>
+
+</body>
+</html>
