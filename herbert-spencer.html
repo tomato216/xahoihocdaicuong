@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 3. Herbert Spencer - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 3. Herbert Spencer</h1>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Herbert Spencer</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-2.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-2.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Herbert Spencer sống trong giai đoạn lịch sử nào?", opts: { A: "1798 – 1857", B: "1818 – 1883", C: "1820 – 1905", D: "1858 – 1917" }, ans: "C", exp: "Herbert Spencer sinh năm 1820 và mất năm 1905." },
+        { q: "2. Herbert Spencer là nhà khoa học thuộc những lĩnh vực nào?", opts: { A: "Nhà toán học và thiên văn học người Pháp", B: "Nhà triết học và xã hội học người Anh", C: "Nhà sử học và nhân chủng học người Đức", D: "Nhà vật lý học và tâm lý học người Mỹ" }, ans: "B", exp: "Herbert Spencer là nhà triết học, xã hội học người Anh." },
+        { q: "3. Điểm đặc biệt trong quá trình học tập của Herbert Spencer so với các nhà tư tưởng cùng thời là gì?", opts: { A: "Ông tốt nghiệp xuất sắc ngành Luật tại Đại học Tổng hợp Berlin", B: "Ông không học ở một trường lớp chính quy nào mà chủ yếu do bố và những người thân trong gia đình dạy", C: "Ông học Triết học tại Đại học Tổng hợp Bonn và Luật tại Berlin", D: "Ông từng là học trò và là thư ký riêng của Saint Simon" }, ans: "B", exp: "Không như các nhà tư tưởng khác, Spencer không học ở một trường lớp chính quy nào mà chủ yếu do bố và những người thân trong gia đình dạy." },
+        { q: "4. Mặc dù không trải qua trường lớp chính quy, Herbert Spencer lại có nền tảng tri thức rất vững chắc trong lĩnh vực nào?", opts: { A: "Khoa học tự nhiên", B: "Mỹ thuật và âm nhạc cổ điển", C: "Khảo cổ học phương Đông", D: "Luật học hành chính" }, ans: "A", exp: "Ông có nền tảng rất vững chắc về khoa học tự nhiên và một mối quan tâm đặc biệt với khoa học xã hội." },
+        { q: "5. Herbert Spencer thực sự bắt đầu chú ý và dành sự quan tâm sâu sắc tới xã hội học vào năm nào?", opts: { A: "1838", B: "1848", C: "1873", D: "1905" }, ans: "C", exp: "Năm 1873, Spencer bắt đầu thực sự chú ý tới xã hội học." },
+        { q: "6. Bối cảnh xã hội Anh thời kỳ Spencer sống có đặc điểm gì nổi bật ảnh hưởng trực tiếp tới tư tưởng xã hội học của ông?", opts: { A: "Là quốc gia phong kiến nông nghiệp đang suy thoái trầm trọng", B: "Là xã hội đầu tiên tiến hành công nghiệp hóa", C: "Đang trải qua cuộc cách mạng vô sản lật đổ giới tư sản", D: "Đang chịu sự thống trị nặng nề bởi chế độ chiếm hữu nô lệ cổ đại" }, ans: "B", exp: "Ông bị ảnh hưởng bởi bối cảnh chính trị, kinh tế, xã hội và môi trường khoa học Anh (xã hội đầu tiên công nghiệp hóa, ít nhiều ảnh hưởng đến những yếu tố tích cực của thế kỷ đầu phát triển tư bản chủ nghĩa)." },
+        { q: "7. Học thuyết nào của Charles Darwin đã có ảnh hưởng mạnh mẽ đến tư tưởng xã hội học của Herbert Spencer?", opts: { A: "Học thuyết tha hóa lao động", B: "Học thuyết tiến hóa xã hội", C: "Học thuyết hình thái kinh tế - xã hội", D: "Học thuyết thực chứng luận" }, ans: "B", exp: "Ông bị ảnh hưởng của học thuyết tiến hóa xã hội (1876) của Darwin." },
+        { q: "8. Tác phẩm nào của Herbert Spencer được bắt đầu viết và xuất bản năm 1873?", opts: { A: "Các nguyên lý của xã hội học", B: "Nghiên cứu xã hội học", C: "Xã hội học mô tả", D: "Vật lý học xã hội" }, ans: "B", exp: "Những tác phẩm tiêu biểu của Spencer bao gồm Nghiên cứu xã hội học (1873)." },
+        { q: "9. Tác phẩm \"Các nguyên lý của xã hội học\" của Herbert Spencer được xuất bản trong giai đoạn nào?", opts: { A: "1817 – 1824", B: "1838 – 1844", C: "1873 – 1881", D: "1876 – 1898" }, ans: "D", exp: "Tác phẩm tiêu biểu của ông gồm Các nguyên lý của xã hội học (1876 – 1898)." },
+        { q: "10. Tác phẩm \"Xã hội học mô tả\" của Herbert Spencer được xuất bản trong khoảng thời gian nào?", opts: { A: "1844 – 1848", B: "1867 – 1870", C: "1873 – 1881", D: "1898 – 1905" }, ans: "C", exp: "Tác phẩm tiêu biểu của ông gồm Xã hội học mô tả (1873 – 1881)." },
+        { q: "11. Herbert Spencer định nghĩa xã hội học là ngành khoa học nghiên cứu về lĩnh vực gì?", opts: { A: "Khoa học về các quy luật và các nguyên lý tổ chức của xã hội", B: "Khoa học giải thích hành động xã hội mang tính duy cảm của cá nhân", C: "Khoa học nghiên cứu về giai cấp vô sản và mâu thuẫn giai cấp đối kháng", D: "Khoa học về các hiện tượng tâm lý đám đông tại đô thị công nghiệp" }, ans: "A", exp: "Spencer định nghĩa xã hội học là khoa học về các quy luật và các nguyên lý tổ chức của xã hội." },
+        { q: "12. Herbert Spencer coi xã hội có bản chất tương tự như một thực thể gì?", opts: { A: "Cơ thể hữu cơ đơn giản", B: "Cơ thể siêu hữu cơ", C: "Cỗ máy cơ học nhân tạo", D: "Hệ thống tâm linh trừu tượng" }, ans: "B", exp: "Ông coi xã hội là \"cơ thể siêu hữu cơ\"." },
+        { q: "13. Nhiệm vụ cốt lõi của xã hội học theo quan điểm của Herbert Spencer là gì?", opts: { A: "Thiết lập các bước và quy trình cúng tế tôn giáo thực chứng", B: "Phát hiện ra quy luật, nguyên lý của cấu trúc và của quá trình xã hội", C: "Kích thích các cuộc cách mạng giai cấp để lật đổ thể chế cũ", D: "Giải thích các hành vi mua bán kinh tế mang tính duy lợi của cá nhân" }, ans: "B", exp: "Xã hội học phải có nhiệm vụ phát hiện ra quy luật, nguyên lý của cấu trúc và của quá trình xã hội." },
+        { q: "14. Xã hội học theo Spencer cần phải tập trung tìm kiếm các khía cạnh nào giữa các sự vật, hiện tượng xã hội?", opts: { A: "Những thuộc tính, đặc điểm chung, phổ quát, phổ biến và những mối quan hệ nhân quả", B: "Những hiện tượng ngẫu nhiên, đơn lẻ không có tính lặp lại", C: "Các thế lực siêu nhiên, ý chí của Chúa chi phối con người", D: "Sự khác biệt về mặt tâm lý học thần kinh di truyền của cá nhân" }, ans: "A", exp: "Xã hội học cần phải tập trung tìm kiếm những thuộc tính, đặc điểm chung, phổ quát, phổ biến và những mối quan hệ nhân quả giữa các sự vật, hiện tượng xã hội." },
+        { q: "15. Một trong những nguyên lý cơ bản và quan trọng nhất trong xã hội học của Herbert Spencer là nguyên lý nào?", opts: { A: "Nguyên lý tha hóa lao động", B: "Nguyên lý tiến hóa", C: "Nguyên lý đấu tranh giai cấp đối kháng", D: "Nguyên lý hành động thực chứng" }, ans: "B", exp: "Một trong những nguyên lý cơ bản nhất của xã hội học Spencer là nguyên lý tiến hóa (có nghĩa là ông đã áp dụng học thuyết tiến hóa của Darwin vào đời sống xã hội)." },
+        { q: "16. Theo Spencer, các xã hội loài người phát triển tuần theo quy luật tiến hóa từ kiểu xã hội nào đến kiểu xã hội nào?", opts: { A: "Từ xã hội lớn phức tạp đến xã hội nhỏ đơn giản hơn", B: "Từ xã hội có cơ cấu nhỏ, đơn giản, chuyên môn hóa thấp, không ổn định, dễ phân rã đến xã hội có cơ cấu lớn, phức tạp, chuyên môn hóa cao, liên kết bền vững và ổn định", C: "Từ xã hội công nghiệp tự do đến xã hội quân sự chuyên chế tập trung", D: "Từ xã hội cộng sản chủ nghĩa quay trở lại xã hội phong kiến nông nghiệp" }, ans: "B", exp: "Các xã hội loài người phát triển tuân theo quy luật tiến hóa từ xã hội có cơ cấu nhỏ, đơn giản, chuyên môn hóa thấp, không ổn định, dễ phân rã (xã hội nguyên thủy) đến xã hội có cơ cấu lớn, phức tạp, chuyên môn hóa cao, liên kết bền vững và ổn định (xã hội hiện đại)." },
+        { q: "17. Herbert Spencer nhìn nhận tiến hóa xã hội là một quá trình có tính chất như thế nào?", opts: { A: "Là một quá trình nhân tạo do bộ máy nhà nước cưỡng ép thực hiện", B: "Là một quá trình tự nhiên và không hề cản trở bước tiến của nhân loại", C: "Là một quá trình ngẫu nhiên không có bất kỳ quy luật khách quan nào", D: "Là quá trình mang tính phá hoại, luôn cản trở sự phát triển của loài người" }, ans: "B", exp: "Tiến hóa là một quá trình tự nhiên và sự tiến hóa đó không hề cản trở bước tiến của nhân loại." },
+        { q: "18. Yếu tố nào đòi hỏi xã hội bắt buộc phải xuất hiện các cơ quan hoạt động theo nguyên tắc chuyên môn hóa?", opts: { A: "Sự áp đặt cưỡng chế hành chính của bộ máy nhà nước phong kiến", B: "Xã hội có hàng loạt nhu cầu tồn tại đòi hỏi đáp ứng nhu cầu cơ thể xã hội", C: "Sự đấu tranh bền bỉ của giai cấp công nhân vô sản chống lại giới chủ", D: "Mong muốn chủ quan của các nhà khoa học xã hội tự nhiên đương thời" }, ans: "B", exp: "Xã hội có hàng loạt nhu cầu tồn tại đòi hỏi phải xuất hiện các cơ quan hoạt động theo nguyên tắc chuyên môn hóa để đáp ứng nhu cầu cơ thể xã hội." },
+        { q: "19. Theo Herbert Spencer, xã hội loài người chỉ có thể phát triển lành mạnh dưới điều kiện nào?", opts: { A: "Khi chính quyền trung ương kiểm soát hoàn toàn mọi hoạt động của cá nhân", B: "Khi các cơ quan chức năng của xã hội đó đảm bảo thỏa mãn các nhu cầu xã hội", C: "Khi xã hội tiến hành xóa bỏ hoàn toàn sự phân công và chuyên môn hóa chức năng", D: "Khi tiến trình tiến hóa tự nhiên của cơ thể xã hội bị dừng lại hoàn toàn" }, ans: "B", exp: "Xã hội chỉ phát triển lành mạnh khi các cơ quan chức năng của xã hội đó đảm bảo thoả mãn các nhu cầu xã hội." },
+        { q: "20. Nhận định \"xã hội chỉ phát triển lành mạnh khi các cơ quan chức năng của xã hội đó đảm bảo thỏa mãn các nhu cầu xã hội\" thể hiện tư tưởng nào đầu tiên trong xã hội học?", opts: { A: "Tư tưởng thực chứng luận", B: "Tư tưởng chức năng luận", C: "Tư tưởng xung đột luận", D: "Tư tưởng duy vật lịch sử" }, ans: "B", exp: "Theo Spencer, xã hội chỉ phát triển lành mạnh khi các cơ quan chức năng của xã hội đó đảm bảo thoả mãn các nhu cầu xã hội. Đây là tư tưởng chức năng luận đầu tiên trong xã hội học." },
+        { q: "21. Tại sao Herbert Spencer lại sử dụng thuyết tổ chức hữu cơ để giải thích sự ổn định và biến đổi xã hội?", opts: { A: "Vì ông cho rằng giữa xã hội và cơ thể sống có những điểm giống nhau và khác nhau", B: "Vì ông muốn chứng minh xã hội loài người hoàn toàn đồng nhất với một cơ thể sinh vật đơn bào", C: "Vì ông chịu sự ảnh hưởng duy nhất từ thế giới quan thần học Kitô giáo", D: "Vì ông muốn phủ nhận vai trò của các phương pháp nghiên cứu thực nghiệm khoa học" }, ans: "A", exp: "Ông sử dụng thuyết tổ chức hữu cơ để giải thích sự ổn định xã hội và biến đổi xã hội vì ông cho rằng giữa xã hội và cơ thể sống có những điểm giống nhau và khác nhau." },
+        { q: "22. Điểm tương đồng đầu tiên giữa cơ thể sinh học và cơ thể xã hội theo Herbert Spencer là gì?", opts: { A: "Đều không có khả năng sinh tồn độc lập với các tác động của môi trường ngoài", B: "Đều có khả năng sinh tồn và phát triển tuân theo những quy luật như tăng kích cỡ cơ thể làm tăng tính chất và tốc độ chuyên môn hóa chức năng", C: "Đều sụp đổ hoàn toàn cấu trúc khi bắt đầu có sự phân hóa và liên kết chức năng", D: "Đều chịu sự điều phối trực tiếp bởi ý chí chủ quan của thế lực siêu nhiên thần bí" }, ans: "B", exp: "Cả cơ thể sinh học và cơ thể xã hội đều có khả năng sinh tồn và phát triển tuân theo những quy luật như tăng kích cỡ của cơ thể làm tăng tính chất và tốc độ chuyên môn hóa chức năng." },
+        { q: "23. Điểm khác biệt cơ bản giữa tế bào sinh học và xã hội trong quá trình sinh trưởng và phát triển là gì?", opts: { A: "Tế bào thì tiến hóa biến đổi liên tục còn xã hội luôn đứng yên tĩnh tại", B: "Một tế bào thì có giới hạn phát triển còn xã hội liên tục trải qua các giai đoạn tiến hóa, suy thoái kế tiếp nhau để thích nghi với môi trường", C: "Tế bào sinh học có cấu trúc liên kết nội tại phức tạp hơn cơ cấu của xã hội hiện đại", D: "Xã hội không có khả năng phân hoá, liên kết và tự tan rã giống như tế bào" }, ans: "B", exp: "Một tế bào còn xã hội liên tục trải qua các giai đoạn tiến hóa, suy thoái kế tiếp nhau (hình thành, tăng trưởng, phân hoá, liên kết, tan rã... và tiếp tục như vậy với một chu kỳ khác) nhằm mục đích thích nghi với môi trường xung quanh." },
+        { q: "24. Chu kỳ tuần hoàn kế tiếp nhau của xã hội để thích nghi với môi trường xung quanh bao gồm những giai đoạn nào?", opts: { A: "Tích lũy, mâu thuẫn, đấu tranh, cách mạng và giải phóng giai cấp", B: "Hình thành, tăng trưởng, phân hoá, liên kết, tan rã", C: "Giai đoạn đặc trưng thần học, siêu hình và giai đoạn thực chứng khoa học", D: "Chế độ nguyên thủy, chiếm hữu nô lệ, phong kiến, tư bản và cộng sản" }, ans: "B", exp: "Xã hội liên tục trải qua các giai đoạn tiến hóa, suy thoái kế tiếp nhau (hình thành, tăng trưởng, phân hoá, liên kết, tan rã... và tiếp tục như vậy với một chu kỳ khác) nhằm mục đích thích nghi với môi trường xung quanh." },
+        { q: "25. Nhà tư tưởng nào là người đầu tiên chỉ ra những khó khăn khi tiến hành nghiên cứu xã hội học?", opts: { A: "Auguste Comte", B: "Karl Marx", C: "Herbert Spencer", D: "Émile Durkheim" }, ans: "C", exp: "Spencer là người đầu tiên chỉ ra những khó khăn khi nghiên cứu xã hội." },
+        { q: "26. Theo Spencer, những khó khăn về phương pháp luận trong nghiên cứu xã hội học bắt nguồn từ yếu tố nào?", opts: { A: "Sự thiếu hụt trầm trọng nguồn kinh phí tài trợ cho khoa học xã hội", B: "Đặc thù của đối tượng nghiên cứu", C: "Trình độ toán học thống kê chưa được phát triển đầy đủ thời bấy giờ", D: "Sự cấm đoán chính trị ngặt nghèo của chính quyền hoàng gia Anh" }, ans: "B", exp: "Xã hội học có hàng loạt những vấn đề khó về phương pháp luận (các khó khăn bắt nguồn từ đặc thù của đối tượng nghiên cứu)." },
+        { q: "27. Hai loại khó khăn về phương pháp luận nghiên cứu xã hội mà Herbert Spencer đưa ra là gì?", opts: { A: "Khó khăn lý luận và khó khăn thực tiễn thực địa", B: "Khó khăn khách quan và khó khăn chủ quan", C: "Khó khăn tài chính công và khó khăn nhân sự kỹ thuật", D: "Khó khăn phương Đông cổ đại và khó khăn phương Tây hiện đại" }, ans: "B", exp: "Hai loại khó khăn mà ông đưa ra bao gồm khó khăn khách quan và khó khăn chủ quan." },
+        { q: "28. Khó khăn khách quan trong nghiên cứu xã hội học theo Spencer liên quan tới vấn đề gì?", opts: { A: "Vấn đề số liệu (rất khó đo lường trạng thái chủ quan khi xã hội luôn biến đổi) và ảnh hưởng của trạng thái tình cảm, tâm trạng xã hội", B: "Sự thiếu thốn các trang thiết bị cơ khí phục vụ cho việc thí nghiệm vật lý", C: "Sự cấm đoán nghiêm khắc của các thiết chế giáo hội tôn giáo thời bấy giờ", D: "Khả năng ghi chép và lưu trữ thông tin thực địa của nhà nghiên cứu bị giới hạn" }, ans: "A", exp: "Khó khăn khách quan liên quan tới vấn đề số liệu (có nghĩa là rất khó đo lường các trạng thái chủ quan của đối tượng, của các cá nhân, nhóm xã hội khi xã hội không ngừng biến đổi) và quá trình nghiên cứu dễ bị ảnh hưởng bởi trạng thái tình cảm và tâm trạng xã hội." },
+        { q: "29. Khó khăn chủ quan trong nghiên cứu xã hội học theo Spencer liên quan tới yếu tố nào từ phía nhà nghiên cứu?", opts: { A: "Địa điểm lựa chọn để tiến hành cuộc khảo sát thực địa", B: "Quan tâm, trình độ và kỹ năng của nhà xã hội học", C: "Quy mô dân số tổng thể của quốc gia được lựa chọn nghiên cứu", D: "Sự bất hợp tác của các nhóm đối tượng trung lưu trong xã hội" }, ans: "B", exp: "Khó khăn chủ quan liên quan quan tâm, trình độ và kỹ năng của nhà xã hội học." },
+        { q: "30. Để khắc phục các khó khăn về phương pháp luận, Spencer nhấn mạnh nhà xã hội học cần phải tuân thủ nghiêm ngặt điều gì?", opts: { A: "Các giáo lý và thiết chế tôn giáo truyền thống lâu đời của xã hội", B: "Các quy tắc, thủ tục, tiêu chuẩn, kỹ thuật nghiên cứu xã hội khi tiến hành nghiên cứu", C: "Ý kiến chỉ đạo chủ quan trực tiếp từ phía chính quyền cầm quyền", D: "Các suy luận triết lý mang tính tự biện cá nhân thuần túy" }, ans: "B", exp: "Ông nhấn mạnh tính cấp bách và cần thiết của việc nghiên cứu các phương pháp làm khoa học, tức là các nhà xã hội học cần tuân thủ các quy tắc, thủ tục, tiêu chuẩn, kỹ thuật nghiên cứu xã hội khi tiến hành nghiên cứu." },
+        { q: "31. Căn cứ vào quá trình tiến hóa, Herbert Spencer đã phân chia các loại hình xã hội thành hai kiểu cơ bản nào?", opts: { A: "Xã hội nguyên thủy và xã hội văn minh hiện đại", B: "Xã hội quân sự và xã hội công nghiệp", C: "Xã hội nông nghiệp cổ truyền và xã hội thông tin tri thức", D: "Xã hội phong kiến địa chủ và xã hội tư bản công nghiệp" }, ans: "B", exp: "Căn cứ vào quá trình tiến hóa, Spencer phân xã hội thành hai loại: xã hội quân sự và xã hội công nghiệp." },
+        { q: "32. Theo Herbert Spencer, kiểu xã hội nào luôn bị ngự trị bởi sự ganh đua và gây hấn, còn kiểu xã hội nào là xã hội tự do?", opts: { A: "Xã hội công nghiệp ngự trị ganh đua; xã hội quân sự là xã hội tự do", B: "Xã hội quân sự ngự trị ganh đua và gây hấn; xã hội công nghiệp là các xã hội tự do", C: "Cả xã hội quân sự và công nghiệp đều là các xã hội tự do hoàn toàn", D: "Cả xã hội quân sự và công nghiệp đều bị ngự trị bởi ganh đua và gây hấn" }, ans: "B", exp: "Spencer phân xã hội thành hai loại: xã hội quân sự và xã hội công nghiệp trong đó sự ganh đua và gây hấn luôn ngự trị và xã hội công nghiệp là các xã hội tự do." },
+        { q: "33. Quá trình tiến hóa biến đổi từ kiểu xã hội này sang kiểu xã hội khác tùy thuộc chủ yếu vào thời kỳ nào?", opts: { A: "Thời kỳ khí hậu thuận lợi hay thời kỳ thiên tai dịch bệnh kéo dài", B: "Thời kỳ chiến tranh hay hoà bình", C: "Thời kỳ khủng hoảng tài chính hay tăng trưởng thị trường kinh tế", D: "Thời kỳ thay đổi các dòng họ nắm quyền lực vương triều phong kiến" }, ans: "B", exp: "Quá trình tiến hóa xã hội diễn ra từ kiểu này sang kiểu khác tuỳ thuộc vào thời kỳ chiến tranh hay hoà bình." },
+        { q: "34. Thời kỳ hòa bình có tác động tự nhiên như thế nào đến sự chuyển hóa của xã hội?", opts: { A: "Hòa bình cản trở tiến bộ xã hội và kéo dài sự cai trị của xã hội quân sự", B: "Hoà bình có lợi cho xã hội, có thể tự nhiên chuyên hóa xã hội quân sự sang xã hội công nghiệp", C: "Hòa bình buộc cơ cấu xã hội phải quay lại thời kỳ bộ lạc nguyên thủy", D: "Hòa bình hoàn toàn không có tác động gì đến sự biến đổi cơ cấu xã hội" }, ans: "B", exp: "Hoà bình có lợi cho xã hội, có thể tự nhiên chuyên hóa xã hội quân sự sang xã hội công nghiệp." },
+        { q: "35. Chiến tranh có ảnh hưởng như thế nào đến tiến trình phát triển và tiến bộ xã hội?", opts: { A: "Chiến tranh kích thích sự tiến hóa tự do, lành mạnh của xã hội công nghiệp", B: "Chiến tranh cản trở và xoá bỏ tiến bộ đó, tạo điều kiện cho phản cách mạng xuất hiện", C: "Chiến tranh giúp xã hội đạt đến trạng thái liên kết bền vững nhanh chóng hơn", D: "Chiến tranh thúc đẩy sự chuyên môn hóa chức năng có lợi của các cơ quan xã hội" }, ans: "B", exp: "Chiến tranh thì cản trở và xoá bỏ tiến bộ đó, tạo điều kiện cho phản cách mạng xuất hiện." },
+        { q: "36. Xã hội quân sự được đặc trưng bởi cơ chế tổ chức và điều hành có đặc điểm gì?", opts: { A: "Cơ chế tổ chức phi tập trung, đề cao dân chủ và tự do cá nhân tối đa", B: "Cơ chế tổ chức, điều hành mang tính tập trung, độc đoán cao độ để phục vụ các mục tiêu quốc phòng và chiến tranh", C: "Cơ chế tự quản tự phát hoàn toàn không chịu sự quản lý của nhà nước trung ương", D: "Cơ chế phân phối linh hoạt theo hai chiều dọc và ngang giữa các cá nhân" }, ans: "B", exp: "Xã hội quân sự được đặc trưng bởi cơ chế tổ chức, điều hành mang tính tập trung, độc đoán cao độ để phục vụ các mục tiêu quốc phòng và chiến tranh." },
+        { q: "37. Chế độ phân phối sản phẩm, dịch vụ trong xã hội quân sự diễn ra theo hình thức nào?", opts: { A: "Diễn ra theo chiều ngang tự phát giữa các cá nhân, nhóm xã hội tự do", B: "Diễn ra theo chiều dọc, mang tính tập trung cao và bị nhà nước quản lý và kiểm soát", C: "Diễn ra tự do theo hai chiều dọc và ngang không chịu sự can thiệp của chính quyền", D: "Hoàn toàn không tồn tại bất kỳ một chế độ phân phối hàng hóa dịch vụ nào" }, ans: "B", exp: "Chế độ phân phối diễn ra theo chiều dọc, mang tính tập trung cao và bị nhà nước quản lý và kiểm soát." },
+        { q: "38. Xã hội công nghiệp được đặc trưng bởi cơ chế tổ chức có đặc điểm gì?", opts: { A: "Cơ chế tổ chức mang tính tập trung, độc đoán cao độ để phục vụ quân đội chiến tranh", B: "Cơ chế tổ chức ít tập trung, ít độc đoán để phục vụ các mục mục tiêu xã hội là sản xuất hàng hóa và dịch vụ", C: "Sự xóa bỏ hoàn toàn tất cả các cơ quan quản lý và kiểm soát của nhà nước", D: "Sự phân hóa giai cấp đối kháng gay gắt nhất giữa giới chủ tư sản và vô sản" }, ans: "B", exp: "Xã hội công nghiệp được đặc trưng bởi cơ chế tổ chức ít tập trung, ít độc đoán để phục vụ các mục mục tiêu xã hội là sản xuất hàng hóa và dịch vụ." },
+        { q: "39. Trong xã hội công nghiệp, mức độ kiểm soát của nhà nước và chính quyền trung ương đối với cá nhân và cơ cấu xã hội thay đổi theo hướng nào?", opts: { A: "Tăng cường kiểm soát tối đa mọi khía cạnh đời sống sinh hoạt của cá nhân", B: "Giảm bớt, tạo ra khả năng mở rộng và phát triển tính năng động của các bộ phận cấu thành nên xã hội", C: "Giữ nguyên không có sự thay đổi nào so với đặc điểm của xã hội quân sự", D: "Nhà nước nắm quyền kiểm soát tuyệt đối và duy nhất việc phân phối theo chiều dọc" }, ans: "B", exp: "Mức độ kiểm soát của nhà nước và chính quyền trung ương đối với các cá nhân và cơ cấu xã hội giảm. Điều này tạo ra khả năng mở rộng và phát triển tính năng động của các bộ phận cấu thành nên xã hội." },
+        { q: "40. Chế độ phân phối hàng hóa và dịch vụ trong xã hội công nghiệp diễn ra theo các chiều nào?", opts: { A: "Chỉ diễn ra theo một chiều dọc tập trung duy nhất từ trên xuống dưới", B: "Diễn ra theo hai chiều dọc và ngang", C: "Hoàn toàn tự cung tự túc trong từng gia đình riêng lẻ không có phân phối", D: "Diễn ra tự phát theo chiều ngang nhưng chịu sự kiểm soát tuyệt đối của nhà nước" }, ans: "B", exp: "Chế độ phân phối diễn ra hai chiều dọc và ngang." },
+        { q: "41. Khái niệm \"phân phối chiều dọc\" trong cơ cấu xã hội công nghiệp thể hiện sự phân phối giữa các đối tượng nào?", opts: { A: "Giữa các tổ chức xã hội với nhau, giữa các cá nhân tự do với nhau", B: "Giữa các tổ chức và cá nhân", C: "Giữa bộ máy nhà nước quân chủ độc đoán và lực lượng quân đội tuyển dụng", D: "Giữa giới chủ sở hữu tư liệu sản xuất và công nhân bán sức lao động" }, ans: "B", exp: "Phân phối chiều dọc tức là giữa các tổ chức và cá nhân." },
+        { q: "42. Khái niệm \"phân phối chiều ngang\" trong cơ cấu xã hội công nghiệp thể hiện sự phân phối giữa các đối tượng nào?", opts: { A: "Giữa các tổ chức và cá nhân trong hệ thống phân tầng từ trên xuống", B: "Giữa các tổ chức xã hội với nhau, giữa các cá nhân với nhau", C: "Giữa nhà nước trung ương và các chính quyền tự trị ở địa phương", D: "Giữa các cơ quan quân sự độc đoán phục vụ mục tiêu quốc phòng" }, ans: "B", exp: "Chiều ngang thể hiện sự phân phối giữa các tổ chức xã hội với nhau, giữa các cá nhân với nhau." },
+        { q: "43. Thuật ngữ “quân sự” và “công nghiệp” được Spencer sử dụng nhằm chỉ điều gì đối với cơ thể xã hội?", opts: { A: "Các ngành kinh tế sản xuất phục vụ trực tiếp cho quân đội và thị trường dân sinh", B: "Các quá trình cơ bản của sự suy thoái hay tiến hóa của cơ thể xã hội", C: "Trình độ công nghệ chế tạo vũ khí quân dụng và công cụ sản xuất của quốc gia", D: "Sự mâu thuẫn giai cấp gay gắt không thể điều hòa trong xã hội hiện đại" }, ans: "B", exp: "Thuật ngữ “quân sự”, “công nghiệp” dùng để chỉ các quá trình cơ bản của sự suy thoái hay tiến hóa của cơ thể xã hội." },
+        { q: "44. Theo Herbert Spencer, cấu trúc xã hội hiện đại có thể tồn tại dưới kiểu loại xã hội nào?", opts: { A: "Bắt buộc phải tiến hóa lên thành xã hội công nghiệp tự do hoàn toàn", B: "Vẫn có thể là kiểu loại xã hội công nghiệp hoặc quân sự", C: "Chỉ có thể tồn tại duy nhất dưới dạng xã hội quân sự độc đoán tập trung", D: "Bắt buộc phải thoái hóa quay trở về thời kỳ xã hội nguyên thủy cổ xưa" }, ans: "B", exp: "Xã hội hiện đại vẫn có thể là kiểu loại xã hội công nghiệp hoặc quân sự." },
+        { q: "45. Tổ chức chính trị của xã hội có thể chuyển đổi theo vòng tuần hoàn biến đổi như thế nào theo mô tả của Spencer?", opts: { A: "Từ nguyên thủy lên phong kiến rồi trực tiếp đạt đến xã hội cộng sản chủ nghĩa", B: "Từ tập trung, độc đoán (kiểu quân sự) sang phi tập trung, dân chủ (kiểu công nghiệp) rồi lại trở về tập trung, độc đoán (quân sự) rồi lại sang kiểu công nghiệp, cứ thế quay vòng", C: "Từ xã hội tự do dân chủ phát triển thẳng lên xã hội không còn sự quản lý của nhà nước", D: "Không có bất kỳ sự chuyển đổi nào, tổ chức chính trị luôn cố định vững chắc theo thời gian" }, ans: "B", exp: "Tổ chức chính trị của xã hội có thể chuyển đổi từ tập trung, độc đoán (kiểu quân sự) sang phi tập trung, dân chủ (kiều công nghiệp) rồi lại trở về tập trung, độc đoán (quân sự) rồi lại sang kiểu công nghiệp, cứ thế quay vòng." },
+        { q: "46. Theo Spencer, yếu tố quan trọng nào xác định tính chất của một xã hội?", opts: { A: "Trình độ phát triển của các công cụ và lực lượng sản xuất vật chất", B: "Tính chất tổ chức và phân phối", C: "Quy mô diện tích đất đai và khối lượng tài nguyên thiên nhiên sở hữu", D: "Hệ thống các thiết chế giáo lý tôn giáo độc thần sùng bái Chúa tối cao" }, ans: "B", exp: "Ông cho rằng, tính chất tổ chức và phân phối xác định tính chất xã hội." },
+        { q: "47. Những nhà xã hội học kinh điển nào đã kế thừa và phát triển cách tiếp cận cơ cấu của Spencer thành trường phái cơ cấu – chức năng luận?", opts: { A: "Auguste Comte và Karl Marx", B: "Durkheim, Parsons, Merton", C: "Saint Simon và Proudhon", D: "Platon và Aristotle" }, ans: "B", exp: "Cách tiếp cận cơ cấu của ông được các nhà xã hội học Dukheim, Parsons, Merton... kế thừa và phát triển thành trường phái cơ cấu – chức năng luận." },
+        { q: "48. Cách tiếp cận cơ cấu của Spencer được kế thừa và phát triển sâu sắc trong các lĩnh vực, phương pháp nào của xã hội học hiện đại?", opts: { A: "Xã hội học vi mô, hành vi cá nhân và tâm lý học đám đông đô thị", B: "Cách tiếp cận hệ thống, lý thuyết tổ chức xã hội, phân tầng xã hội", C: "Lý thuyết tha hóa lao động và đấu tranh giai cấp vô sản cách mạng", D: "Phương pháp luận thực chứng tôn giáo thần học và cúng tế xã hội" }, ans: "B", exp: "Ý tưởng của Spencer được tiếp tục phát triển... thể hiện trong cách tiếp cận hệ thống, lý thuyết tổ chức xã hội, phân tầng..." },
+        { q: "49. Những nguyên lý nào trong xã hội học của Spencer đóng vai trò nền tảng cho khoa học xã hội?", opts: { A: "Nguyên lý về tha hóa lao động, tích lũy tư bản và cách mạng xã hội toàn diện", B: "Nguyên lý về tác nhân xã hội, tiến hóa xã hội, cơ cấu xã hội", C: "Nguyên lý về thực chứng thần học, siêu hình học và thực chứng khoa học thực tế", D: "Nguyên lý về chuẩn mực đạo đức, hành động duy lý cá nhân và tương tác xã hội" }, ans: "B", exp: "Các nguyên lý xã hội học của ông đóng vai trò quan trọng đối với khoa học xã hội (Ví dụ: Nguyên lý về tác nhân xã hội, tiến hóa xã hội, cơ cấu xã hội đóng vai trò nền tảng)." },
+        { q: "50. Tư tưởng chức năng luận đầu tiên của Spencer được khái quát qua khẳng định nào về sự vận động và phát triển của cơ thể xã hội?", opts: { A: "Xã hội chỉ phát triển lành mạnh khi nhà nước tăng cường quản lý độc đoán theo kiểu quân sự", B: "Xã hội chỉ phát triển lành mạnh khi các cơ quan chức năng đó đảm bảo thỏa mãn các nhu cầu của xã hội", C: "Xã hội chỉ phát triển lành mạnh khi tiến trình phân hóa chức năng bị triệt tiêu hoàn toàn", D: "Xã hội chỉ phát triển lành mạnh khi các cuộc đấu tranh giai cấp diễn ra liên tục" }, ans: "B", exp: "Ông cũng đưa ra tư tưởng chức năng luận đầu tiên trong xã hội học. Theo ông, xã hội chỉ phát triển lành mạnh khi các cơ quan chức năng đó đảm bảo thoả mãn các nhu cầu của xã hội." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
