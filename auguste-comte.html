@@ -20,10 +20,12 @@
         input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
         input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
         .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        .setup-note { font-size: 0.85rem; color: #777; margin-top: 20px; text-align: left; border-top: 1px solid #3a2366; padding-top: 15px; }
         
         #quiz-screen { display: none; padding-bottom: 50px; }
         .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
         .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        .btn-back { background: #3a2366; color: white; padding: 8px 15px; border-radius: 6px; cursor: pointer; border: none; font-size: 0.9rem; margin: 10px 0; }
         .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
         .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
         .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
@@ -34,7 +36,6 @@
         .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
         .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; }
         #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
-        .btn-back { display: inline-block; background: #3a2366; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; text-decoration: none; font-size: 0.9rem; border: none; }
     </style>
 </head>
 <body>
@@ -42,7 +43,6 @@
 <div class="container">
     <div id="setup-screen">
         <h1>Bộ đề 50 câu: Auguste Comte</h1>
-        <p style="font-size: 0.9rem; color: #6f42c1;">Thiết lập: Tùy chỉnh thời gian và chế độ hiển thị đáp án trước khi bắt đầu bài thi.</p>
         <div class="setting-group">
             <span>Tính thời gian làm bài</span>
             <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
@@ -52,6 +52,12 @@
             <input type="checkbox" id="instant-feedback" checked>
         </div>
         <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+        <div class="setup-note">
+            <b>Hướng dẫn thiết lập:</b><br>
+            • Chọn "Tính thời gian" nếu bạn muốn giới hạn giờ làm bài.<br>
+            • "Hiển thị đáp án ngay" giúp bạn ôn tập nhanh từng câu hỏi.<br>
+            • Bạn có thể quay lại menu này bất cứ lúc nào trong khi làm bài.
+        </div>
     </div>
 
     <div id="quiz-screen">
@@ -59,9 +65,9 @@
             <h2>Auguste Comte</h2>
             <div class="timer" id="timer-display"></div>
         </div>
-        <button class="btn-back" style="margin-top:20px;" onclick="location.reload()">← Quay lại menu chọn bộ đề</button>
+        <button class="btn-back" onclick="location.reload()">« Quay lại Menu</button>
         <div id="questions-container"></div>
-        <button class="btn-back" style="margin-top:20px; width: 100%; text-align: center;" onclick="location.reload()">← Quay lại menu chọn bộ đề</button>
+        <button class="btn-back" onclick="location.reload()">« Quay lại Menu</button>
         <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
         <div id="result-box">
             <h2>Hoàn thành!</h2>
@@ -139,6 +145,7 @@
 
     function renderQuestions() {
         const container = document.getElementById('questions-container');
+        container.innerHTML = "";
         questionsData.forEach((q, index) => {
             container.innerHTML += `
                 <div class="question-card" id="q-${index}">
