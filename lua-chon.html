@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh Sách Ôn Tập - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Phần Tiêu đề trang */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff 60%, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Lưới hiển thị các ô lựa chọn */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 cột trên máy tính */
+            gap: 20px;
+        }
+
+        /* Thiết kế từng ô lựa chọn */
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-decoration: none;
+            background-color: #121216;
+            border: 1px solid #3a2366; /* Viền tím tối */
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-item h3 {
+            color: #b388ff;
+            font-size: 1.2rem;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .grid-item p {
+            color: #b3b3b8;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            font-weight: 300;
+        }
+
+        /* Hiệu ứng rê chuột vào ô */
+        .grid-item:hover {
+            background-color: rgba(111, 66, 193, 0.1);
+            border-color: #6f42c1; /* Sáng viền tím khi hover */
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.25);
+        }
+
+        .grid-item:hover h3 {
+            color: #ffffff;
+        }
+
+        /* Nút quay lại */
+        .back-nav {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: #8c8c93;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border: 1px solid #8c8c93;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Tối ưu cho màn hình điện thoại (chuyển về 1 cột) */
+        @media (max-width: 600px) {
+            .grid-container {
+                grid-template-columns: 1fr; /* 1 cột trên điện thoại */
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1 id="page-title">Đang tải danh sách...</h1>
+        </div>
+        
+        <div class="grid-container" id="grid-container">
+            </div>
+
+        <div class="back-nav">
+            <a href="che-do.html" class="back-link">← Quay lại chọn chế độ</a>
+        </div>
+    </div>
+
+    <script>
+        // Dữ liệu 10 chương lấy từ mục lục bạn cung cấp
+        const dsChuong = [
+            "Đối tượng, cơ cấu, chức năng của Xã hội học",
+            "Sơ lược lịch sử và lý thuyết Xã hội học",
+            "Phương pháp nghiên cứu Xã hội học",
+            "Hành động xã hội, tương tác xã hội, quan hệ xã hội",
+            "Cấu trúc xã hội và một số thuật ngữ liên quan",
+            "Quyền lực, bất bình đẳng, phân tầng xã hội, di động xã hội",
+            "Lệch chuẩn, tuân thủ và kiểm soát xã hội",
+            "Văn hóa",
+            "Xã hội hóa",
+            "Biến đổi xã hội"
+        ];
+
+        // Lấy tham số 'mode' từ đường dẫn URL (ví dụ: ?mode=chuong)
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+        
+        const pageTitle = document.getElementById('page-title');
+        const gridContainer = document.getElementById('grid-container');
+
+        // Hàm tạo nội dung cho lưới
+        function renderItems() {
+            gridContainer.innerHTML = ''; // Làm sạch container trước
+            
+            if (mode === 'chuong') {
+                pageTitle.innerText = 'Ôn Tập Theo Chương';
+                // Tạo 10 ô chương
+                dsChuong.forEach((tenChuong, index) => {
+                    const id = index + 1;
+                    const itemHTML = `
+                        <a href="chuong-${id}.html" class="grid-item">
+                            <h3>Chương ${id}</h3>
+                            <p>${tenChuong}</p>
+                        </a>
+                    `;
+                    gridContainer.innerHTML += itemHTML;
+                });
+            } 
+            else if (mode === 'tonghop') {
+                pageTitle.innerText = 'Ôn Tập Tổng Hợp';
+                // Tạo 10 ô đề tổng hợp
+                for (let i = 1; i <= 10; i++) {
+                    const itemHTML = `
+                        <a href="de-${i}.html" class="grid-item">
+                            <h3>Đề số ${i}</h3>
+                            <p>Kiểm tra đánh giá năng lực tổng hợp kiến thức toàn bộ học phần</p>
+                        </a>
+                    `;
+                    gridContainer.innerHTML += itemHTML;
+                }
+            } 
+            else {
+                // Xử lý lỗi nếu người dùng truy cập trực tiếp file mà không qua file che-do.html
+                pageTitle.innerText = 'Lỗi: Vui lòng chọn chế độ';
+                gridContainer.innerHTML = '<p style="color: #ff5252; text-align: center; width: 100%;">Không tìm thấy chế độ ôn tập phù hợp. Vui lòng quay lại.</p>';
+            }
+        }
+
+        // Chạy hàm tạo nội dung khi trang vừa load xong
+        renderItems();
+    </script>
+</body>
+</html>
