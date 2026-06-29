@@ -139,10 +139,8 @@
     let totalScore = 0;
     let timerInterval;
 
-    // Bật/Tắt khóa ô nhập thời gian
     document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
 
-    // Xử lý đếm ngược thời gian
     function startTimer(duration) {
         let timer = duration, minutes, seconds;
         const display = document.getElementById('timer-display');
@@ -167,7 +165,6 @@
         }, 1000);
     }
 
-    // Bắt đầu bài làm
     function startQuiz() {
         isInstantFeedback = document.getElementById('instant-feedback').checked;
         const enableTimer = document.getElementById('enable-timer').checked;
@@ -183,7 +180,6 @@
         
         renderQuestions();
         
-        // Kích hoạt đồng hồ nếu bật
         if (enableTimer && timeVal > 0) {
             startTimer(timeVal * 60);
         } else {
@@ -192,7 +188,6 @@
         }
     }
 
-    // Tạo HTML cho toàn bộ danh sách câu hỏi
     function renderQuestions() {
         const container = document.getElementById('questions-container');
         container.innerHTML = "";
@@ -214,18 +209,15 @@
         });
     }
 
-    // Xử lý khi click vào đáp án
     window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
         const qCard = document.getElementById(`q-${qIndex}`);
-        if (qCard.classList.contains('answered')) return; // Nếu đã khóa thì không cho bấm
+        if (qCard.classList.contains('answered')) return;
 
-        // Đảm bảo nút radio được chọn
         labelElement.querySelector('input').checked = true;
 
         const allLabels = qCard.querySelectorAll('.option-label');
         
         if (isInstantFeedback) {
-            // Chế độ báo đáp án ngay
             qCard.classList.add('answered');
             const correctAns = questionsData[qIndex].ans;
             
@@ -240,15 +232,13 @@
             document.getElementById(`exp-${qIndex}`).style.display = 'block';
             allLabels.forEach(l => l.classList.add('disabled'));
         } else {
-            // Chế độ thi bình thường (cho phép chọn lại thoải mái)
             allLabels.forEach(l => l.classList.remove('selected'));
             labelElement.classList.add('selected');
         }
     }
 
-    // Nút nộp bài xử lý mọi thao tác chấm điểm
     window.submitQuiz = function() {
-        if (timerInterval) clearInterval(timerInterval); // Dừng thời gian
+        if (timerInterval) clearInterval(timerInterval);
         totalScore = 0;
 
         questionsData.forEach((q, index) => {
@@ -256,7 +246,6 @@
             const qCard = document.getElementById(`q-${index}`);
             const allLabels = qCard.querySelectorAll('.option-label');
             
-            // Khóa câu hỏi và hiện giải thích
             qCard.classList.add('answered');
             document.getElementById(`exp-${index}`).style.display = 'block';
             allLabels.forEach(l => l.classList.add('disabled'));
@@ -264,28 +253,24 @@
             if (selected) {
                 if (selected.value === q.ans) {
                     selected.parentElement.classList.add('correct');
-                    totalScore++; // Cộng điểm nếu đúng
+                    totalScore++;
                 } else {
                     selected.parentElement.classList.add('wrong');
-                    // Bôi xanh đáp án đáng lẽ đúng
                     allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
                 }
             } else {
-                // Nếu chưa chọn thì cũng bôi xanh đáp án đúng
                 allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
             }
         });
         
         showFinalResult();
-        document.getElementById('submit-btn').style.display = 'none'; // Ẩn nút nộp bài
+        document.getElementById('submit-btn').style.display = 'none';
     }
 
-    // Hiển thị khung kết quả
     function showFinalResult() {
         document.getElementById('result-box').style.display = 'block';
         document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
         
-        // Nếu làm chưa đúng 100% thì hiện nút làm lại câu sai
         if (totalScore < questionsData.length) {
             document.getElementById('redo-btn').style.display = 'inline-block';
         } else {
@@ -295,18 +280,19 @@
         window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
     }
 
-    // Chức năng "Làm lại những câu sai"
     window.redoWrongQuestions = function() {
-        document.getElementById('result-box').style.display = 'none'; // Ẩn kết quả
-        document.getElementById('submit-btn').style.display = 'block'; // Hiện lại nút nộp bài
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
 
         questionsData.forEach((q, index) => {
             const selected = document.querySelector(`input[name="q${index}"]:checked`);
             const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
 
-            // Xóa khóa và reset nếu câu đó bị sai hoặc bỏ trống
-            if (!isCorrect) {
-                const qCard = document.getElementById(`q-${index}`);
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
                 qCard.classList.remove('answered');
                 
                 const allLabels = qCard.querySelectorAll('.option-label');
@@ -319,7 +305,6 @@
             }
         });
         
-        // Cuộn ngược lên đầu để làm lại
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 </script>
