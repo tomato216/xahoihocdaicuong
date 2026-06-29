@@ -34,6 +34,7 @@
         .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
         .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; }
         #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+        .btn-back { display: inline-block; background: #3a2366; color: #fff; padding: 8px 16px; border-radius: 6px; cursor: pointer; margin-bottom: 20px; text-decoration: none; font-size: 0.9rem; border: none; }
     </style>
 </head>
 <body>
@@ -41,6 +42,7 @@
 <div class="container">
     <div id="setup-screen">
         <h1>Bộ đề 50 câu: Auguste Comte</h1>
+        <p style="font-size: 0.9rem; color: #6f42c1;">Thiết lập: Tùy chỉnh thời gian và chế độ hiển thị đáp án trước khi bắt đầu bài thi.</p>
         <div class="setting-group">
             <span>Tính thời gian làm bài</span>
             <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
@@ -57,7 +59,9 @@
             <h2>Auguste Comte</h2>
             <div class="timer" id="timer-display"></div>
         </div>
+        <button class="btn-back" style="margin-top:20px;" onclick="location.reload()">← Quay lại menu chọn bộ đề</button>
         <div id="questions-container"></div>
+        <button class="btn-back" style="margin-top:20px; width: 100%; text-align: center;" onclick="location.reload()">← Quay lại menu chọn bộ đề</button>
         <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
         <div id="result-box">
             <h2>Hoàn thành!</h2>
