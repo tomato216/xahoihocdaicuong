@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 4. Émile Durkheim - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 4. Émile Durkheim</h1>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Émile Durkheim</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-2.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-2.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Émile Durkheim sống trong giai đoạn lịch sử nào?", opts: { A: "1818 - 1883", B: "1858 - 1917", C: "1820 - 1905", D: "1864 - 1920" }, ans: "B", exp: "Émile Durkheim sinh năm 1858 và mất năm 1917." },
+        { q: "2. Émile Durkheim là nhà xã hội học thuộc quốc gia nào?", opts: { A: "Anh", B: "Pháp", C: "Đức", D: "Mỹ" }, ans: "B", exp: "Émile Durkheim là nhà xã hội học người Pháp." },
+        { q: "3. Nhà tư tưởng Pháp nào dưới đây có ảnh hưởng trực tiếp đến tư tưởng xã hội học của Émile Durkheim?", opts: { A: "Thomas Hobbes", B: "Jean-Jacques Rousseau", C: "Auguste Comte", D: "Herbert Spencer" }, ans: "C", exp: "Émile Durkheim chịu ảnh hưởng của các nhà tư tưởng châu Âu, nhất là những nhà tư tưởng Pháp như Saint-Simon, Auguste Comte." },
+        { q: "4. Vào năm 1879, Émile Durkheim theo học tại thành phố nào?", opts: { A: "Bordeaux", B: "Paris", C: "Berlin", D: "London" }, ans: "B", exp: "Năm 1879, Durkheim theo học ở Paris tại trường đại học sư phạm." },
+        { q: "5. Năm 1887, Émile Durkheim bắt đầu giảng dạy tại ngôi trường nào?", opts: { A: "Đại học Sư phạm Paris", B: "Đại học Tổng hợp Bordeaux", C: "Đại học Tổng hợp Sorbonne", D: "Đại học Tổng hợp Bonn" }, ans: "B", exp: "Năm 1887, ông bắt đầu dạy học tại đại học tổng hợp Bordeaux." },
+        { q: "6. Năm 1902, Émile Durkheim chuyển sang giảng dạy tại trường đại học nào?", opts: { A: "Đại học Tổng hợp Bordeaux", B: "Đại học Tổng hợp Berlin", C: "Đại học Tổng hợp Sorbonne", D: "Đại học Sư phạm Paris" }, ans: "C", exp: "Đến năm 1902, ông chuyển sang giảng dạy tại đại học Tổng hợp Sorbonne." },
+        { q: "7. Tác phẩm nào sau đây được Émile Durkheim xuất bản vào năm 1893?", opts: { A: "Các nguyên tắc phương pháp luận xã hội học", B: "Những hình thức sơ đẳng của đời sống tôn giáo", C: "Bàn về phân công lao động xã hội", D: "Diễn ngôn về tinh thần thực chứng" }, ans: "C", exp: "Những tác phẩm tiêu biểu của ông gồm Bàn về phân công lao động xã hội xuất bản năm 1893." },
+        { q: "8. Tác phẩm \"Các nguyên tắc phương pháp luận xã hội học\" của Émile Durkheim được xuất bản năm nào?", opts: { A: "1893", B: "1895", C: "1912", D: "1902" }, ans: "B", exp: "Những tác phẩm tiêu biểu của ông gồm Các nguyên tắc phương pháp luận xã hội học xuất bản năm 1895." },
+        { q: "9. Tác phẩm \"Những hình thức sơ đẳng của đời sống tôn giáo\" được Émile Durkheim xuất bản vào năm nào?", opts: { A: "1893", B: "1895", C: "1912", D: "1902" }, ans: "C", exp: "Tác phẩm Những hình thức sơ đẳng của đời sống tôn giáo xuất bản năm 1912." },
+        { q: "10. Theo Émile Durkheim, đối tượng nghiên cứu của xã hội học là gì?", opts: { A: "Các hành động mang tính chủ quan của cá nhân", B: "Các sự kiện xã hội", C: "Mâu thuẫn giai cấp trong xã hội tư bản", D: "Quy luật cung cầu kinh tế" }, ans: "B", exp: "Durkheim quan niệm đối tượng nghiên cứu của xã hội học là các sự kiện xã hội." },
+        { q: "11. Sự kiện xã hội theo quan niệm của Émile Durkheim bao gồm những loại nào?", opts: { A: "Sự kiện xã hội vật chất và sự kiện xã hội phi vật chất", B: "Sự kiện xã hội tâm lý và sự kiện xã hội vật chất", C: "Sự kiện xã hội kinh tế và sự kiện xã hội chính trị", D: "Sự kiện xã hội cá nhân và sự kiện xã hội tập thể" }, ans: "A", exp: "Sự kiện xã hội bao gồm sự kiện xã hội vật chất và sự kiện xã hội phi vật chất." },
+        { q: "12. Yếu tố nào dưới đây là một ví dụ về \"sự kiện xã hội vật chất\" theo Émile Durkheim?", opts: { A: "Chuẩn mực đạo đức", B: "Hệ thống giá trị xã hội", C: "Nhóm, dân cư, tổ chức xã hội", D: "Phong tục, tập quán" }, ans: "C", exp: "Sự kiện xã hội vật chất bao gồm nhóm, dân cư, tổ chức xã hội." },
+        { q: "13. Yếu tố nào dưới đây là ví dụ về \"sự kiện xã hội phi vật chất\" theo Émile Durkheim?", opts: { A: "Mật độ dân cư", B: "Tổ chức xã hội", C: "Hệ thống giá trị, chuẩn mực, phong tục, tập quán", D: "Các nhóm tôn giáo vật chất" }, ans: "C", exp: "Sự kiện xã hội phi vật chất bao gồm hệ thống giá trị, chuẩn mực, phong tục, tập quán, đặc điểm." },
+        { q: "14. Émile Durkheim nêu ra bao nhiêu đặc trưng của sự kiện xã hội?", opts: { A: "Hai đặc trưng", B: "Ba đặc trưng", C: "Bốn đặc trưng", D: "Năm đặc trưng" }, ans: "B", exp: "Ông nêu ra 3 đặc trưng của sự kiện xã hội." },
+        { q: "15. Đặc trưng \"ở bên ngoài cá nhân\" của sự kiện xã hội có nghĩa là gì theo Émile Durkheim?", opts: { A: "Cá nhân không sinh ra trong môi trường đã có sẵn các sự kiện này mà phải học tập, tiếp thu và tuân thủ chúng", B: "Sự kiện xã hội hoàn toàn độc lập và không có tác động gì đến cuộc sống của cá nhân", C: "Các sự kiện này chỉ tồn tại ở thế giới tự nhiên bên ngoài xã hội loài người", D: "Sự kiện xã hội chỉ xuất hiện khi cá nhân rời khỏi nhóm của mình" }, ans: "A", exp: "Thứ nhất, sự kiện xã hội phải là những gì ở bên ngoài cá nhân. Cá nhân không sinh ra trong môi trường đã có sẵn các sự kiện như thiết chế, chuẩn mực, giá trị... mà còn học tập, tiếp thu, tuân thủ các chuẩn mực, giá trị đó." },
+        { q: "16. Đặc trưng thứ hai của sự kiện xã hội \"bao giờ cũng là chung đối với nhiều cá nhân\" có nghĩa là gì?", opts: { A: "Mỗi cá nhân có một sự kiện xã hội riêng biệt không giống ai", B: "Sự kiện xã hội được cộng đồng xã hội cùng chia sẻ, chấp nhận", C: "Sự kiện xã hội chỉ dành riêng cho những người đứng đầu cộng đồng", D: "Mọi cá nhân đều có phản ứng tâm lý hoàn toàn giống nhau trước một hiện tượng" }, ans: "B", exp: "Thứ hai, các sự kiện xã hội bao giờ cũng là chung đối với nhiều cá nhân tức là được cộng đồng xã hội cùng chia sẻ, chấp nhận." },
+        { q: "17. Đặc trưng thứ ba của sự kiện xã hội theo Émile Durkheim liên quan đến khía cạnh nào?", opts: { A: "Khả năng thay đổi nhanh chóng theo thời gian", B: "Sức mạnh kiểm soát và cưỡng chế hành động, hành vi của cá nhân", C: "Tính chất mơ hồ và khó xác định bằng thực nghiệm", D: "Sự phụ thuộc hoàn toàn vào ý chí tự do của cá nhân" }, ans: "B", exp: "Thứ ba, sự kiện xã hội có sức mạnh kiểm soát và cưỡng chế hành động và hành vi của cá nhân." },
+        { q: "18. Thuật ngữ \"thực tế xã hội\" được dịch từ cụm từ tiếng Pháp nào?", opts: { A: "Fait social", B: "Action sociale", C: "Fait individuel", D: "Solidarité sociale" }, ans: "A", exp: "Thực tế xã hội tương ứng với thuật ngữ tiếng Pháp là fait social và tiếng Anh là social fact." },
+        { q: "19. Theo Émile Durkheim, thực tế xã hội tồn tại khách quan và độc lập với yếu tố nào?", opts: { A: "Sự phát triển của tự nhiên", B: "Mọi hành động cá nhân", C: "Các quy luật vật lý và hóa học", D: "Sự biến đổi của lịch sử loài người" }, ans: "B", exp: "Mọi thực tế/sự kiện xã hội có sự tồn tại khách quan và độc lập với mọi hành động cá nhân." },
+        { q: "20. Theo quan niệm của Émile Durkheim, xã hội được hiểu là gì?", opts: { A: "Một tổng số các hành động kinh tế của các cá nhân độc lập", B: "Một trật tự, một sự thống nhất về đạo đức giữa mọi người hay một ý thức tập thể", C: "Một cơ chế sinh học khổng lồ hoạt động theo bản năng sinh tồn", D: "Sự liên kết tạm thời mang tính vụ lợi giữa các chủ thể kinh tế" }, ans: "B", exp: "Xã hội là một trật tự, một sự thống nhất về đạo đức giữa mọi người hay một ý thức tập thể." },
+        { q: "21. Xã hội học của Émile Durkheim chủ yếu xoay quanh vấn đề gì?", opts: { A: "Mối quan hệ giữa sự phát triển công nghệ và biến đổi khí hậu", B: "Mối quan hệ giữa con người và xã hội", C: "Cuộc đấu tranh giành quyền lực chính trị giữa các đảng phái", D: "Quy luật tích lũy tư bản trong nền kinh tế thị trường" }, ans: "B", exp: "Xã hội học của Durkheim chủ yếu xoay quanh vấn đề mối quan hệ giữa con người và xã hội." },
+        { q: "22. Hai hình thức đoàn kết xã hội được Émile Durkheim dùng để trả lời câu hỏi về mối quan hệ giữa cá nhân và xã hội là gì?", opts: { A: "Đoàn kết hữu cơ và đoàn kết cơ giới", B: "Đoàn kết tự nguyện và đoàn kết cưỡng chế", C: "Đoàn kết giai cấp và đoàn kết quốc tế", D: "Đoàn kết gia đình và đoàn kết xã hội" }, ans: "A", exp: "Durkheim trả lời câu hỏi cơ bản về mối quan hệ giữa con người và xã hội theo hai hình thức: đoàn kết cơ giới và đoàn kết hữu cơ." },
+        { q: "23. Khái niệm \"đoàn kết cơ giới\" được Émile Durkheim mô tả như thế nào?", opts: { A: "Sự liên kết xã hội dựa trên sự phân công lao động chuyên môn hóa cao", B: "Mối liên kết xã hội qua sự giống nhau gần như tuyệt đối giữa các cá nhân", C: "Sự liên kết tạm thời thông qua các thỏa thuận hợp đồng dân sự", D: "Mối liên kết cưỡng chế dựa trên sức mạnh quân sự của nhà nước" }, ans: "B", exp: "Đoàn kết cơ giới là mối liên kết xã hội qua sự giống nhau gần như tuyệt đối. Sự giống nhau ấy tập hợp các cá nhân có chung các kỹ năng và có chung niềm tin." },
+        { q: "24. Khái niệm \"đoàn kết hữu cơ\" được Émile Durkheim mô tả là kiểu liên kết như thế nào?", opts: { A: "Sự liên kết trong đó các cá nhân hoàn toàn độc lập và không cần đến nhau", B: "Kiểu liên kết xã hội trong đó lao động của người này phụ thuộc vào lao động của người khác", C: "Sự liên kết dựa trên sự tương đồng tuyệt đối về niềm tin tôn giáo và phong tục", D: "Mối quan hệ huyết thống tự nhiên trong phạm vi gia đình nhỏ" }, ans: "B", exp: "Đoàn kết hữu cơ là kiểu liên kết xã hội trong đó lao động của người này phụ thuộc vào lao động của người khác. Như vậy, cá nhân ở vào tình thế gắn bó hữu cơ với cấu trúc xã hội." },
+        { q: "25. Trong xã hội có sự đoàn kết cơ giới, hệ thống luật pháp thường biểu hiện dưới dạng nào?", opts: { A: "Luật pháp chủ yếu nhằm mục đích điều chỉnh và bồi thường thiệt hại", B: "Luật pháp dành chỗ cho những chế tài mạnh mẽ mang tính cưỡng chế và trừng phạt nhằm bảo vệ ý thức tập thể", C: "Luật pháp hoàn toàn bị bãi bỏ và thay thế bằng các quy tắc tự nguyện", D: "Luật pháp chỉ điều chỉnh các quan hệ hợp đồng thương mại giữa các nhóm" }, ans: "B", exp: "Trong các xã hội có sự đoàn kết cơ giới hay đoàn kết máy móc, thì luật pháp dành chỗ cho những chế tài mạnh mẽ gắn với ý thức tập thể cũng rất mạnh mẽ và mang tính cưỡng chế đối với mọi cá nhân." },
+        { q: "26. Trong các xã hội có đoàn kết hữu cơ, pháp luật thường hướng tới mục đích nào?", opts: { A: "Áp dụng các hình phạt thể xác khốc liệt nhất đối với cá nhân vi phạm", B: "Nhằm mục đích điều chỉnh nhiều hơn là trừng phạt", C: "Tăng cường sự áp đặt tuyệt đối của ý thức tập thể lên mọi hành vi cá nhân", D: "Xóa bỏ mọi sự khác biệt về vai trò và chức năng của các cá nhân" }, ans: "B", exp: "Trong các xã hội có đoàn kết hữu cơ tương ứng với ý thức tập thể yếu hơn, pháp luật lại thường bổ sung chế tài để nhằm mục đích điều chỉnh nhiều hơn là trừng phạt." },
+        { q: "27. Theo Émile Durkheim, chức năng chính của sự phân công lao động xã hội là gì?", opts: { A: "Tạo ra sự bất bình đẳng sâu sắc giữa các giai cấp", B: "Tạo ra sự đoàn kết xã hội và củng cố tinh thần đoàn kết xã hội", C: "Giảm bớt nhu cầu tương tác giữa các cá nhân trong cộng đồng", D: "Thay thế hoàn toàn vai trò của hệ thống luật pháp và nhà nước" }, ans: "B", exp: "Sự phân công lao động xã hội thực hiện chức năng tạo ra sự đoàn kết xã hội và củng cố tinh thần đoàn kết xã hội." },
+        { q: "28. Quy tắc nghiên cứu thứ nhất của Émile Durkheim đòi hỏi việc quan sát xã hội phải đảm bảo yếu tố nào?", opts: { A: "Sử dụng các phương pháp thống kê định lượng", B: "Phải loại bỏ thành kiến cá nhân tức là phải khách quan", C: "Dựa trên các quy tắc chuẩn mực đạo đức cá nhân", D: "Tránh việc so sánh giữa các xã hội khác nhau" }, ans: "B", exp: "Thứ nhất, quan sát xã hội đòi hỏi phải loại bỏ thành kiến cá nhân tức là phải khách quan bởi lẽ sự kiện xã hội là khách quan tồn tại ngoài bất kỳ cá nhân nào." },
+        { q: "29. Theo quy tắc nghiên cứu thứ hai của Émile Durkheim, nhà xã hội học cần làm gì để chỉ ra những gì là mẫu mực cho cuộc sống con người?", opts: { A: "Chỉ tập trung nghiên cứu những hành vi lệch lạc, dị biệt của cá nhân", B: "Phân biệt được cái chuẩn mực, cái bình thường với cái dị biệt, cái không bình thường", C: "Loại bỏ hoàn toàn khái niệm chuẩn mực ra khỏi nghiên cứu xã hội học", D: "Đồng nhất mọi hành vi của con người đều là bình thường và tự nhiên" }, ans: "B", exp: "Thứ hai, nhà xã hội học phải phân biệt được những cái chuẩn mực, cái bình thường với cái dị biệt, cái không bình thường từ đó mới có thể tạo dựng và chỉ ra những gì là mẫu mực, tốt lành cho cuộc sống của con người." },
+        { q: "30. Quy tắc nghiên cứu thứ ba của Émile Durkheim yêu cầu điều gì?", opts: { A: "Nghiên cứu xã hội như một thực thể không thay đổi và không có lịch sử", B: "Cần phân loại xã hội dựa vào bản chất và các thành tố cấu tạo nên xã hội để hiểu tiến trình phát triển lịch sử xã hội", C: "Chỉ phân loại xã hội dựa trên quy mô giàu nghèo về mặt kinh tế thuần túy", D: "Tránh việc phân loại xã hội vì sẽ làm mất đi tính khách quan của nghiên cứu" }, ans: "B", exp: "Thứ ba, cần phân loại xã hội dựa vào bản chất và các thành tố cấu tạo nên xã hội để hiểu tiến trình phát triển lịch sử xã hội." },
+        { q: "31. Quy tắc nghiên cứu thứ tư của Émile Durkheim nhấn mạnh việc giải thích hiện tượng xã hội cần tìm kiếm nguyên nhân ở đâu?", opts: { A: "Ở đặc điểm tâm lý bẩm sinh và nhu cầu sinh học của cá nhân", B: "Ở cấu trúc, thiết chế, quy định, chuẩn mực hay hệ giá trị", C: "Ở sự ngẫu nhiên không có quy luật của hành động con người", D: "Ở ý chí chủ quan và sở thích nhất thời của người hành động" }, ans: "B", exp: "Thứ tư, cần giải thích nhân quả các hiện tượng xã hội. Hay nói cách khác, để hiểu hành vi và hành động của cá nhân thì cần tìm kiếm nguyên nhân ở cấu trúc, thiết chế, quy định, chuẩn mực hay hệ giá trị." },
+        { q: "32. Theo quy tắc nghiên cứu thứ năm của Émile Durkheim, phương pháp nào dưới đây là cần thiết?", opts: { A: "Phương pháp nội quan tâm lý học cá nhân", B: "Phải so sánh hai hay nhiều xã hội để xem giữa chúng có những sự kiện xã hội giống và khác nhau như thế nào", C: "Phương pháp dự đoán tương lai dựa trên trực giác siêu hình", D: "Phương pháp chỉ nghiên cứu một trường hợp duy nhất và không đối chiếu" }, ans: "B", exp: "Thứ năm, phải so sánh hai hay nhiều xã hội để xem giữa chúng có những sự kiện xã hội giống và khác nhau như thế nào." },
+        { q: "33. Émile Durkheim được mệnh danh là ông tổ của trường phái lý thuyết nào?", opts: { A: "Xã hội học hành động xã hội", B: "Xã hội học cấu trúc", C: "Xã hội học tương tác biểu trưng", D: "Xã hội học xung đột giai cấp" }, ans: "B", exp: "Durkheim là ông tổ của xã hội học cấu trúc vì cho rằng, hành vi của cá nhân là hậu quả của chuẩn mực cấu trúc." },
+        { q: "34. Theo trường phái xã hội học cấu trúc của Émile Durkheim, hành vi của cá nhân được coi là gì?", opts: { A: "Nguyên nhân chính quyết định cấu trúc và thiết chế xã hội", B: "Hậu quả (biến phụ thuộc) của chuẩn mực cấu trúc (nguyên nhân/biến độc lập)", C: "Sự lựa chọn hoàn toàn tự do không chịu tác động từ bên ngoài", D: "Kết quả của các xung đột kinh tế và vật chất đơn thuần" }, ans: "B", exp: "Durkheim là ông tổ của xã hội học cấu trúc vì cho rằng hành vi của cá nhân là hậu quả (biến phụ thuộc) của chuẩn mực cấu trúc (nguyên nhân/biến độc lập)." },
+        { q: "35. Câu ngạn ngữ nào được áp dụng để mô tả một cách hình ảnh về lý thuyết xã hội học cấu trúc của Émile Durkheim?", opts: { A: "Trứng nở ra gà", B: "Gà đẻ ra trứng", C: "Tre già măng mọc", D: "Nước chảy đá mòn" }, ans: "B", exp: "Có thể áp dụng câu Gà đẻ ra trứng để nói về xã hội học của ông, biết rằng gà là cấu trúc, thiết chế, tức là thực tế khách quan, còn trứng là cá nhân - sản phẩm của cấu trúc, thiết chế và thực tế xã hội đó." },
+        { q: "36. Trong câu ngạn ngữ \"Gà đẻ ra trứng\" được dùng để mô tả tư tưởng của Émile Durkheim, hình ảnh \"con gà\" đại diện cho yếu tố nào?", opts: { A: "Cá nhân con người cụ thể", B: "Cấu trúc, thiết chế, tức là thực tế khách quan", C: "Động cơ hành động chủ quan của cá nhân", D: "Sự biến đổi ngẫu nhiên của lịch sử" }, ans: "B", exp: "Gà là cấu trúc, thiết chế, tức là thực tế khách quan, còn trứng là cá nhân - sản phẩm của cấu trúc, thiết chế và thực tế xã hội đó." },
+        { q: "37. Nhận xét của Émile Durkheim về hầu hết các nhà tư tưởng trước thế kỷ XIX là gì?", opts: { A: "Họ đã xây dựng được một hệ thống thuật ngữ và lập luận thực nghiệm chuẩn xác", B: "Họ chưa nhìn nhận xã hội dưới tiếp cận xã hội học, chỉ trình bày về mô hình xã hội lý tưởng, hoàn thiện", C: "Họ tập trung hoàn toàn vào việc đo lường và đánh giá thực tế các biến đổi xã hội đương thời", D: "Họ coi xã hội là do chính con người quyết định thông qua các tương tác hàng ngày" }, ans: "B", exp: "Như Émile Durkheim đã nhận xét, không có nhà tư tưởng nào trong số những người kể trên nhìn nhận xã hội dưới tiếp cận xã hội học. Hầu hết các nhà tư tưởng, đến trước thế kỷ XIX, đều chưa cung cấp những mô tả giá trị của xã hội mà họ đang sống, mà chỉ trình bày quan điểm của họ về một mô hình xã hội lý tưởng, hoàn thiện." },
+        { q: "38. Theo dòng lý thuyết cấu trúc - chức năng, Émile Durkheim nhấn mạnh cần phải phân biệt hai khía cạnh nào khi nghiên cứu?", opts: { A: "Chuẩn mực đạo đức và quy định pháp lý", B: "Chức năng và nguyên nhân của thực tế/sự kiện xã hội", C: "Biến số khách quan và biến số chủ quan của hành vi", D: "Sự kiện xã hội vật chất và sự kiện xã hội tinh thần" }, ans: "B", exp: "Émile Durkheim nhấn mạnh cần phải phân biệt chức năng và nguyên nhân của thực tế/sự kiện xã hội khi đề xuất những quy tắc phương pháp luận nghiên cứu xã hội học." },
+        { q: "39. Đặc trưng cốt lõi của \"thực tế xã hội\" theo định nghĩa của Émile Durkheim là gì?", opts: { A: "Tồn tại ngoài ý thức cá nhân và có sức cưỡng chế hay một sự ràng buộc đối với mọi ý thức cá nhân", B: "Được quyết định hoàn toàn bởi ý thức chủ quan của từng con người riêng lẻ", C: "Chỉ xuất hiện khi có sự đồng thuận tuyệt đối của tất cả các thành viên trong xã hội", D: "Luôn thay đổi tùy thuộc vào lợi ích kinh tế của giai cấp thống trị" }, ans: "A", exp: "Đối tượng đặc thù của khoa học xã hội là thực tế xã hội (social fact) tồn tại ngoài ý thức cá nhân. Thực tế xã hội tồn tại một cách độc lập ngoài mọi ý thức cá nhân và có sức cưỡng chế hay một sự ràng buộc đối với mọi ý thức cá nhân." },
+        { q: "40. Theo Émile Durkheim, khi nào sức cưỡng của sự kiện xã hội (chuẩn mực hành vi) biểu hiện rõ nét nhất?", opts: { A: "Khi cá nhân hoàn toàn đồng ý và tự nguyện tuân theo chuẩn mực đó", B: "Khi cá nhân định chống lại nó", C: "Khi chuẩn mực đó được bãi bỏ hoàn toàn bởi nhà nước", D: "Khi cá nhân sống biệt lập một mình ngoài xã hội" }, ans: "B", exp: "Sức cưỡng của sự kiện xã hội (chuẩn mực hành vi được thiết chế hóa, được cấu trúc hóa hay được mọi người thừa nhận) chỉ biểu hiện rõ khi cá nhân định chống lại nó." },
+        { q: "41. Chuẩn mực hành vi của sinh viên trong lớp học chỉ phát biểu khi được cho phép, và phản ứng khó chịu của tập thể khi có ai đó tự động phát biểu nhiều, minh họa cho khái niệm nào của Émile Durkheim?", opts: { A: "Hành động xã hội chủ quan", B: "Sức cưỡng và chế tài (sanction) của sự kiện xã hội", C: "Sự đoàn kết hữu cơ dựa trên hợp đồng", D: "Sự phân công lao động tự nhiên" }, ans: "B", exp: "Ví dụ: chuẩn mực hành vi chung của sinh viên trong lớp học là chỉ phát biểu khi được cho phép. Nhưng nếu ai đó cứ tự động phát biểu nhiều thì cả lớp học sẽ cảm thấy khó chịu. Từ đó, cấu trúc/thiết chế tạo ra một hình thức chế tài (sanction) đối với sinh viên đó." },
+        { q: "42. Theo Émile Durkheim, con người trong \"tình trạng tự nhiên\" (chưa được xã hội hóa) có đặc điểm gì?", opts: { A: "Tự có đạo đức hoàn hảo và luôn biết giới hạn ham muốn của mình", B: "Có vô số ham muốn và nhu cầu nên hành động một cách bản năng, luôn cần có một thế lực kiểm soát bên ngoài để giới hạn ham muốn này", C: "Không có bất kỳ ham muốn hay nhu cầu cá nhân nào", D: "Luôn hướng tới lợi ích tập thể một cách tự giác không cần thiết chế" }, ans: "B", exp: "Trong tình trạng tự nhiên (chưa được xã hội hóa), con người có vô số ham muốn và nhu cầu nên hành động một cách bản năng; con người luôn cần có một thế lực kiểm soát bên ngoài để giới hạn ham muốn này." },
+        { q: "43. Theo Émile Durkheim, nhờ vào yếu tố nào mà con người \"trở nên con người hơn\" và tìm được ý nghĩa tồn tại của mình?", opts: { A: "Nhờ vào việc loại bỏ hoàn toàn mọi chuẩn mực và luật pháp xã hội", B: "Nhờ vào sự ràng buộc của xã hội tính, chuẩn mực xã hội hay cấu trúc/thiết chế xã hội", C: "Nhờ vào việc thỏa mãn tối đa các ham muốn bản năng cá nhân", D: "Nhờ vào sự phát triển công nghệ sản xuất vật chất đơn thuần" }, ans: "B", exp: "Nhờ vào sự ràng buộc của xã hội tính (society), sự ràng buộc của chuẩn mực xã hội hay của cấu trúc/thiết chế xã hội, con người trở nên con người hơn, tức là con người tìm được ý nghĩa tồn tại của mình trong thiết chế hay trong cấu trúc xã hội." },
+        { q: "44. Về mặt phương pháp luận, Émile Durkheim và các tác giả thuộc trường phái cấu trúc chọn đơn vị phân tích là gì?", opts: { A: "Động cơ tâm lý chủ quan của cá nhân hành động", B: "Cái xã hội (the social) hay cái tổng thể (the total)", C: "Các hiện tượng sinh học tự nhiên của cơ thể con người", D: "Sự tương tác trực tiếp giữa hai cá nhân đơn lẻ" }, ans: "B", exp: "Về mặt phương pháp luận, Durkheim cũng như các tác giả của trường phái này chọn cái xã hội (the social)/cái tổng thể (the total)/cấu trúc/thiết chế để làm đơn vị phân tích." },
+        { q: "45. Theo phương pháp luận của Émile Durkheim, các biến số độc lập (biến số nhân) thuộc về yếu tố nào?", opts: { A: "Sở thích và tâm lý nhất thời của từng cá nhân đơn lẻ", B: "Tổng thể/cấu trúc/thiết chế/hệ thống/chuẩn mực của xã hội", C: "Bản năng sinh học tự nhiên của con người", D: "Những biến đổi địa lý và khí hậu bên ngoài xã hội" }, ans: "B", exp: "Biến số độc lập tức là biến số thuộc về tổng thể/cấu trúc/thiết chế/hệ thống/chuẩn mực (causal variables) - biến số nhân... mà không một cá nhân đơn lẻ nào can thiệp vào chúng được." },
+        { q: "46. Trong phương pháp luận xã hội học cấu trúc của Émile Durkheim, hành vi của cá nhân đóng vai trò là loại biến số nào?", opts: { A: "Biến số độc lập (biến số nhân)", B: "Biến số phụ thuộc (biến số quả)", C: "Biến số trung gian không có ảnh hưởng thực tế", D: "Biến số ngẫu nhiên hoàn toàn tự do" }, ans: "B", exp: "Biến số phụ thuộc tức là biến số thành phần hay cá nhân, biến số hành vi - biến số quả. Theo dòng lý thuyết này, nhân nằm trong cấu trúc, còn quả nằm trong hành động của cá nhân." },
+        { q: "47. Cơ sở nào để gọi lý thuyết xã hội học của Émile Durkheim là \"chủ thuyết xã hội quyết định cá nhân\" (determinism)?", opts: { A: "Quan niệm cho rằng cá nhân hoàn toàn quyết định cấu trúc xã hội", B: "Quan điểm cho rằng cái tổng thể quyết định (determine) cái cá nhân", C: "Sự khẳng định rằng xã hội không có bất kỳ sức cưỡng chế nào đối với con người", D: "Việc coi mọi hành vi của con người đều do các yếu tố sinh học quyết định" }, ans: "B", exp: "Cái tổng thể quyết định (determine) cái cá nhân. Đó cũng là một cơ sở để ta gọi chủ thuyết xã hội học này là chủ thuyết xã hội quyết định cá nhân (determinism)." },
+        { q: "48. Trong nghiên cứu thực nghiệm nổi tiếng về hiện tượng \"Tự tử\", Émile Durkheim đã giải thích các nguyên nhân bằng phương pháp nào?", opts: { A: "Sử dụng các công cụ thống kê xã hội, nghĩa là thuần túy định lượng", B: "Tiến hành các cuộc phỏng vấn sâu định tính về tâm lý cá nhân", C: "Phân tích lịch sử cuộc đời của từng nạn nhân riêng biệt", D: "Quan sát trực tiếp hành vi của các nhóm nhỏ trong phòng thí nghiệm" }, ans: "A", exp: "Trong Tự tử, Émile Durkheim giải thích các nguyên nhân của hiện tượng này bằng các công cụ thống kê xã hội, nghĩa là thuần túy định lượng." },
+        { q: "49. Xã hội học của Émile Durkheim và những tác giả theo trường phái cấu trúc được gọi là gì dựa trên tính chất nghiên cứu của nó?", opts: { A: "Xã hội học chủ quan (subjective sociology)", B: "Xã hội học khách quan (objective sociology)", C: "Xã hội học tương tác (interactionist sociology)", D: "Xã hội học hiện tượng luận (phenomenological sociology)" }, ans: "B", exp: "Xã hội học của những tác gia theo trường phái cấu trúc là xã hội học khách quan (objective sociology)." },
+        { q: "50. Điểm khác biệt giữa quan điểm của Émile Durkheim và Max Weber về mối quan hệ giữa cá nhân và xã hội là gì?", opts: { A: "Durkheim ủng hộ thuyết xung đột giai cấp, còn Weber ủng hộ thuyết cấu trúc - chức năng", B: "Durkheim cho rằng \"gà đẻ ra trứng\" (cấu trúc quyết định cá nhân), trong khi Weber cho rằng \"trứng nở ra gà\" (cá nhân và hành động của họ tạo ra cấu trúc)", C: "Durkheim chỉ tập trung vào nghiên cứu định tính, còn Weber chỉ sử dụng nghiên cứu định lượng thống kê", D: "Cả hai nhà xã hội học đều không thừa nhận sự tồn tại khách quan của các thiết chế xã hội lớn" }, ans: "B", exp: "Đối với Weber, trứng nở ra gà, biết rằng trứng là cá nhân và gà là cấu trúc, thiết chế. Trái lại, Durkheim cho rằng gà đẻ ra trứng tức là cấu trúc quyết định cá nhân." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
