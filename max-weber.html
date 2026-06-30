@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 5. Max Weber - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 5. Max Weber</h1>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Max Weber</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-2.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-2.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Max Weber sống trong giai đoạn lịch sử nào?", opts: { A: "1818 - 1883", B: "1858 - 1917", C: "1864 - 1920", D: "1820 - 1905" }, ans: "C", exp: "Max Weber sinh năm 1864 và mất năm 1920." },
+        { q: "2. Max Weber là nhà xã hội học thuộc quốc gia nào?", opts: { A: "Anh", B: "Pháp", C: "Đức", D: "Mỹ" }, ans: "C", exp: "Max Weber là một nhà xã hội học, triết học, luật học, kinh tế học và sư học người Đức." },
+        { q: "3. Vào năm 1893, Max Weber giữ vị trí khoa học tại trường đại học nào?", opts: { A: "Đại học Tổng hợp Freiburg", B: "Đại học Tổng hợp Berlin", C: "Đại học Tổng hợp Bonn", D: "Đại học Tổng hợp Sorbonne" }, ans: "B", exp: "Năm 1893, Weber có vị trí khoa học trong đại học tổng hợp Berlin." },
+        { q: "4. Năm 1896, ở tuổi 32, Max Weber được phong làm giáo sư tại trường đại học nào?", opts: { A: "Đại học Tổng hợp Berlin", B: "Đại học Tổng hợp Freiburg", C: "Đại học Tổng hợp Heidelberg", D: "Đại học Sư phạm Paris" }, ans: "B", exp: "Đến năm 1896, ở tuổi 32, ông được phong giáo sư đại học tổng hợp Freiburg." },
+        { q: "5. Vào năm 1909, Max Weber đảm nhận vai trò nào dưới đây?", opts: { A: "Hiệu trưởng trường Đại học Freiburg", B: "Bộ trưởng Bộ Giáo dục Đức", C: "Chủ biên nhà xuất bản xã hội học", D: "Sáng lập viên trường Đại học Sư phạm Paris" }, ans: "C", exp: "Năm 1909, ông trở thành chủ biên nhà xuất bản xã hội học." },
+        { q: "6. Tác phẩm nào dưới đây của Max Weber được xuất bản vào năm 1904?", opts: { A: "Đạo đức Tin lành và tinh thần chủ nghĩa tư bản", B: "Xã hội học tôn giáo", C: "Kinh tế và xã hội", D: "Các nguyên tắc phương pháp luận xã hội học" }, ans: "A", exp: "Những tác phẩm tiêu biểu của ông gồm Đạo đức Tin lành và tinh thần chủ nghĩa tư bản (1904)." },
+        { q: "7. Tác phẩm \"Xã hội học tôn giáo\" của Max Weber được xuất bản vào năm nào?", opts: { A: "1904", B: "1912", C: "1922", D: "1895" }, ans: "B", exp: "Những tác phẩm tiêu biểu của ông gồm Xã hội học tôn giáo (1912)." },
+        { q: "8. Tác phẩm \"Kinh tế và xã hội\" của Max Weber được xuất bản vào năm nào?", opts: { A: "1904", B: "1912", C: "1922", D: "1920" }, ans: "C", exp: "Những tác phẩm tiêu biểu của ông gồm Kinh tế và xã hội (1922)." },
+        { q: "9. Theo Max Weber, xã hội học là một ngành khoa học nghiên cứu về cái gì?", opts: { A: "Các cấu trúc xã hội vĩ mô kiểm soát hành vi cá nhân", B: "Diễn giải hành động xã hội", C: "Quy luật phát triển kinh tế vật chất qua các giai đoạn lịch sử", D: "Bản năng sinh học và tâm lý học hành vi của con người" }, ans: "B", exp: "Weber định nghĩa xã hội học là khoa học nghiên cứu diễn giải hành động và qua đó, tìm cách giải thích nhân quả tiến trình hành động cũng như những tác động của hành động." },
+        { q: "10. Theo Max Weber, hành động xã hội là tập hợp hành vi của tác nhân khi hành vi đó được gán yếu tố nào?", opts: { A: "Ý nghĩa chủ quan", B: "Quy luật tự nhiên tất yếu", C: "Sự áp đặt cưỡng chế của pháp luật", D: "Tính chất kinh tế thuần túy" }, ans: "A", exp: "Hành động xã hội là tập hợp hành vi của tác nhân/các tác nhân khi họ gán cho nó một ý nghĩa chủ quan." },
+        { q: "11. Hai đặc trưng cơ bản của hành động xã hội theo Max Weber là gì?", opts: { A: "Mang tính kinh tế và mang tính chính trị", B: "Mang ý nghĩa chủ quan và hướng đến người khác", C: "Mang tính cưỡng chế và mang tính khách quan ngoài cá nhân", D: "Mang tính truyền thống và mang tính xúc cảm tự nhiên" }, ans: "B", exp: "Ý tưởng của Max Weber về đối tượng nghiên cứu của xã hội học là hành động xã hội với 2 đặc trưng: mang ý nghĩa chủ quan và hướng đến người khác." },
+        { q: "12. Loại hành động xã hội nào được thực hiện khi cá nhân tính toán, sử dụng phương tiện và công cụ để đạt được mục tiêu đề ra?", opts: { A: "Hành động duy lý về giá trị", B: "Hành động duy lý về mục tiêu và công cụ", C: "Hành động xúc cảm", D: "Hành động truyền thống" }, ans: "B", exp: "Hành động duy lý về mục tiêu và công cụ là hành động theo đó cá nhân tính toán, sử dụng phương tiện và công cụ để đạt được mục tiêu đề ra (hành động bằng đầu)." },
+        { q: "13. Hành động thể hiện tín ngưỡng, niềm tin tôn giáo hay đạo đức mà không quan tâm đến kết quả thực tế thuộc loại hành động xã hội nào?", opts: { A: "Hành động duy lý về giá trị", B: "Hành động duy lý về mục tiêu và công cụ", C: "Hành động xúc cảm", D: "Hành động truyền thống" }, ans: "A", exp: "Hành động duy lý về giá trị là hành động theo đó cá nhân thể hiện tín ngưỡng và niềm tin tôn giáo hay đạo đức thế hiện ý chí giá trị, vừa có sự tác động của xúc cảm, tình cảm, vừa có sự ảnh hưởng của tập tục." },
+        { q: "14. Loại hành động xã hội nào được thực hiện và điều khiển trực tiếp bằng tình cảm của tác nhân?", opts: { A: "Hành động duy lý về mục tiêu và công cụ", B: "Hành động duy lý về giá trị", C: "Hành động xúc cảm", D: "Hành động truyền thống" }, ans: "C", exp: "Hành động xúc cảm là hành động được thực hiện và điều khiển bằng tình cảm (hành động bằng tình)." },
+        { q: "15. Loại hành động xã hội nào được thực hiện phù hợp với các tập tục lâu đời mà không bị phê phán?", opts: { A: "Hành động duy lý về mục tiêu và công cụ", B: "Hành động duy lý về giá trị", C: "Hành động xúc cảm", D: "Hành động truyền thống" }, ans: "D", exp: "Hành động truyền thống là hành động được thực hiện phù hợp với các tập tục được truyền từ đời này sang đời khác mà không bị phê phán." },
+        { q: "16. Hành động đi lễ chùa để thực hiện tín ngưỡng và thể hiện đức tin tôn giáo sâu sắc là ví dụ tiêu biểu cho loại hành động xã hội nào?", opts: { A: "Hành động duy lý về mục tiêu và công cụ", B: "Hành động duy lý về giá trị", C: "Hành động truyền thống", D: "Hành động xúc cảm" }, ans: "B", exp: "Hành động duy lý về giá trị là hành động thể hiện đức tin tôn giáo hay đạo đức cao đẹp mà tác nhân hướng tới mà không quá đặt nặng hiệu quả hay lợi ích vật chất tức thời." },
+        { q: "17. Hành động một người tức giận bộc phát bạo lực đối với người khác do mâu thuẫn nhất thời thuộc loại hành động nào?", opts: { A: "Hành động duy lý về mục tiêu và công cụ", B: "Hành động duy lý về giá trị", C: "Hành động truyền thống", D: "Hành động xúc cảm" }, ans: "D", exp: "Hành động xúc cảm được thực hiện và điều khiển trực tiếp bằng các trạng thái tình cảm nhất thời như yêu, ghét, tức giận, vui mừng." },
+        { q: "18. Việc người dân mặc trang phục truyền thống và thực hiện các nghi lễ cưới hỏi cổ truyền từ đời này sang đời khác là biểu hiện của loại hành động nào?", opts: { A: "Hành động duy lý về mục tiêu và công cụ", B: "Hành động duy lý về giá trị", C: "Hành động truyền thống", D: "Hành động xúc cảm" }, ans: "C", exp: "Hành động truyền thống dựa trên thói quen, phong tục, tập quán lâu đời được lặp đi lặp lại một cách tự nhiên." },
+        { q: "19. Phân loại hành động truyền thống của Max Weber lưu ý điều gì về tính chất của tập tục?", opts: { A: "Tập tục luôn là những hủ tục lạc hậu cần xóa bỏ", B: "Tập tục bao gồm cả truyền thống tốt đẹp và những hủ tục lạc hậu", C: "Tập tục luôn mang tính tiến bộ vượt bậc", D: "Tập tục không có bất kỳ ảnh hưởng nào đến đời sống hiện đại" }, ans: "B", exp: "Trong khái niệm truyền thống đã hàm chứa phạm trù chất lượng tốt đẹp của truyền thống nhưng cũng chứa đựng cả những hủ tục lạc hậu." },
+        { q: "20. Theo Max Weber, hành động của cá nhân có thể được phối hợp với nhau để hướng tới một hành động chung lớn hơn. Hành động đó được gọi là gì?", opts: { A: "Hành động tương tác trực tiếp", B: "Hành động tập thể", C: "Hành động cấu trúc vĩ mô", D: "Hành động duy lý tuyệt đối" }, ans: "B", exp: "Hành động có hai loại nếu phân chia theo tác nhân thực hiện hành động: hành động cá nhân và hành động tập thể." },
+        { q: "21. Tiêu chí thứ nhất để xác định một hành động trở thành hành động xã hội theo Max Weber yêu cầu tác nhân phải ở vị thế nào?", opts: { A: "Ở trong tư thế bị động, chịu sự áp đặt hoàn toàn từ bên ngoài", B: "Ở trong tư thế chủ động, tích cực tức là không ở trong thế bị động", C: "Hoàn toàn vô thức và không có ý thức về hành vi của mình", D: "Phải chịu sự kiểm soát bắt buộc của luật pháp nhà nước" }, ans: "B", exp: "Tiêu chí 1 quy định tác nhân (cá nhân hoặc tập thể) thực hiện hành động cần ở trong tư thế chủ động, tích cực tức là không ở trong thế bị động." },
+        { q: "22. Tiêu chí thứ hai của hành động xã hội theo Max Weber quy định hành động phải mang lại điều gì?", opts: { A: "Hiệu quả kinh tế vượt trội cho toàn xã hội", B: "Ý nghĩa với chính tác nhân ấy và có ý nghĩa với người khác đón nhận hệ quả của nó", C: "Sự thay đổi hoàn toàn cấu trúc chính trị của quốc gia", D: "Sự phá vỡ mọi quy tắc và chuẩn mực truyền thống" }, ans: "B", exp: "Tiêu chí 2 quy định hành động mà tác nhân thực hiện mang ý nghĩa với chính tác nhân ấy và có ý nghĩa với người khác đón nhận hệ quả của nó." },
+        { q: "23. Tiêu chí thứ ba của hành động xã hội theo Max Weber đòi hỏi hành động của tác nhân phải đáp ứng yêu cầu nào?", opts: { A: "Phải luôn tuân thủ tuyệt đối các giáo lý tôn giáo", B: "Phải được ghi nhận bằng văn bản pháp lý chính thức", C: "Phải định hướng đến người khác trong quá trình thực hiện", D: "Phải diễn ra hoàn toàn biệt lập và không liên quan đến ai khác" }, ans: "C", exp: "Tiêu chí 3 quy định hành động của tác nhân phải định hướng đến người khác trong quá trình thực hiện." },
+        { q: "24. Điểm định hướng hướng đến người khác trong tiêu chí thứ ba của hành động xã hội được coi là cơ sở cho dòng lý thuyết nào?", opts: { A: "Lý thuyết cấu trúc - chức năng", B: "Lý thuyết tương tác", C: "Lý thuyết quyết định luận", D: "Lý thuyết xung đột giai cấp" }, ans: "B", exp: "Định hướng hướng đến người khác là một điểm mở cho dòng lý thuyết tương tác (interactionnisme)." },
+        { q: "25. Hành động của nhà nước khi ban hành các quyết định chính sách công là ví dụ tiêu biểu cho loại hành động nào?", opts: { A: "Hành động cá nhân", B: "Hành động tập thể", C: "Hành động truyền thống", D: "Hành động xúc cảm" }, ans: "B", exp: "Hành động tập thể thể hiện qua hành động của nhà nước chính là quyết định chính sách công." },
+        { q: "26. Khác với Karl Marx, Max Weber đưa ra bao nhiêu yếu tố hoặc tiêu chuẩn để xác định phân tầng xã hội?", opts: { A: "Hai yếu tố", B: "Ba yếu tố", C: "Bốn yếu tố", D: "Năm yếu tố" }, ans: "B", exp: "Ông đưa ra ba yếu tố, tiêu chuẩn để xác định phân tầng xã hội là của của cải, uy tín và quyền lực (hoặc còn gọi là giai cấp, địa vị và đảng phái)." },
+        { q: "27. Ba yếu tố dùng để xác định phân tầng xã hội theo lý thuyết của Max Weber bao gồm những gì?", opts: { A: "Thu nhập, nghề nghiệp và học vấn", B: "Của cải, uy tín và quyền lực", C: "Sở hữu tư liệu sản xuất, giai cấp và tôn giáo", D: "Sức mạnh quân sự, địa vị chính trị và dòng dõi quý tộc" }, ans: "B", exp: "Ba yếu tố, tiêu chuẩn để xác định phân tầng xã hội là của cải, uy tín và quyền lực (hoặc còn gọi là giai cấp, địa vị và đảng phái)." },
+        { q: "28. Trong lý thuyết phân tầng xã hội của Max Weber, yếu tố \"của cải\" gắn liền với khái niệm nào?", opts: { A: "Địa vị", B: "Giai cấp", C: "Đảng phái", D: "Uy tín" }, ans: "B", exp: "Yếu tố thứ nhất được nhắc đến là yếu tố của cải và giai cấp." },
+        { q: "29. Khái niệm \"giai cấp\" được Max Weber định nghĩa dựa trên khía cạnh nào dưới đây?", opts: { A: "Sự đồng thuận tuyệt đối về các chuẩn mực đạo đức và lối sống", B: "Các nhóm người có cơ may sống giống nhau, được xác định bởi vị trí kinh tế trong xã hội, sản phẩm sở hữu và cơ hội đối với thu nhập", C: "Sự gắn kết chặt chẽ về mặt huyết thống và dòng họ", D: "Việc trực tiếp nắm giữ và điều hành bộ máy quyền lực nhà nước" }, ans: "B", exp: "Giai cấp đại diện cho các nhóm người có cơ may sống giống nhau, được xác định bởi vị trí kinh tế trong xã hội, những sản phẩm mà họ sở hữu, những cơ hội đối với thu nhập của họ." },
+        { q: "30. Theo Max Weber, yếu tố thứ hai trong phân tầng xã hội là gì?", opts: { A: "Của cải", B: "Uy tín (địa vị)", C: "Quyền lực (đảng phái)", D: "Tôn giáo" }, ans: "B", exp: "Yếu tố thứ hai là uy tín (địa vị)." },
+        { q: "31. Uy tín hay địa vị xã hội của một cá nhân theo Max Weber chủ yếu được xác định dựa trên yếu tố nào?", opts: { A: "Chỉ dựa trên số lượng tư liệu sản xuất mà họ sở hữu", B: "Sự kiểm soát, tôn trọng và lối sống, sự tôn vinh xã hội dành cho cá nhân hay nhóm xã hội", C: "Việc gia nhập vào các tổ chức chính trị nhà nước", D: "Sức mạnh thể chất và khả năng lao động cơ bắp" }, ans: "B", exp: "Con người thường thích cao trong xã hội, trong khi có thể có ít hoặc không có của cải. Uy tín hay địa vị xã hội dựa vào sự tôn trọng và lối sống của cá nhân hay nhóm xã hội đó." },
+        { q: "32. Khái niệm \"quyền lực\" (đảng phái) được Max Weber định nghĩa như thế nào trong phân tầng xã hội?", opts: { A: "Là sự áp đặt bắt buộc bằng bạo lực thể xác đối với mọi cá nhân", B: "Khả năng đạt được mong muốn bất chấp sự kháng cự của những người khác", C: "Việc nắm giữ toàn bộ tài sản và của cải vật chất của xã hội", D: "Sự đồng thuận tự nguyện hoàn toàn của cộng đồng mà không có phản kháng" }, ans: "B", exp: "Quyền lực là khả năng đạt được mong muốn bất chấp sự kháng cự của những người khác." },
+        { q: "33. Nhận định nào dưới đây là đúng về mối quan hệ giữa quyền lực và của cải theo Max Weber?", opts: { A: "Một cá nhân bắt buộc phải có nhiều của cải thì mới có thể có quyền lực", B: "Con người có thể có nhiều quyền lực mà không cần có nhiều của cải hay sở hữu tư liệu sản xuất", C: "Quyền lực và của cải luôn luôn đồng nhất và không thể tách rời", D: "Chỉ những người sở hữu tư liệu sản xuất mới có khả năng nắm giữ quyền lực" }, ans: "B", exp: "Con người có nhiều quyền lực mà không cần có nhiều của cải hay sở hữu tư liệu sản xuất." },
+        { q: "34. Max Weber cho rằng đặc trưng quan trọng nhất của xã hội hiện đại là gì?", opts: { A: "Hành động của tác nhân ngày càng trở nên duy lý, hợp với tính toán, chi ly, tỉ mỉ", B: "Sự quay trở lại mạnh mẽ của các hành động truyền thống cổ xưa", C: "Sự biến mất hoàn toàn của các hoạt động kinh tế dựa trên đồng tiền", D: "Việc con người chỉ hành động dựa trên cảm xúc bộc phát nhất thời" }, ans: "A", exp: "Weber cho rằng đặc trưng quan trọng nhất của xã hội hiện đại là hành động của tác nhân ngày càng trở nên duy lý, hợp với tính toán, chi ly, tỉ mỉ, chính xác về mối quan hệ giữa công cụ với phương tiện và mục đích với kết quả." },
+        { q: "35. Sự trỗi dậy và phát triển của phương thức sản xuất nào ở phương Tây được Max Weber coi là minh chứng tiêu biểu cho xu hướng duy lý hóa xã hội hiện đại?", opts: { A: "Chủ nghĩa phong kiến trung cổ", B: "Chủ nghĩa tư bản phương Tây hiện đại", C: "Nền kinh tế nông nghiệp tự cung tự cấp", D: "Chế độ chiếm hữu nô lệ cổ đại" }, ans: "B", exp: "Xu hướng duy lý hóa gắn liền với việc tôn vinh chủ nghĩa tư bản phương Tây hiện đại, nơi các hành động ngày càng trở nên duy lý, hợp với tính toán và hiệu quả." },
+        { q: "36. Hai phương pháp nghiên cứu xã hội học rất quan trọng được Max Weber đề xuất là gì?", opts: { A: "Phương pháp cấu trúc vĩ mô và phương pháp thực chứng xã hội", B: "Phương pháp luận cá nhân và khuôn mẫu lý tưởng (điển hình lý tưởng)", C: "Phương pháp duy vật lịch sử và phương pháp đấu tranh giai cấp", D: "Phương pháp thực nghiệm phòng thí nghiệm và phương pháp nội quan tâm lý" }, ans: "B", exp: "Tác gia đề xuất hai phương pháp nghiên cứu xã hội học rất quan trọng như sau: thứ nhất, phương pháp luận cá nhân; thứ hai, khuôn mẫu lý tưởng hay điển hình lý tưởng." },
+        { q: "37. Phương pháp luận cá nhân (\"Individualisme méthodologique\") của Max Weber đưa ra định nghĩa \"xã hội\" là gì?", opts: { A: "Một thực thể khách quan tồn tại độc lập hoàn toàn ngoài ý thức con người", B: "Tập hợp các cá nhân cộng lại", C: "Một cấu trúc siêu hình không thể phân chia hay phân tích", D: "Một hệ thống máy móc tự vận hành theo quy luật sinh học" }, ans: "B", exp: "Phương pháp luận cá nhân gợi ý cho ta định nghĩa xã hội là tập hợp các cá nhân cộng lại." },
+        { q: "38. Theo phương pháp luận cá nhân, để thấu hiểu một thực tế xã hội nào đó, nhà nghiên cứu cần phải làm gì?", opts: { A: "Chỉ cần nghiên cứu các bộ luật và quy định chính thức của nhà nước", B: "Thấu hiểu cảm nhận, trạng thái, hành vi... của mọi cá nhân sống trong xã hội ấy", C: "Loại bỏ hoàn toàn yếu tố cá nhân để tập trung vào phân tích cấu trúc tổng thể", D: "Quy hiện tượng xã hội về các phản ứng vật lý và hóa học của môi trường" }, ans: "B", exp: "Do vậy, để hiểu được một thực tế xã hội nào đó thì phải hiểu được cảm nhận, trạng thái, hành vi... của mọi cá nhân sống trong xã hội ấy." },
+        { q: "39. Tại sao nhà nghiên cứu theo phương pháp luận cá nhân của Max Weber bắt buộc phải sử dụng phương pháp chọn mẫu mang tính đại diện?", opts: { A: "Vì không được phép nghiên cứu tất cả các cá nhân do luật pháp ngăn cấm", B: "Do nhà nghiên cứu không thể có đủ thời gian, sức lực, phương tiện, năng lực... để lấy dữ liệu từ tất cả các cá nhân", C: "Vì việc nghiên cứu toàn bộ cá nhân sẽ làm mất đi tính khách quan của dữ liệu", D: "Vì xã hội học chỉ quan tâm đến các nhóm thiểu số trong xã hội" }, ans: "B", exp: "Tuy nhiên, do nhà nghiên cứu không thể có đủ thời gian, sức lực, phương tiện, năng lực... để lấy dữ liệu từ tất cả các cá nhân nên nhà nghiên cứu phải chọn mẫu mang tính đại diện cho tổng thể xã hội." },
+        { q: "40. Khái niệm \"khuôn mẫu lý tưởng\" hay \"điển hình lý tưởng\" (Ideal-Type) của Max Weber được định nghĩa là gì?", opts: { A: "Một mô hình xã hội hoàn thiện và tốt đẹp nhất trong tương lai mà con người cần đạt tới", B: "Khuôn mẫu được tạo dựng về mặt lý thuyết để làm công cụ nhận thức, làm thước đo và đánh giá các hiện tượng thực tế", C: "Một tập hợp các quy tắc bắt buộc mọi cá nhân trong xã hội phải tuân thủ", D: "Sự mô tả chính xác 100% một trường hợp thực tế đang diễn ra trong đời sống" }, ans: "B", exp: "Điển hình lý tưởng là khuôn mẫu được tạo dựng về mặt lý thuyết để lại cho chúng ta một công cụ nhận thức quan trọng. Điển hình lý tưởng là khuôn mẫu được tạo dựng về mặt lý thuyết, không trùng khít với bất kỳ thực tế nào, được dùng làm thước đo và đánh giá những hiện tượng thực tế đang diễn ra." },
+        { q: "41. Max Weber phân chia khuôn mẫu lý tưởng làm bao nhiêu dạng cơ bản?", opts: { A: "Hai dạng", B: "Ba dạng", C: "Bốn dạng", D: "Năm dạng" }, ans: "B", exp: "Ông phân chia ba dạng khuôn mẫu lý tưởng." },
+        { q: "42. Dạng khuôn mẫu lý tưởng thứ nhất của Max Weber xuất phát từ khía cạnh nào?", opts: { A: "Trực giác siêu hình của nhà nghiên cứu", B: "Bối cảnh xã hội cụ thể, chẳng hạn như chủ nghĩa tư bản, đạo đức Tin Lành", C: "Các quy luật sinh học tự nhiên của con người", D: "Sự khái quát hóa các hành vi cảm xúc nhất thời" }, ans: "B", exp: "Thứ nhất, khuôn mẫu lý tưởng xuất phát từ bối cảnh xã hội cụ thể, chẳng hạn như chủ nghĩa tư bản, đạo đức Tin Lành..." },
+        { q: "43. Dạng khuôn mẫu lý tưởng thứ hai của Max Weber được xây dựng dựa trên cơ sở nào?", opts: { A: "Sự khái quát hóa, trừu tượng hóa một thực tế xã hội rộng lớn như quan liêu, phong kiến", B: "Việc mô tả tỉ mỉ hành vi của một cá nhân duy nhất trong lịch sử", C: "Các giáo lý tôn giáo truyền thống không thay đổi", D: "Sự tính toán toán học thuần túy về các biến số kinh tế" }, ans: "A", exp: "Thứ hai, khuôn mẫu lý tưởng là kết quả của khái quát hóa, trừu tượng hóa một thực tế xã hội: ví dụ, chủ nghĩa phong kiến hay tổ chức quan liêu..." },
+        { q: "44. Dạng khuôn mẫu lý tưởng thứ ba của Max Weber được sử dụng với vai trò gì?", opts: { A: "Làm quy định pháp lý bắt buộc cho bộ máy hành chính nhà nước", B: "Làm công cụ lý luận để nghiên cứu một dạng hành động xã hội nhất định như hành động kinh tế", C: "Làm tiêu chuẩn đạo đức để đánh giá sự thánh thiện của cá nhân", D: "Làm phương tiện để dự báo chính xác các biến động chính trị" }, ans: "B", exp: "Thứ ba, khuôn mẫu lý tưởng làm công cụ lý luận để nghiên cứu một dạng hành động xã hội nhất định. Chẳng hạn, con người như là thực thể kinh tế..." },
+        { q: "45. Xã hội học của Max Weber hướng đến một quan điểm nghiên cứu khách quan được gọi là gì?", opts: { A: "Xã hội học quyết định luận tuyệt đối", B: "Xã hội học tự do về giá trị (free-value)", C: "Xã hội học định chuẩn đạo đức", D: "Xã hội học thực chứng siêu hình" }, ans: "B", exp: "Nhìn chung, Max Weber là một nhà tư tưởng hướng đến xã hội học tự do về giá trị (free-value)." },
+        { q: "46. Quan điểm \"tự do về giá trị\" (free-value) của Max Weber đòi hỏi nhà nghiên cứu xã hội học phải làm gì?", opts: { A: "Phải tích cực truyền bá các giá trị đạo đức cá nhân vào nghiên cứu", B: "Giữ thái độ trung lập, khách quan, không đưa định kiến và giá trị chủ quan của mình vào giải thích hiện tượng", C: "Chỉ nghiên cứu những hiện tượng xã hội không có bất kỳ giá trị nào đối với con người", D: "Luôn phê phán và tìm cách thay đổi các giá trị văn hóa của cộng đồng" }, ans: "B", exp: "Tự do về giá trị yêu cầu nhà nghiên cứu duy trì sự khách quan khoa học, tách biệt giữa nhận thức khoa học khách quan và các phán xét giá trị chủ quan hay thiên kiến cá nhân của người nghiên cứu." },
+        { q: "47. So với Karl Marx và Émile Durkheim, Max Weber thể hiện thái độ như thế nào khi đưa ra các kết luận xã hội học?", opts: { A: "Khẳng định chắc chắn về các quy luật phát triển tất yếu mang tính tuyệt đối của lịch sử", B: "Khiêm tốn hơn, chỉ đi tìm xác suất chứ không tuyên bố quy luật tất yếu", C: "Cho rằng hành vi con người hoàn toàn bị quyết định bởi thần linh và định mệnh", D: "Phủ nhận hoàn toàn khả năng tìm ra bất kỳ quy luật hay sự giải thích nhân quả nào" }, ans: "B", exp: "Ông khiêm tốn hơn so với Émile Durkheim khi tuyên bố rằng, vốn dĩ xã hội là do con người tạo ra, mà con người thì có đủ các loại động cơ, nhu cầu, cảm xúc... nên cũng sẽ có nhiều loại hành động với nhiều lý do hành động, do đó xã hội học chỉ đi tìm xác suất chứ không tuyên bố quy luật tất yếu." },
+        { q: "48. Theo sự ví von về mối quan hệ giữa cá nhân và cấu trúc xã hội, lý thuyết của Max Weber tương ứng với quan điểm nào?", opts: { A: "Gà đẻ ra trứng (cấu trúc quyết định cá nhân)", B: "Trứng nở ra gà (cá nhân và hành động tạo ra cấu trúc)", C: "Trứng và gà hoàn toàn không có mối quan hệ nào", D: "Cấu trúc xã hội tự sinh ra mà không cần con người" }, ans: "B", exp: "Đối với ông, trứng nở ra gà, biết rằng trứng là cá nhân và gà là cấu trúc, thiết chế, tức là thực tế khách quan." },
+        { q: "49. Sự đóng góp của Max Weber về hành động xã hội (mang ý nghĩa chủ quan và hướng đến người khác) là nền tảng cốt lõi cho dòng lý thuyết nào sau này?", opts: { A: "Lý thuyết cơ cấu - chức năng của Parsons", B: "Lý thuyết tương tác biểu trưng của Blumer", C: "Thuyết duy vật biện chứng của Marx", D: "Thuyết tiến hóa xã hội của Spencer" }, ans: "B", exp: "Ý tưởng của Max Weber về đối tượng nghiên cứu của xã hội học là hành động xã hội với 2 đặc trưng: mang ý nghĩa chủ quan và hướng đến người khác đã được kế thừa bởi trường phái tương tác biểu trưng của Herbert Blumer." },
+        { q: "50. Cuộc tranh luận lý thuyết kéo dài nhiều thập kỷ giữa hai nhà xã hội học cổ điển nào được coi là đại diện cho hai trường phái đối lập lớn trong lịch sử ngành?", opts: { A: "Max Weber và Karl Marx", B: "Max Weber và Émile Durkheim", C: "Max Weber và Herbert Spencer", D: "Max Weber và Auguste Comte" }, ans: "B", exp: "Cuộc tranh cãi mấy chục năm giữa hai ông tổ (Durkheim và Weber) đại diện cho hai trường phái xã hội học cổ điển." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
