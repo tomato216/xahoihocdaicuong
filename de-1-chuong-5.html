@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề 1. Chương 5 - Xã Hội Học</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 1. Chương 5</h1>
+        <p>Cấu trúc xã hội và một số thuật ngữ liên quan</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Cấu trúc xã hội và một số thuật ngữ liên quan</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="#" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="#" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Theo Akoun, cấu trúc hay cơ cấu xã hội được định nghĩa là gì?", opts: { A: "Là sự kết hợp ngẫu nhiên của các cá nhân trong xã hội không theo quy luật nào.", B: "Là một tập hợp các yếu tố mà giữa chúng có những mối quan hệ khăng khít với nhau đến nỗi sự biến đổi một yếu tố hoặc sự biến đổi một mối quan hệ nào đó sẽ dẫn đến sự biến đổi của các yếu tố và các quan hệ khác.", C: "Là tổng số các cá nhân sinh sống trong một phạm vi địa lý nhất định.", D: "Là các quy định pháp luật do nhà nước ban hành nhằm quản lý hành vi của công dân." }, ans: "B", exp: "Cấu trúc/cơ cấu xã hội là một tập hợp các yếu tố mà giữa chúng có những mối quan hệ khăng khít với nhau đến nỗi sự biến đổi một yếu tố hoặc sự biến đổi một mối quan hệ nào đó sẽ dẫn đến sự biến đổi của các yếu tố và các quan hệ khác." },
+        { q: "2. Ban đầu, việc sử dụng thuật ngữ 'cấu trúc' hay 'cơ cấu' xuất phát từ lĩnh vực khoa học nào với nghĩa đầu tiên là 'tổ chức' ở thế kỷ XVII?", opts: { A: "Khoa học xã hội", B: "Khoa học tự nhiên", C: "Khoa học nhân văn", D: "Tâm lý học" }, ans: "B", exp: "Ban đầu việc sử dụng thuật ngữ cấu trúc hay cơ cấu không xuất phát từ định nghĩa của dòng lý thuyết cấu trúc, mà xuất phát từ khoa học tự nhiên thông qua nghĩa đầu tiên của nó là tổ chức ở thế kỷ XVII." },
+        { q: "3. Ai là người đã phân biệt cơ cấu hạ tầng kinh tế (cơ sở hạ tầng) và cấu trúc thượng tầng luật pháp và chính trị?", opts: { A: "Auguste Comte", B: "Émile Durkheim", C: "Karl Marx", D: "Talcott Parsons" }, ans: "C", exp: "Karl Marx phân biệt cơ cấu cấu trúc hạ tầng kinh tế và cấu trúc thượng tầng luật pháp và chính trị." },
+        { q: "4. Theo Akoun, cấu trúc xã hội luôn được hiểu theo hai ngữ nghĩa nào?", opts: { A: "Thứ nhất là mô hình hữu lý biểu hiện cụ thể ra bên ngoài; thứ hai là kết quả của các tương quan, liên kết thiết lập giữa các sự kiện xã hội.", B: "Thứ nhất là các nhóm xã hội tự phát; thứ hai là các tổ chức do nhà nước thành lập.", C: "Thứ nhất là các hành vi sinh học bẩm sinh; thứ hai là các hành vi có ý thức của con người.", D: "Thứ nhất là cấu trúc kinh tế nông nghiệp; thứ hai là cấu trúc kinh tế công nghiệp." }, ans: "A", exp: "Cấu trúc xã hội luôn được hiểu trong hai ngữ nghĩa: thứ nhất, cấu trúc xã hội là một mô hình hữu lý mà các yếu tố cấu thành nó là những biểu hiện cụ thể ra bên ngoài; thứ hai, cấu trúc xã hội là kết quả của các tương quan, liên kết được thiết lập giữa các sự kiện xã hội." },
+        { q: "5. Trong lý thuyết cấu trúc - chức năng của Talcott Parsons, giai đoạn thứ nhất của nghiên cứu xã hội học nhằm mục đích gì?", opts: { A: "Tìm ra các cơ chế phản ứng bộc phát của hệ thống xã hội.", B: "Tìm từ trong hệ thống xã hội những thành tố tương đối ổn định, hay còn gọi là 'những yếu tố bất biến' (constants).", C: "Phân tích các xung đột giai cấp diễn ra trong đời sống thường nhật.", D: "Đo lường mức độ biến động kinh tế của các quốc gia." }, ans: "B", exp: "Giai đoạn thứ nhất của nghiên cứu xã hội học là tìm từ trong hệ thống xã hội những thành tố tương đối ổn định. Đây chính là những thành tố cấu thành cấu trúc của hệ thống xã hội được nghiên cứu và được tác giả coi như là những yếu tố bất biến (constants)." },
+        { q: "6. Theo Talcott Parsons, giai đoạn thứ hai của nghiên cứu xã hội học tập trung vào việc làm sáng tỏ điều gì?", opts: { A: "Các hoạt động kinh tế phi chính thức trong xã hội cổ đại.", B: "Các cơ chế 'phản ứng' của hệ thống trước điều kiện môi trường nhằm duy trì hệ thống được duy trì như thế nào.", C: "Sự suy giảm quyền lực của nhà nước trước các nhóm xã hội tự phát.", D: "Sự phát triển của các công nghệ giao thông vận tải hiện đại." }, ans: "B", exp: "Giai đoạn thứ hai của nghiên cứu xã hội học là làm sáng tỏ các cơ chế phản ứng của hệ thống trước điều kiện môi trường. Đây là giai đoạn tìm hiểu và giải thích quá trình xã hội và ý nghĩa của chúng xét về mặt chức năng, tức là hệ thống được duy trì như thế nào." },
+        { q: "7. Theo Nguyên tắc 2 của Talcott Parsons, nhà xã hội học phải tuân thủ thứ tự nghiên cứu như thế nào?", opts: { A: "Nghiên cứu động học xã hội trước, sau đó mới nghiên cứu tĩnh học xã hội.", B: "Nghiên cứu tĩnh học xã hội trước (mô tả các thành tố ổn định), sau đó mới nghiên cứu động học xã hội (mô hình chuẩn mực hành động đã được thiết chế hóa).", C: "Chỉ nghiên cứu tĩnh học xã hội và bỏ qua hoàn toàn động học xã hội.", D: "Nghiên cứu đồng thời cả hai mà không cần phân chia giai đoạn." }, ans: "B", exp: "Nguyên tắc 2 nêu rõ nhà xã hội học phải tuân thủ thứ tự nghiên cứu theo hai giai đoạn: giai đoạn một là giai đoạn nghiên cứu tĩnh học xã hội, tức là mô tả các thành tố ổn định cấu thành hệ thống xã hội và giai đoạn hai là giai đoạn nghiên cứu động học xã hội." },
+        { q: "8. Bốn chức năng căn bản (mô hình AGIL) mà mọi hệ thống xã hội muốn vận hành tốt đều phải thực hiện theo Talcott Parsons gồm những gì?", opts: { A: "Chức năng kinh tế, chức năng chính trị, chức năng tôn giáo, chức năng giáo dục.", B: "Chức năng thích ứng, chức năng thực hiện mục tiêu, chức năng hội nhập, chức năng duy trì các mô hình văn hóa.", C: "Chức năng sản xuất, chức năng tiêu dùng, chức năng phân phối, chức năng trao đổi.", D: "Chức năng quản lý hành chính, chức năng kiểm soát xã hội, chức năng đối ngoại, chức năng phòng thủ." }, ans: "B", exp: "Mọi hệ thống xã hội muốn vận hành tốt đều phải thực hiện bốn chức năng căn bản gồm: chức năng thích ứng, chức năng thực hiện mục tiêu, chức năng hội nhập và chức năng duy trì các mô hình văn hóa (AGIL)." },
+        { q: "9. Khái niệm 'sự kiểm soát xã hội theo cấp bậc' (hiérarchie cybernétique de contrôle) trong Nguyên tắc 4 của Talcott Parsons nghĩa là gì?", opts: { A: "Các chức năng của hệ thống xã hội được sắp xếp theo thứ bậc cao thấp, hệ thống này được cấu thành từ các tiểu hệ thống và kiểm soát lẫn nhau.", B: "Sự áp đặt quyền lực tuyệt đối của cơ quan lập pháp đối với cơ quan hành pháp.", C: "Sự kiểm soát của các tổ chức tôn giáo đối với hoạt động kinh tế thường nhật.", D: "Việc nhà nước sử dụng các thiết bị công nghệ hiện đại để giám sát hành vi của công dân." }, ans: "A", exp: "Các chức năng của hệ thống xã hội được sắp xếp theo thứ bậc cao thấp. Hay nói cách khác, một hệ thống xã hội được cấu thành từ các tiểu hệ thống được kiểm soát theo cấp bậc, gọi là sự kiểm soát xã hội theo cấp bậc." },
+        { q: "10. Theo Nguyễn Đình Tấn, cấu trúc xã hội của một xã hội thường có ba loại thành tố cơ bản nào?", opts: { A: "Cơ cấu các nhóm xã hội, cơ cấu tầng lớp xã hội, kiểu liên hệ và quan hệ xã hội.", B: "Cơ cấu giai cấp thống trị, cơ cấu giai cấp bị trị, cơ cấu giai cấp trung gian.", C: "Các thiết chế giáo dục, thiết chế chính trị, thiết chế tôn giáo.", D: "Mạng lưới xã hội chính thức, mạng lưới xã hội phi chính thức, mạng lưới truyền thông." }, ans: "A", exp: "Cấu trúc xã hội của một xã hội thường có ba loại thành tố: cơ cấu các nhóm xã hội (cấu trúc ngang); cơ cấu các tầng lớp xã hội và các kiểu liên hệ hệ và quan hệ xã hội." },
+        { q: "11. Khái niệm 'vị trí xã hội' (social position) được Charon định nghĩa như thế nào?", opts: { A: "Chỗ đứng của cá nhân trong tương tác.", B: "Vị thế cao nhất mà cá nhân đạt được thông qua sự cố gắng của bản thân.", C: "Nghĩa vụ đạo đức của cá nhân đối với gia đình và dòng họ.", D: "Tỷ lệ đóng góp tài chính của cá nhân cho cộng đồng cư trú." }, ans: "A", exp: "Khi đề cập đến khái niệm vị trí xã hội, các nhà xã hội học thường xem nó là chỗ đứng của cá nhân trong tương tác." },
+        { q: "12. Theo cách hiểu thứ nhất của Hughes và Kroehler, vị thế (địa vị) xã hội (social status) nghĩa là gì?", opts: { A: "Là các vai diễn mà cá nhân thực hiện trên sân khấu xã hội.", B: "Là vị trí ở trong một nhóm hay một xã hội, đồng nghĩa với 'vị trí' và 'vị thế' xã hội.", C: "Là mức độ giàu có về mặt vật chất của cá nhân được thừa nhận công khai.", D: "Là sự đánh giá chủ quan của cá nhân về tầm ảnh hưởng của bản thân." }, ans: "B", exp: "Ở cách hiểu thứ nhất, vị thế xã hội là vị trí ở trong một nhóm hay một xã hội, đồng nghĩa với vị trí và vị thế xã hội đồng nghĩa với nhau bởi chúng cùng cho biết vị trí đứng của một người trong cấu trúc xã hội." },
+        { q: "13. Theo Ralph Linton, vị thế xã hội được hiểu theo hai nghĩa nào?", opts: { A: "Vị thế kinh tế và vị thế chính trị.", B: "Vị thế gán cho và vị thế đạt được.", C: "Nghĩa trừu tượng (vị trí trong mô hình chung) và nghĩa cụ thể (vị trí của một người xác định trong tổng thể tương tác).", D: "Vị thế chủ chốt và vị thế phụ thuộc." }, ans: "C", exp: "Theo Ralph Linton, vị thế được hiểu theo 2 nghĩa: (1) Theo một nghĩa trừu tượng, một vị thế là một vị trí trong một mô hình khuôn mẫu hành vi, nhiều mối tương tác xã hội. (2) Theo một nghĩa cụ thể, vị thế của một người trong xã hội là một tập hợp các vị thế mà người đó nắm giữ trong các mối tương tác xã hội." },
+        { q: "14. Định nghĩa về 'vị thế gán cho' (ascribed status) theo Phạm Tất Dong và Lê Ngọc Hùng là gì?", opts: { A: "Vị thế gắn liền với những yếu tố tự nhiên bẩm sinh như giới tính, chủng tộc, dòng họ, nơi sinh, tuổi tác...", B: "Vị thế mà cá nhân có được thông qua sự nỗ lực, học tập và rèn luyện trong cuộc sống.", C: "Vị thế quan trọng nhất quyết định sự nhận diện của một cá nhân trong xã hội.", D: "Vị thế tạm thời được giao cho cá nhân trong một tình huống cụ thể." }, ans: "A", exp: "Vị thế gán cho gắn liền với những yếu tố tự nhiên, bẩm sinh như giới tính, chủng tộc, dòng họ, nơi sinh, tuổi tác..." },
+        { q: "15. Ví dụ nào sau đây đại diện cho vị thế gán cho (ascribed status)?", opts: { A: "Bác sĩ chuyên khoa ngoại", B: "Giáo viên dạy môn xã hội học", C: "Người Kinh, nam giới", D: "Giám đốc điều hành công ty kinh doanh" }, ans: "C", exp: "Vị thế gán cho là những vị thế có sẵn ngay từ khi mới sinh ra hoặc vô tình đảm nhận trong một thời điểm nào đó trong tiến trình cuộc đời mà cá nhân không thể cưỡng lại được, chẳng hạn như người Kinh, người Tày hay nam giới, nữ giới." },
+        { q: "16. Vị thế đạt được (achieved status) được hình thành dựa trên cơ sở nào?", opts: { A: "Các đặc điểm sinh học bẩm sinh của cá nhân khi sinh ra.", B: "Sự lựa chọn, sự cố gắng đạt được của con người thông qua học tập, rèn luyện, kết bạn, sáng tạo sản phẩm mới...", C: "Quyết định áp đặt từ phía các cơ quan hành chính nhà nước.", D: "Địa vị kinh tế sẵn có của gia đình và dòng họ từ nhiều thế hệ trước." }, ans: "B", exp: "Vị thế đạt được dựa trên cơ sở những gì con người đã thực hiện, kết quả và ảnh hưởng của các hoạt động ấy. Nó thường gắn với sự lựa chọn, sự cố gắng đạt được của con người." },
+        { q: "17. Khái niệm 'vị thế chủ chốt' hay 'vị thế chính' (master status) được định nghĩa là gì?", opts: { A: "Vị thế cao nhất về mặt quyền lực chính trị trong một quốc gia.", B: "Vị thế hạt nhân, cốt lõi hoặc vị thế chính yếu mà nó có một tác động quan trọng trong các tương tác và các quan hệ của cá nhân với những người khác.", C: "Vị thế tạm thời có được khi tham gia các hoạt động lễ hội truyền thống.", D: "Vị thế gắn liền với các đặc điểm sinh học bẩm sinh không thể thay đổi." }, ans: "B", exp: "Vị thế chủ chốt (master status) là một vị thế hạt nhân, cốt lõi hoặc vị thế chính yếu mà nó có một tác động quan trọng trong các tương tác và các quan hệ của cá nhân với những người khác." },
+        { q: "18. Theo Akoun và Ansart, 'vai trò xã hội' (social role) là gì?", opts: { A: "Là những mong muốn chủ quan của cá nhân về vị thế tương lai của mình.", B: "Là tập hợp hành vi hoặc các mô hình hành vi gắn với vị thế cá nhân để khẳng định bản sắc cá nhân và thuộc phạm trù của một quá trình tương tác giữa cá nhân và cấu trúc xã hội.", C: "Là các quy định pháp luật buộc cá nhân phải thực hiện đầy đủ nghĩa vụ quân sự.", D: "Là sự đánh giá của cộng đồng về mức độ đóng góp tài chính của một cá nhân." }, ans: "B", exp: "Vai trò là tập hợp hành vi hoặc các mô hình hành vi gắn với vị thế cá nhân để khẳng định bản sắc cá nhân và thuộc phạm trù của một quá trình tương tác giữa cá nhân và cấu trúc xã hội." },
+        { q: "19. Ở cấp độ cấu trúc (thiết chế) theo Jean Maisonneuve, vai trò được hiểu như thế nào?", opts: { A: "Là toàn thể các hành vi mang tính chuẩn mực của một tác nhân ấn định ở một địa vị xã hội.", B: "Là sự bộc phát cảm xúc cá nhân trước các kích thích từ môi trường tự nhiên.", C: "Là các kỹ năng lao động chân tay được truyền lại từ đời này sang đời khác.", D: "Là sự đấu tranh của cá nhân chống lại các áp đặt từ cấu trúc xã hội." }, ans: "A", exp: "Ở cấp độ cấu trúc (thiết chế), vai trò là toàn thể các hành vi mang tính chuẩn mực của một tác nhân ấn định ở một địa vị xã hội. Những chuẩn mực hành vi ấy phù hợp với các biến số tuổi, giới tính, nghề nghiệp, vị thế gia đình và vị thế chính trị." },
+        { q: "20. Xung đột vai trò (role conflict) là gì?", opts: { A: "Là kết quả khi các cá nhân đối diện với những mong đợi trái chiều, xuất phát từ việc họ phải nắm giữ hai hay nhiều vị thế cùng một lúc.", B: "Là sự mâu thuẫn giữa hai cá nhân cùng nắm giữ một vị thế giống nhau trong một tổ chức.", C: "Là sự bất đồng ý kiến giữa các thành viên trong một gia đình về cách phân chia tài sản.", D: "Là sự tranh chấp quyền lực giữa các phòng ban hành chính trong một cơ quan nhà nước." }, ans: "A", exp: "Xung đột vai trò (role conflict) là kết quả khi các cá nhân đối diện với những mong đợi trái chiều, xuất phát từ việc họ phải nắm giữ hai hay nhiều vị thế cùng một lúc." },
+        { q: "21. Căng thẳng vai trò (role strain) xảy ra khi nào?", opts: { A: "Khi cá nhân phải chuyển đổi vị thế xã hội của mình từ thấp lên cao một cách nhanh chóng.", B: "Khi cá nhân nhận thấy những mong đợi trái chiều đối với một vai trò đơn lẻ nào đó mà họ đảm nhận, khiến việc thực hiện gặp khó khăn.", C: "Khi tổ chức xã hội bị giải thể do gặp khó khăn về tài chính và nhân sự.", D: "Khi cá nhân từ chối thực hiện mọi vai trò xã hội được cộng đồng giao phó." }, ans: "B", exp: "Căng thẳng vai trò (role strain) là trường hợp xảy ra khi cá nhân nhận thấy những mong đợi trái chiều đối với một vai trò nào đó là không thích hợp, bởi thế họ khó khăn khi thực hiện vai trò đó." },
+        { q: "22. Theo Ansart, thiết chế xã hội được định nghĩa là gì?", opts: { A: "Là các tổ chức hành chính do chính quyền thành lập nhằm cưỡng chế người dân.", B: "Là tập hợp các quy tắc có chức năng quản lý và điều tiết các quan hệ giữa người và con người.", C: "Là các tòa nhà công cộng được xây dựng bằng ngân sách của nhà nước.", D: "Là các lễ hội truyền thống được tổ chức hàng năm tại các làng quê." }, ans: "B", exp: "Thiết chế là tập hợp các quy tắc có chức năng quản lý và điều tiết các quan hệ giữa người và con người." },
+        { q: "23. Theo Lê Ngọc Hùng, thiết chế xã hội được thiết lập nhằm mục đích gì?", opts: { A: "Nhằm tăng cường quyền kiểm soát của giai cấp thống trị đối với tầng lớp nghèo.", B: "Nhằm điều chỉnh hành vi, hoạt động của các cá nhân, các nhóm, các tổ chức nhằm đáp ứng những nhu cầu nhất định của xã hội.", C: "Nhằm xóa bỏ hoàn toàn sự bất bình đẳng kinh tế giữa các thành viên.", D: "Nhằm thúc đẩy sự phát triển của công nghệ thông tin trong các hoạt hoạt động kinh tế." }, ans: "B", exp: "Thiết chế xã hội là một hệ thống các cách thức, các quy tắc chính thức và phi chính thức được người ta tạo ra để điều chỉnh hành vi, hoạt động của các cá nhân, các nhóm, các tổ chức nhằm đáp ứng những nhu cầu nhất định của xã hội." },
+        { q: "24. Theo lý thuyết của Émile Durkheim, thiết chế xã hội có đặc tính nổi bật nào đối với cá nhân?", opts: { A: "Hoàn toàn phụ thuộc vào ý chí chủ quan của từng cá nhân đơn lẻ.", B: "Là thực tế khách quan (sự kiện xã hội) mang tính bắt buộc, có sức mạnh cưỡng chế hành động của cá nhân.", C: "Chỉ có giá trị trong các giao dịch kinh tế bằng văn bản chính thức.", D: "Dễ dàng bị thay đổi bởi hành vi bộc phát của bất kỳ cá nhân nào." }, ans: "B", exp: "Thiết chế được tạo nên các yếu tố cấu trúc: nó chính là sự kiện xã hội hay thực tế khách quan được khách thể hóa đến mức cá nhân không được tự do lựa chọn được đặc trưng bởi những ràng buộc đối với cá nhân và được xác định bởi sự tồn tại thường trực của nó trước mọi hành động của cá nhân." },
+        { q: "25. Theo Berger và Luckman, ba quá trình xảy ra khi một thiết chế xã hội được tạo ra bao gồm những gì?", opts: { A: "Ngoại hóa (exteriorisation), Khách quan hóa (objectivation), Nội hóa (interiorisation).", B: "Sản xuất (production), Phân phối (distribution), Tiêu dùng (consumption).", C: "Đăng ký (registration), Vận hành (operation), Giải thể (dissolution).", D: "Giao tiếp (communication), Thỏa thuận (agreement), Thực thi (execution)." }, ans: "A", exp: "Ba quá trình xảy ra khi thiết chế được tạo ra bao gồm: Ngoại hóa (exteriorisation) là quá trình thiết chế tách ra khỏi tập hợp các cá nhân đã tham gia tạo ra chúng; Khách quan hóa (objectivation) là quá trình thiết chế đã có được tính chất khách quan tồn tại sau đó; Nội hóa (interiorisation) là quá trình mọi cá nhân thẩm thấu các nguyên tắc của thiết chế đến nỗi hành động của cá nhân mang tính tự nhiên." },
+        { q: "26. Theo Segalen, cấu trúc thiết chế gia đình được phân chia thành bốn nhóm chính nào?", opts: { A: "Gia đình nông thôn, gia đình thành thị, gia đình miền núi, gia đình ven biển.", B: "Gia đình 'không có cấu trúc gia đình' (hộ độc thân), gia đình 'đơn', gia đình 'mở rộng', gia đình 'đa gia đình'.", C: "Gia đình một thế hệ, gia đình hai thế hệ, gia đình ba thế hệ, gia đình bốn thế hệ.", D: "Gia đình truyền thống, gia đình hiện đại, gia đình quá độ, gia đình tương lai." }, ans: "B", exp: "Có thể phân loại thành 4 nhóm cấu trúc chính: Các thiết chế gia đình không có cấu trúc gia đình (hộ độc thân); Các thiết chế gia đình đơn; Các thiết chế gia đình mở rộng; Các thiết chế gia đình đa gia đình." },
+        { q: "27. Chức năng bề mặt (manifest functions) của thiết chế giáo dục bao gồm những hoạt động nào?", opts: { A: "Trông trẻ ngoài giờ, tạo cơ hội cho học sinh rèn luyện thể chất để đi làm việc sau này.", B: "Dạy dỗ, rèn luyện các kỹ năng cho học sinh (nghe, nói, đọc, viết, làm toán, văn, địa lý, tính kỷ luật, tự giác, làm việc nhóm...).", C: "Giảm bớt áp lực thất nghiệp cho thị trường lao động bằng cách kéo dài thời gian đi học của thanh niên.", D: "Tạo điều kiện cho các cặp đôi gặp gỡ, kết hôn và duy trì các chuẩn mực gia đình truyền thống." }, ans: "B", exp: "Chức năng bề mặt (manifest functions) là các chức năng của giáo dục như: dạy dỗ, rèn luyện các kỹ năng cho học sinh (nghe, nói, đọc, viết, làm toán, văn, địa lý, tính kỷ luật, tự giác, làm việc nhóm...); chuyển giao di sản văn hóa và khuyến khích thích ứng văn hóa; điều chỉnh hành vi, thúc đẩy những hành vi phù hợp đạo đức." },
+        { q: "28. Chức năng nào sau đây được coi là chức năng ngầm ẩn (latent functions) của thiết chế giáo dục?", opts: { A: "Truyền bá các kiến thức khoa học tự nhiên và lịch sử xã hội cho thế hệ trẻ.", B: "Trông giữ trẻ cho cha mẹ đi làm; trường học trở thành nơi giám sát học sinh; duy trì, củng cố khuôn mẫu hành vi cũ hoặc thúc đẩy thay đổi xã hội.", C: "Tổ chức các kỳ thi đánh giá năng lực học tập định kỳ của học sinh.", D: "Cung cấp sách giáo khoa và các trang thiết bị học tập cho lớp học." }, ans: "B", exp: "Chức năng ngầm ẩn ẩn hay chức năng không chủ định của giáo dục bao gồm: trông giữ trẻ cho cha mẹ có thể đi làm; trường học trở thành nơi giám sát chúng; duy trì, củng cố khuôn mẫu hành vi cũ hoặc thúc đẩy thay đổi xã hội." },
+        { q: "29. Thiết chế tôn giáo được định nghĩa như thế nào theo Barkan?", opts: { A: "Là tập hợp các nghi lễ thần bí chỉ được thực hiện bởi các tu sĩ ở nơi hoang vắng.", B: "Là tập hợp các niềm tin và thực hành về những điều thiêng liêng giúp con người hiểu được mục đích và ý nghĩa của cuộc sống.", C: "Là các quy tắc hành chính bắt buộc mọi công dân phải đóng thuế cho nhà thờ.", D: "Là sự tụ tập đông người ngoài đường để phản đối các chính sách kinh tế của chính phủ." }, ans: "B", exp: "Tôn giáo là tập hợp các niềm tin và thực hành về những điều thiêng liêng giúp con người hiểu được mục đích và ý nghĩa của cuộc sống." },
+        { q: "30. Chức năng của thiết chế kinh tế theo Wiggin và Davis bao gồm những gì?", opts: { A: "Tổ chức các hoạt động vui chơi giải trí và thể thao cho công nhân sau giờ làm việc.", B: "Thiết lập và bảo vệ quyền sở hữu; thiết lập điều kiện cho các giao dịch; thiết lập cơ chế cho phép hợp tác kinh tế, tương tác trong khuôn khổ tổ chức.", C: "Quản lý hộ khẩu và cấp giấy tờ tùy thân cho người lao động tại các nhà máy.", D: "Tuyên truyền các tư tưởng chính trị của giai cấp cầm quyền đến người lao động." }, ans: "B", exp: "Các chức năng của thiết chế kinh tế bao gồm: thứ nhất, thiết lập và bảo vệ quyền sở hữu; thứ hai, thiết lập điều kiện cho các giao dịch; thứ ba, thiết lập cơ chế cho phép hợp tác kinh tế, tương tác trong khuôn khổ tổ chức." },
+        { q: "31. Thuật ngữ 'chính trị' (politics) có gốc Hy Lạp từ 'polis' mang ý nghĩa là gì?", opts: { A: "Quyền lực nhà nước", B: "Thành bang (đô thị tự trị, độc lập)", C: "Sự đấu tranh giai cấp", D: "Luật pháp quốc gia" }, ans: "B", exp: "Gốc Hy Lạp của từ chính trị - politics là từ polis có nghĩa là thành bang. Thuật ngữ chính trị hàm ý về sự quan tâm tới hoạt động quản lý thành bang." },
+        { q: "32. Nhóm xã hội được định nghĩa như thế nào theo Orfali?", opts: { A: "Là bất kỳ sự tụ tập đông người ngẫu nhiên nào ngoài đường phố do tò mò.", B: "Là tập hợp người, ít hay nhiều, nhưng có những nét đặc trưng chung như quan điểm, sở thích hay hoạt động.", C: "Là một tập thể có quy mô từ mười nghìn người trở lên và có cơ cấu quản lý phức tạp.", D: "Là các cá nhân sống biệt lập không có bất kỳ mối liên hệ nào với nhau." }, ans: "B", exp: "Nhóm xã hội là tập hợp người, ít hay nhiều, nhưng có những nét đặc trưng chung như quan điểm, sở thích hay hoạt động." },
+        { q: "33. Tác giả nào đã sử dụng phương pháp 'Phân tích quá trình tương tác' để nghiên cứu các tương tác xã hội của nhóm xã hội?", opts: { A: "Kurt Lewin", B: "Émile Durkheim", C: "Bales", D: "Pierre Bourdieu" }, ans: "C", exp: "Những sắp xếp của Bales cung cấp cho khoa học xã hội một công cụ phân tích các dạng và quy trình tương tác. Hệ thống sắp xếp của Bales cho phép hiểu quá trình của một cuộc thảo luận nhóm, vai trò của các thành viên tham gia." },
+        { q: "34. Nghiên cứu so sánh xã hội của Fistingers làm sáng tỏ điều gì ở các thành viên trong nhóm?", opts: { A: "Mức độ mâu thuẫn về lợi ích kinh tế giữa các thành viên.", B: "Làm sáng tỏ cảm giác thuộc về nhóm hoặc thậm chí là động cơ gia nhập vào một nhóm nào đó của các cá nhân.", C: "Sự khác biệt về tuổi tác và giới tính của các thành viên trong nhóm.", D: "Quá trình di cư của các thành viên từ nông thôn ra thành thị." }, ans: "B", exp: "Quá trình này làm sáng tỏ cảm giác thuộc về nhóm hoặc thậm chí là động cơ gia nhập vào một nhóm nào đó. Chức năng so sánh này được thực hiện ở tương tác bên trong nhóm, tức là giữa các thành viên thường so bì nhau." },
+        { q: "35. Trong nghiên cứu của Tajfel, sự phân chia các cá nhân vào nhóm dựa trên cơ sở nào?", opts: { A: "Sự nhận biết (perception) và môi trường trường xã hội của cá nhân.", B: "Mức thu nhập hàng năm của từng cá nhân.", C: "Trình độ học vấn chính thức của các thành viên.", D: "Tôn giáo và tín ngưỡng của các gia đình." }, ans: "A", exp: "Sự phân loại hai nhóm biến số như vậy mang hai chức năng căn bản: sự nhận biết (perception) và môi trường trường xã hội của cá nhân." },
+        { q: "36. Thí nghiệm năm 1970 của Haney, Banks và Zimbardo về sự phân vai tù nhân và cai ngục ngẫu nhiên chứng minh điều gì?", opts: { A: "Tính hiệu quả của các biện pháp cải tạo phạm nhân trong thực tế.", B: "Sự phân vai cho các cá nhân dẫn đến việc các cá nhân ấy đóng đúng vai trò của mình dưới ảnh hưởng của bối cảnh tổ chức xã hội ấy tạo ra.", C: "Sự thất bại của hệ thống quản lý nhà tù ở các nước phương Tây.", D: "Tầm quan trọng của việc giáo dục đạo đức cho thanh niên trong gia đình." }, ans: "B", exp: "Trải nghiệm rất khó khăn này chứng minh sự phân vai cho các cá nhân dẫn đến việc các cá nhân ấy đóng đúng vai trò của mình. Sự phân vai này khiến hành vi của cá nhân thay đổi nhanh chóng dưới ảnh hưởng của bối cảnh tổ chức xã hội ấy tạo ra." },
+        { q: "37. Khái niệm 'biểu trưng xã hội' (representations sociales) của nhóm xã hội được nghiên cứu và đề xuất bởi tác giả nào?", opts: { A: "Serge Moscovici", B: "Karl Marx", C: "Max Weber", D: "Émile Durkheim" }, ans: "A", exp: "Quan niệm này của Moscovici có giá trị trong nghiên cứu cứu nhóm nhỏ và hình thành nên lý thuyết biểu trưng xã hội (representations sociales)." },
+        { q: "38. Nhà tâm lý học xã hội người Mỹ Kurt Lewin đã nghiên cứu về hiện tượng gì của nhóm xã hội?", opts: { A: "Mức độ bất bình đẳng thu nhập giữa các nhóm xã hội khác nhau.", B: "Hiện tượng 'tính trạng ôn định của nhóm', tức là một tình trạng cân bằng giữa các sức mạnh tâm lý xã hội trong đó.", C: "Lịch sử hình thành các bộ tộc cổ đại ở vùng Bắc Mỹ.", D: "Các nghi lễ tôn giáo của các nhóm thiểu số trong xã hội hiện đại." }, ans: "B", exp: "Kurt Lewin đề xuất khái niệm tính trạng ôn định của nhóm, tức là một tình trạng cân bằng giữa các sức mạnh tâm lý xã hội trong đó." },
+        { q: "39. Trong phân tích cấu trúc mạng lưới xã hội, 'nút' (node) và 'cầu nối' (tie) đại diện cho điều gì?", opts: { A: "'Nút' là các nhóm xã hội lớn, 'cầu nối' là các thiết chế luật pháp.", B: "'Nút' là vị trí và vị thế của các tác nhân, 'cầu nối' là mối quan hệ xã hội giữa các tác nhân.", C: "'Nút' là các cá nhân giàu có, 'cầu nối' là các ngân hàng tài chính.", D: "'Nút' là các đô thị hiện đại, 'cầu nối' là hệ thống đường giao thông." }, ans: "B", exp: "Cấu trúc thông thường của một mạng lưới xã hội bao gồm: (1) định hay nút là vị trí và vị thế của tác nhân được định hướng quan hệ nhiều nhất và mạnh mẽ nhất trong các quyết định hành động; (2) cầu nối là liên hệ giữa các tác nhân, có thể là giữa cá nhân với cá nhân, giữa cá nhân với nhóm và (3) một hệ thống các vị thế đạt được của các tác nhân." },
+        { q: "40. Ai là tác giả đề xuất lý thuyết nổi tiếng về 'Sức mạnh của các mối liên kết yếu' (The strength of weak ties)?", opts: { A: "Pierre Bourdieu", B: "Mark Granovetter", C: "Émile Durkheim", D: "Robin Dunbar" }, ans: "B", exp: "Đây chính là thứ mà Granovetter gọi tên là sức mạnh của các mối liên kết yếu." },
+        { q: "41. Theo Robin Dunbar, số lượng cá nhân tối đa mà một người có thể duy trì mối quan hệ ổn định và thường xuyên là bao nhiêu?", opts: { A: "Con số 50", B: "Con số 100", C: "Con số 150", D: "Con số 200" }, ans: "C", exp: "Số Dunbar (150) chỉ ra con số 150 được coi là con số tối đa giới hạn số lượng những mối quan hệ mà một người có thể duy trì ổn định và thường xuyên, con số này vẫn khá bền vững." },
+        { q: "42. Ba nguyên tắc phân tích cơ bản của mạng lưới xã hội theo Degenne và Forcé bao gồm những gì?", opts: { A: "Nguyên tắc 1: Không phân tích đơn lẻ; Nguyên tắc 2: Phân tích phức hợp; Nguyên tắc 3: Phân tích cấu trúc.", B: "Nguyên tắc 1: Phân tích kinh tế; Nguyên tắc 2: Phân tích chính trị; Nguyên tắc 3: Phân tích văn hóa.", C: "Nguyên tắc 1: Quan sát trực tiếp; Nguyên tắc 2: Điều tra bảng hỏi; Nguyên tắc 3: Phỏng vấn sâu.", D: "Nguyên tắc 1: Phân tích định lượng; Nguyên tắc 2: Phân tích định tính; Nguyên tắc 3: So sánh lịch sử." }, ans: "A", exp: "Ba nguyên tắc cơ bản gồm: Nguyên tắc 1: Không phân tích đơn lẻ (non-atomisme); Nguyên tắc 2: Phân tích phức hợp (Multiplexité); Nguyên tắc 3: Phân tích cấu trúc (Structure)." },
+        { q: "43. Tổ chức xã hội theo định nghĩa của Ansart là gì?", opts: { A: "Là tập hợp các cá nhân tự nguyện đóng góp tài chính để làm từ thiện.", B: "Là tập hợp các hình thức xã hội và các cấu trúc xã hội được tổ chức và được thiết lập bởi những nguyên tắc chính thức hoặc phi chính thức.", C: "Là một hệ thống giao thông công cộng được quản lý bởi chính quyền thành phố.", D: "Là các lễ hội văn hóa dân gian được tổ chức ở các làng quê." }, ans: "B", exp: "Tổ chức xã hội là tập hợp các hình thức xã hội và các cấu trúc xã hội được tổ chức và được thiết lập bởi những nguyên tắc chính thức hoặc phi chính thức." },
+        { q: "44. Điểm khác biệt quan trọng trong lập luận của March và Simon về mục đích của tổ chức xã hội là gì?", opts: { A: "Tổ chức xã hội luôn có một mục đích duy nhất và rõ ràng được tất cả mọi người chia sẻ.", B: "Chỉ có cá nhân mới có mục đích, còn tổ chức thì không có mục đích.", C: "Mục đích của tổ chức xã hội hoàn toàn do nhà nước quyết định và áp đặt từ trên xuống.", D: "Mục đích của tổ chức xã hội luôn thay đổi theo chu kỳ kinh tế của thị trường." }, ans: "B", exp: "March và Simon đã đưa ra luận điểm rất quan trọng rằng, chỉ có cá nhân mới có mục đích, còn tổ chức thì không có mục đích." },
+        { q: "45. Ví dụ của Bernard về ba người hàng xóm muốn dịch chuyển một cây gỗ ngang đường nhằm minh họa cho điều gì trong hoạt động của tổ chức xã hội?", opts: { A: "Sự tranh chấp quyền lực và xung đột lợi ích giữa các cá nhân trong cộng đồng.", B: "Sự phân công lao động theo nguồn lực và tích hợp nguồn lực dưới sự chỉ huy của một người để đạt mục tiêu chung.", C: "Sự thờ ơ của người dân trước các vấn đề công cộng của địa phương.", D: "Tầm quan trọng của việc áp dụng các công nghệ kỹ thuật hiện đại vào lao động sản xuất." }, ans: "B", exp: "Ví dụ trên cho thấy, mọi hoạt động điều phối thường ở hai cực: phân chia nhiệm vụ theo nguồn lực và chức năng của từng người và tích hợp nguồn lực dưới sự chỉ huy của một người." },
+        { q: "46. Lý thuyết của Hirschman chỉ ra ba cách phản ứng khi cá nhân thất vọng với một tổ chức xã hội, đó là gì?", opts: { A: "Đầu đấu tranh, thỏa hiệp, đầu hàng.", B: "Thoát lui (exit), phát biểu (voice), trung thành (loyalty).", C: "Khiếu nại, đình công, bỏ việc.", D: "Im lặng, chấp nhận, rời đi." }, ans: "B", exp: "Hirschman lập luận rằng, ai đó thất vọng thường sẽ cãi lại hoặc rời bỏ tổ chức. Tương tự như vậy, một khách hàng thất vọng có thể khiếu nại hoặc chuyển sang vai trò cạnh tranh (thoát lui, phát biểu, trung thành)." },
+        { q: "47. F. Tönnies phân chia cộng đồng thành hai khái niệm mới mang tính phân cực nào?", opts: { A: "Cộng đồng nông thôn và cộng đồng đô thị.", B: "Cộng đồng (Gemeinschaft) và Xã hội (Gesellschaft).", C: "Cộng đồng huyết thống và cộng đồng tôn giáo.", D: "Cộng đồng truyền thống và cộng đồng hiện đại." }, ans: "B", exp: "F. Tönnies là người mang lại một ngữ nghĩa mới cho khái niệm cộng đồng. Trong cuốn Cộng đồng và xã hội, tác giả phân biệt hai khái niệm này một cách giản đơn và có phần cực đoan." },
+        { q: "48. Karl Marx là người chỉ ra sự biến đổi của cộng đồng gắn liền với sự thay thế của yếu tố nào trong lịch sử?", opts: { A: "Các cuộc cách mạng công nghệ thông tin toàn cầu.", B: "Các hình thái kinh tế - xã hội cụ thể, sự thay thế nhau của các hình thái kinh tế - xã hội đã có trong lịch sử.", C: "Các cuộc chiến tranh giành lãnh thổ giữa các bộ tộc cổ đại.", D: "Sự thay đổi thời tiết và khí hậu của trái đất qua các kỷ băng hà." }, ans: "B", exp: "Karl Marx là người chỉ ra cách tiếp cận cộng đồng này qua nghiên cứu về sự thay thế nhau của các hình thái kinh tế - xã hội - xã hội cụ thể. Lịch sử phát triển của xã hội loài người đã chỉ rõ là như vậy." },
+        { q: "49. Émile Durkheim phân chia các kiểu liên kết xã hội thành hai hình thức đoàn kết nào?", opts: { A: "Đoàn kết tự nguyện và đoàn kết bắt buộc.", B: "Đoàn kết máy móc (cơ học) và đoàn kết hữu cơ.", C: "Đoàn kết gia đình và đoàn kết giai cấp.", D: "Đoàn kết tôn giáo và đoàn kết chính trị." }, ans: "B", exp: "É. Durkheim cũng có những phân tích khá tương đồng với F. Tönnies khi phân biệt đoàn kết máy móc (cơ học) và đoàn kết hữu cơ." },
+        { q: "50. Theo lý thuyết của Karl Marx, trong xã hội tư bản chủ nghĩa, hai giai cấp đối kháng cơ bản là gì?", opts: { A: "Giai cấp chủ nô và giai cấp nô lệ.", B: "Giai cấp địa chủ và giai cấp nông dân.", C: "Giai cấp tư sản và giai cấp vô sản.", D: "Giai cấp quý tộc và giai cấp bình dân." }, ans: "C", exp: "Marx xác định cuộc đấu tranh giữa giai cấp tư sản và giai cấp vô sản. Trong bộ Tư bản, Marx cho rằng nền tảng cấu trúc của chủ nghĩa tư bản chính là mối quan hệ xung đột giữa giai cấp tư sản sở hữu các phương tiện sản xuất và giai cấp vô sản chỉ sở hữu sức lao động." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
