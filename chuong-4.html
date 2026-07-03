@@ -3,311 +3,165 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chương 4 - Xã Hội Học</title>
+    <title>Chương 4: Hành động xã hội, tương tác xã hội, quan hệ xã hội - Xã Hội Học Đại Cương</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
-        .container { max-width: 800px; margin: 0 auto; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
-        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
-        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
-        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
-        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
-        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
-        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
-        
-        #quiz-screen { display: none; padding-bottom: 50px; }
-        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
-        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
-        
-        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
-        .btn-nav:hover { background: #5a32a3; }
-        
-        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
-        
-        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
-        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
-        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
-        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
-        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
-        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
-        .option-label.disabled { cursor: default; }
-        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
-        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
-        .btn-submit:hover { background-color: #00c853; }
-        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Phần Tiêu đề trang */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff 60%, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #b3b3b8;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Lưới hiển thị linh hoạt tự động xếp hàng */
+        .grid-container {
+            display: grid;
+            /* Tự động căn chỉnh: cột tối thiểu 280px, nếu màn hình rộng sẽ dàn ra */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px;
+        }
+
+        /* Thiết kế từng ô lựa chọn */
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            background-color: #121216;
+            border: 1px solid #3a2366; /* Viền tím tối */
+            border-radius: 12px;
+            padding: 30px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-item .bo-de {
+            color: #b388ff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .grid-item .ten-tac-gia {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        /* Hiệu ứng rê chuột vào ô */
+        .grid-item:hover {
+            background-color: rgba(111, 66, 193, 0.1);
+            border-color: #6f42c1;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.25);
+        }
+
+        .grid-item:hover .bo-de {
+            color: #ffffff;
+        }
+
+        /* Nút quay lại */
+        .back-nav {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: #8c8c93;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border: 1px solid #8c8c93;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Tối ưu cho màn hình điện thoại */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .grid-item {
+                padding: 25px 15px;
+            }
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div id="setup-screen">
-        <h1>Chương 4</h1>
-        <p>Hành động xã hội, tương tác xã hội, quan hệ xã hội</p>
-        <div class="setting-group">
-            <span>Tính thời gian làm bài</span>
-            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+    <div class="container">
+        <div class="header">
+            <h1>Chương 4: Hành động xã hội, tương tác xã hội, quan hệ xã hội</h1>
+            <p class="subtitle">Chọn một bộ đề để ôn tập</p>
         </div>
-        <div class="setting-group">
-            <span>Hiển thị đáp án ngay sau khi chọn</span>
-            <input type="checkbox" id="instant-feedback" checked>
-        </div>
-        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
-    </div>
+        
+        <div class="grid-container">
+            <a href="de-1-chuong-4.html" class="grid-item">
+                <span class="bo-de">Bộ đề 1</span>
+            </a>
 
-    <div id="quiz-screen">
-        <div class="quiz-header">
-            <h2>Hành động xã hội, tương tác xã hội, quan hệ xã hội</h2>
-            <div class="timer" id="timer-display"></div>
-        </div>
-        
-        <a href="chuong-4.html" class="btn-nav">← Quay lại Menu</a>
-        <div id="settings-summary" class="settings-info"></div>
-        
-        <div id="questions-container"></div>
-        
-        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
-        <a href="chuong-4.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
-        
-        <div id="result-box">
-            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
-            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
-            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+            <a href="de-2-chuong-4.html" class="grid-item">
+                <span class="bo-de">Bộ đề 2</span>
+            </a>
+
+            <a href="de-3-chuong-4.html" class="grid-item">
+                <span class="bo-de">Bộ đề 3</span>
+            </a>
+        <div class="back-nav">
+            <a href="lua-chon.html?mode=chuong" class="back-link">← Quay lại danh sách chương</a>
         </div>
     </div>
-</div>
 
-<script>
-    const questionsData = [
-        { q: "1. Ai là một trong những tác giả điển hình đề cập đến khái niệm hành động xã hội trong các nghiên cứu xã hội học?", opts: { A: "Auguste Comte", B: "Karl Marx", C: "M. Weber", D: "Herbert Spencer" }, ans: "C", exp: "Hành động xã hội là một khái niệm cơ bản của xã hội học, được nhiều tác giả đề cập đến trong các nghiên cứu của mình, điển hình phải kể tới M. Weber, V. Pareto, T. Parsons,..." },
-        { q: "2. Theo định nghĩa của M. Weber, hành động xã hội là gì?", opts: { A: "Là những phản ứng sinh học vô thức của con người trước môi trường xung quanh.", B: "Là hành động mà chủ thể gán cho nó những ý nghĩa chủ quan nhất định.", C: "Là các chuyển động vật lý khách quan của cơ thể con người.", D: "Là hành động đơn độc của cá nhân không hướng tới ai khác." }, ans: "B", exp: "M. Weber đã xác định: Hành động xã hội là hành động mà chủ thể gán cho nó những ý nghĩa chủ quan nhất định." },
-        { q: "3. Ý nghĩa chủ quan của hành động xã hội hướng tới ai trong quá trình hành động theo quan điểm của M. Weber?", opts: { A: "Hướng tới chính bản thân chủ thể một cách tuyệt đối và không đổi.", B: "Hướng tới thế giới tự nhiên vô tri vô giác.", C: "Hướng tới người khác và định hướng hành động của chủ thể.", D: "Không hướng tới bất kỳ đối tượng nào." }, ans: "C", exp: "Ý nghĩa chủ quan của hành động hướng tới người khác trong quá trình hành động và định hướng hành động của chủ thể." },
-        { q: "4. Theo phân tích của M. Weber, một hành động được gọi là hành động xã hội khi nào?", opts: { A: "Khi nó tương quan và định hướng vào hành động của người khác theo cái ý đã được nhận thức bởi chủ thể hành động.", B: "Khi hành động đó diễn ra hoàn toàn theo bản năng tự nhiên mà không cần suy nghĩ.", C: "Khi hành động đó được thực hiện bởi một nhóm người lớn trong xã hội.", D: "Khi hành động đó không có bất kỳ sự tương quan nào với người khác xung quanh." }, ans: "A", exp: "Hành động được gọi là hành động xã hội khi nó tương quan và định hướng vào hành động của người khác theo cái ý đã được nhận thức bởi chủ thể hành động." },
-        { q: "5. Nếu hành động của cá nhân không có sự định hướng tới người khác thì hành động đó được xem là gì?", opts: { A: "Vẫn là hành động xã hội nhưng ở mức độ thấp.", B: "Không phải hành động xã hội.", C: "Là hành động duy lý công cụ có hiệu quả cao.", D: "Là hành động mang tính chuẩn mực cộng đồng." }, ans: "B", exp: "Khi hành động của cá nhân không có sự định hướng tới người khác thì hành động đó không phải hành động xã hội." },
-        { q: "6. Hành động khóc một mình khi cảm thấy buồn của một cá nhân, không có sự chứng kiến của người khác và không định hướng đến hành động của người khác, được coi là:", opts: { A: "Hành động xã hội cảm xúc.", B: "Hành động xã hội truyền thống.", C: "Hành động không phải hành động xã hội.", D: "Hành động duy lý giá trị." }, ans: "C", exp: "Hành động khóc một mình khi cảm thấy buồn, chủ thể hành động thực hiện một mình, không có sự chứng kiến của người khác, cũng không định hướng đến hành động của người khác thì hành động đó không phải hành động xã hội." },
-        { q: "7. Hành vi một đứa trẻ khóc ăn vạ đòi bố mẹ mua đồ chơi được coi là hành động xã hội vì lý do nào sau đây?", opts: { A: "Đây là phản ứng bản năng sinh học của đứa trẻ trước thế giới xung quanh.", B: "Hành động này có tương quan và định hướng đến hành động của bố mẹ nhằm đạt mục đích mua đồ chơi.", C: "Hành động này không chứa đựng ý nghĩa chủ quan nào của đứa trẻ.", D: "Hành động này diễn ra một cách tự phát, không có mong muốn nào của chủ thể." }, ans: "B", exp: "Đứa trẻ sử dụng hành động khóc với mong muốn đòi bố mẹ mua cho mình món đồ chơi đó. Hành động khóc này là hành động có tương quan và định hướng đến hành động của bố mẹ, theo cách mà đứa trẻ nhận thức được rằng cứ khóc thật to, thật lâu là bố mẹ sẽ phải mua cho mình." },
-        { q: "8. Điểm cốt lõi để phân biệt hành động xã hội với các hành động phi xã hội của M. Weber là gì?", opts: { A: "Tính chất phức tạp của các vận động cơ thể.", B: "Ý nghĩa chủ quan hướng tới người khác và sự định hướng hành động theo hành vi của người khác.", C: "Mức độ thành công của hành động trong thực tế cuộc sống.", D: "Số lượng người tham gia vào hành động đó." }, ans: "B", exp: "Hành động xã hội phải mang ý nghĩa chủ quan do chủ thể gán cho nó và phải có sự định hướng tới người khác." },
-        { q: "9. Theo M. Weber, hành vi của cá nhân bị ảnh hưởng bởi tâm lý đám đông có được coi là hành động xã hội không?", opts: { A: "Có, vì có nhiều người cùng thực hiện hành động đó.", B: "Không, vì cá nhân lúc này trở thành một bộ phận của đám đông, hành động không có sự định hướng vì hành vi của kẻ khác dưới sự chỉ đạo của cái ý chủ quan.", C: "Có, vì hành động đó luôn mang tính duy lý công cụ rõ rệt.", D: "Không, vì đám đông không bao giờ có các hoạt động liên quan đến xã hội học." }, ans: "B", exp: "Loại hành động do bị ảnh hưởng bởi tâm lý đám đông không phải hành động xã hội, vì trong trường hợp đó cá nhân trở thành một bộ phận của đám đông, chứ không phải sự định hướng hành động vì hành vi của kẻ khác, dưới sự chỉ đạo của cái ý chủ quan." },
-        { q: "10. Khi quan sát một hành động để kết luận đó có phải là hành động xã hội hay không, chúng ta không thể chỉ nhìn vào biểu hiện bên ngoài mà cần xem xét yếu tố nào?", opts: { A: "Xem hành động đó có mang lại lợi ích kinh tế ngay lập tức hay không.", B: "Xem hành động đó có một ý nghĩa chủ quan nào đó của chủ thể hành động và có sự định hướng đến hành động của người khác hay không.", C: "Xem hành động đó có được pháp luật quy định cụ thể hay không.", D: "Xem hành động đó có được đa số mọi người ủng hộ hay không." }, ans: "B", exp: "Khi quan sát một hành động để có thể kết luận đấy có phải là hành động xã hội hay không chúng ta không thể chỉ nhìn vào biểu hiện của hành động đó mà cần xem hành động đó có một ý nghĩa chủ quan nào đó của chủ thể hành động và có sự định hướng đến hành động của người khác hay không." },
-        { q: "11. Một người đi đường dừng xe lại xem một vụ tai nạn giao thông vì tò mò, không nhằm tác động hay liên hệ với bất cứ ai. Hành động này có phải là hành động xã hội không?", opts: { A: "Có, vì họ đang đứng ở nơi công cộng có nhiều người qua lại.", B: "Không, vì hành động này không định hướng hay tương quan tới hành động của người khác.", C: "Có, vì hành động này thể hiện sự đồng cảm sâu sắc với nạn nhân.", D: "Có, vì hành động này tuân theo chuẩn mực pháp luật giao thông." }, ans: "B", exp: "Khi hành động không nhằm tới bất cứ ai, được thực hiện bởi chính chủ thể hành động thì dù có sự hành động tương tự nhau, hành động đó không phải hành động xã hội. Ví dụ những người đi qua đường dừng lại khi chứng kiến tai nạn do tò mò, không nhằm tới bất cứ ai." },
-        { q: "12. M. Weber đã phân biệt bao nhiêu kiểu loại hành động xã hội cơ bản?", opts: { A: "2 kiểu loại", B: "3 kiểu loại", C: "4 kiểu loại", D: "5 kiểu loại" }, ans: "C", exp: "M. Weber đã phân biệt 4 kiểu loại hành động xã hội cơ bản bao gồm: hành động duy lý công cụ, hành động duy lý giá trị, hành động truyền thống, hành động cảm xúc." },
-        { q: "13. Hành động duy lý công cụ (instrumental-rational action) được định nghĩa là gì?", opts: { A: "Là hành động hướng đến việc theo đuổi mục đích thông qua việc tính toán các lợi thế và bất lợi của các phương tiện có thể đạt tới mục đích đó.", B: "Là hành động thực hiện hoàn toàn dựa trên cảm xúc nhất thời, bộc phát không kiểm soát.", C: "Là hành động tuân thủ thói quen, phong tục đã có từ lâu đời của cộng đồng.", D: "Là hành động hướng tới các giá trị thẩm mỹ hay tôn giáo mà không cần quan tâm đến phương tiện." }, ans: "A", exp: "Hành động duy lý công cụ là hành động hướng đến việc theo đuổi mục đích thông qua việc tính toán các lợi thế và bất lợi của các phương tiện có thể đạt tới mục đích đó." },
-        { q: "14. Ví dụ nào sau đây minh họa cho hành động duy lý công cụ theo M. Weber?", opts: { A: "Một người tham gia ngày hội Tết cổ truyền của dân tộc theo thói quen từ nhỏ.", B: "Hành động đình công của công nhân nhằm đòi cải thiện các điều kiện lao động.", C: "Một người mẹ bật khóc nức nở trong ngày cưới của con gái mình.", D: "Một người quyết định không gian lận trong kỳ thi vì tin rằng đó là hành vi đạo đức sai trái." }, ans: "B", exp: "Ví dụ hành động đình công của công nhân nhằm đòi cải thiện các điều kiện lao động là một dạng hành động mang tính duy lý công cụ, chủ thể tính toán các lợi thế để tạo sức ép nhằm cải thiện điều kiện lao động." },
-        { q: "15. Trong hành động duy lý công cụ, chủ thể hành động tính toán các phương tiện để đạt mục đích dựa trên khía cạnh nào?", opts: { A: "Tính toán các lợi thế và bất lợi của các phương tiện có thể đạt tới mục đích đó.", B: "Sự bộc phát của cảm xúc và tâm lý nhất thời của bản thân.", C: "Sự áp đặt của các thói quen cổ truyền từ xa xưa của gia đình.", D: "Lòng trung thành tuyệt đối với một lý tưởng tôn giáo hay đạo đức." }, ans: "A", exp: "Hành động duy lý công cụ là hành động hướng đến việc theo đuổi mục đích thông qua việc tính toán các lợi thế và bất lợi của các phương tiện có thể đạt tới mục đích đó." },
-        { q: "16. Hành động duy lý giá trị (value-rational action) theo phân loại của M. Weber có đặc điểm gì?", opts: { A: "Chủ thể hành động bỏ qua hoàn toàn các giá trị đạo đức hay tôn giáo để đạt mục đích bằng mọi giá.", B: "Vẫn tính đến công cụ và phương tiện thực hiện hành động, tuy vậy dường như những giá trị và chuẩn mực mà hành động chịu ảnh hưởng là những thứ đã được đúc kết qua giáo dục và trở thành những giá trị nằm trong tiềm thức cá nhân.", C: "Hành động diễn ra hoàn toàn vô ý thức, không có bất kỳ sự suy nghĩ hay định hướng nào của chủ thể.", D: "Chỉ nhằm thỏa mãn các nhu cầu sinh học tức thời của cơ thể mà không cần giáo dục." }, ans: "B", exp: "Hành động duy lý giá trị vẫn tính đến công cụ và phương tiện thực hiện hành động tuy vậy dường như những giá trị và chuẩn mực mà hành động chịu ảnh hưởng là những thứ đã được đúc kết qua giáo dục và trở thành những giá trị nằm trong tiềm thức cá nhân." },
-        { q: "17. Hành động duy lý giá trị thường liên quan đến yếu tố nào buộc cá nhân phải tuân theo?", opts: { A: "Các tính toán kinh tế có lợi nhuận cao nhất.", B: "Những yêu cầu hoặc mệnh lệnh buộc cá nhân phải tuân theo bởi được coi là những hành động đúng đắn và nên làm.", C: "Những phản xạ tự nhiên của cơ thể trước kích thích môi trường.", D: "Sự lôi kéo vô thức của một đám đông hỗn loạn ngoài đường." }, ans: "B", exp: "Hành động duy lý giá trị thường liên quan tới những yêu cầu hoặc mệnh lệnh buộc cá nhân phải tuân theo bởi được coi là những hành động đúng đắn và nên làm." },
-        { q: "18. Hành động học sinh kiềm chế không gian lận trong kỳ thi vì coi đó là điều đúng đắn, trung thực cần làm là ví dụ của loại hành động nào?", opts: { A: "Hành động cảm xúc.", B: "Hành động truyền thống.", C: "Hành động duy lý giá trị.", D: "Hành động duy lý công cụ." }, ans: "C", exp: "Hành động kiềm chế không gian lận trong kỳ thi vì coi đó là hành động đúng đắn và nên làm là ví dụ điển hình của hành động duy lý giá trị." },
-        { q: "19. Hành động truyền thống (traditional action) theo phân loại của M. Weber là gì?", opts: { A: "Là dạng hành động tuân thủ theo thói quen hay phong tục lâu đời.", B: "Là hành động được thúc đẩy bởi sự bùng nổ cảm xúc tức thì.", C: "Là hành động tính toán chi tiết lợi ích kinh tế trước mắt.", D: "Là hành động hoàn toàn mang tính phản xạ sinh học không điều kiện." }, ans: "A", exp: "Hành động truyền thống là dạng hành động tuân thủ theo thói quen hay phong tục lâu đời." },
-        { q: "20. Trong hành động truyền thống, hành vi của cá nhân được hình thành từ cơ sở nào?", opts: { A: "Từ các nghiên cứu khoa học hiện đại và thực nghiệm xã hội.", B: "Tuân thủ thói quen đã có từ trước chứ không phải bởi mối quan tâm tới việc tối đa hóa kết quả hoặc cam kết dựa trên nguyên tắc đạo đức.", C: "Từ sự sợ hãi trước các thế lực tự nhiên một cách nhất thời.", D: "Từ sự tính toán chi li về mặt tài chính và công cụ thực hiện." }, ans: "B", exp: "Hành vi cá nhân được hình thành không phải bởi một mối quan tâm tới việc tối đa hóa kết quả hoặc cam kết dựa trên nguyên tắc đạo đức mà là tuân thủ thói quen đã có từ trước." },
-        { q: "21. Vai trò của hành động truyền thống trong cuộc sống thường nhật của con người là gì?", opts: { A: "Gây ra sự hỗn loạn lớn vì không có quy tắc rõ ràng nào.", B: "Là dạng hành động mang tính tự động trong những tình huống nhất định, giúp cho chủ thể hành động bớt suy tính về phương tiện, mục đích của hành động.", C: "Bắt buộc cá nhân phải liên tục thay đổi để thích ứng với cái mới.", D: "Đòi hỏi cá nhân phải liên tục tư duy logic ở mức độ cực kỳ cao." }, ans: "B", exp: "Hành động truyền thống là dạng hành động mang tính tự động trong những tình huống nhất định, giúp cho chủ thể hành động bớt suy tính về phương tiện, mục đích của hành động." },
-        { q: "22. Ví dụ nào dưới đây đại diện cho hành động truyền thống?", opts: { A: "Hành động mừng tuổi trẻ em vào dịp tết hay hành động chào hỏi khi bắt đầu cuộc giao tiếp nào đó.", B: "Hành động nộp đơn khiếu nại lên cơ quan chức năng để đòi quyền lợi đất đai.", C: "Hành động rụt tay lại ngay lập tức khi chạm vào cốc nước nóng.", D: "Hành động đầu tư chứng khoán sau khi phân tích kỹ thị trường tài chính." }, ans: "A", exp: "Ví dụ như hành động mừng tuổi trẻ em vào dịp tết hay hành động chào hỏi khi bắt đầu cuộc giao tiếp nào đó là dạng hành động mang tính tự động trong những tình huống nhất định, tuân theo thói quen hay phong tục lâu đời." },
-        { q: "23. Hành động cảm xúc (affective action) là dạng hành động có đặc điểm như thế nào?", opts: { A: "Hành động được thực hiện sau khi đã cân nhắc kỹ lưỡng mọi hậu quả có thể xảy ra.", B: "Được đánh dấu bởi tính bộc phát đồng thời hoặc sự thể hiện của cảm xúc không được kiểm soát.", C: "Hành động lặp đi lặp lại theo đúng các nghi lễ tôn giáo cổ xưa.", D: "Hành động mua bán hàng hóa dựa trên sự so sánh giá cả thị trường." }, ans: "B", exp: "Hành động cảm xúc là hành động được đánh dấu bởi tính bộc phát đồng thời hoặc sự thể hiện của cảm xúc không được kiểm soát." },
-        { q: "24. Điểm đặc trưng về mặt tính toán phương tiện trong hành động cảm xúc là gì?", opts: { A: "Đòi hỏi tính toán cực kỳ chi tiết và chính xác.", B: "Thiếu đi sự tính toán về phương tiện đạt mục đích.", C: "Được định hướng bởi các quy định pháp luật nghiêm ngặt.", D: "Cần sự đồng thuận của toàn bộ cộng đồng cư dân xung quanh." }, ans: "B", exp: "Đối với hành động cảm xúc thì thiếu đi sự tính toán về phương tiện đạt mục đích." },
-        { q: "25. Ví dụ nào thể hiện hành động cảm xúc theo phân loại của M. Weber?", opts: { A: "Hành động viết đơn xin nghỉ việc theo đúng quy trình hành chính của công ty.", B: "Hành động cãi lại quyết định của trọng tài trong một trận đấu bóng hay hành động khóc của cha mẹ trong lễ cưới của con cái.", C: "Hành động đứng dậy chào giáo viên khi giáo viên bước vào lớp học.", D: "Hành động thắp hương thờ cúng tổ tiên vào ngày rằm hàng tháng." }, ans: "B", exp: "Ví dụ hành động cãi lại quyết định của trọng tài trong một trận đấu bóng hay hành động khóc của cha mẹ trong lễ cưới của con cái là hành động cảm xúc, thể hiện cảm xúc không được kiểm soát và thiếu tính toán phương tiện đạt mục đích." },
-        { q: "26. Khi phân tích hành động duy lý công cụ và hành động duy lý giá trị, hành động duy lý công cụ thường hướng tới khía cạnh nào?", opts: { A: "Tính bộc phát của cảm xúc nhất thời của cá nhân.", B: "Những mục đích cá nhân (đôi khi mang tính vị lợi).", C: "Việc bảo tồn các giá trị truyền thống lâu đời của dòng họ.", D: "Sự tuân thủ vô điều kiện đối với các mệnh lệnh tôn giáo tối thượng." }, ans: "B", exp: "Nhìn chung, hành động duy lý công cụ thường hướng tới những mục đích cá nhân (đôi khi mang tính vị lợi)." },
-        { q: "27. Hành động duy lý giá trị hướng tới yếu tố nào khác với hành động duy lý công cụ?", opts: { A: "Những giá trị và chuẩn mực chung của cộng đồng mà chủ thể hành động thực hiện do bị giá trị chung này chi phối, không tính nhiều đến lợi ích bản thân.", B: "Việc tối đa hóa lợi nhuận kinh tế bằng mọi phương tiện có được.", C: "Sự thỏa mãn các kích thích vật lý tức thời của cơ thể chủ thể.", D: "Sự tuân thủ thụ động theo thói quen cơ học không suy nghĩ của đám đông." }, ans: "A", exp: "Hành động duy lý giá trị hướng tới những giá trị và chuẩn mực chung của cộng đồng – chủ thể hành động thực hiện hành động do bị giá trị chung này chi phối mà không tính nhiều đến lợi ích của bản thân." },
-        { q: "28. Hành động một chàng trai đưa một cô gái qua đường để tạo cơ hội tiếp cận và làm quen cô gái đó thuộc loại hành động nào?", opts: { A: "Hành động cảm xúc.", B: "Hành động truyền thống.", C: "Hành động duy lý công cụ.", D: "Hành động duy lý giá trị." }, ans: "C", exp: "Hành động duy lý công cụ là khi một chàng trai đưa một cô gái qua đường để tạo cơ hội tiếp cận và làm quen cô gái đó, hướng tới mục đích cá nhân mang tính vị lợi." },
-        { q: "29. Hành động một bạn sinh viên đưa một cụ già lớn tuổi qua đường mà không mang lại lợi ích gì cho bản thân sinh viên đó đại diện cho loại hành động nào?", opts: { A: "Hành động duy lý công cụ.", B: "Hành động duy lý giá trị.", C: "Hành động truyền thống.", D: "Hành động cảm xúc." }, ans: "B", exp: "Hành động một bạn sinh viên đưa một cụ già lớn tuổi qua đường là hành động duy lý giá trị bởi hành động đó không mang lại lợi ích gì cho bạn sinh viên đó cả, hành động xuất phát từ giá trị đạo đức giúp đỡ người già yếu." },
-        { q: "30. Bốn kiểu loại hành động xã hội của M. Weber trên thực tế được coi là gì?", opts: { A: "Bốn mô hình hoàn toàn tách biệt và không bao giờ pha trộn trong thực tế.", B: "Bốn mô hình lý tưởng (ideal types).", C: "Bốn quy luật bắt buộc của mọi hiến pháp quốc gia.", D: "Bốn giai đoạn tiến hóa sinh học của loài người." }, ans: "B", exp: "Giống như quan niệm của Weber về mô hình lý tưởng, cách phân loại này của ông trên thực tế là 4 mô hình lý tưởng." },
-        { q: "31. Tại sao M. Weber lại đưa ra khái niệm mô hình lý tưởng cho các kiểu loại hành động xã hội?", opts: { A: "Vì trên thực tế, hành động của con người thường là sự kết hợp phức tạp, các ví dụ chỉ mang tính điển hình để làm rõ nội dung giúp dễ theo dõi.", B: "Vì con người chỉ hành động theo duy nhất một kiểu loại trong suốt cuộc đời.", C: "Vì các mô hình này hoàn hảo tuyệt đối và không có bất kỳ sai lệch nào trong xã hội.", D: "Vì đây là những hành động bắt buộc phải thực hiện trong xã hội lý tưởng tương lai." }, ans: "A", exp: "Những ví dụ lựa chọn để trình bày thực chất là những ví dụ điển hình cho mỗi loại nhằm làm rõ nội dung và giúp người đọc thuận tiện hơn khi theo dõi. Trên thực tế, trong cuộc sống hàng ngày hiếm khi hành động của con người thuộc chỉ một trong bốn kiểu loại hành động mà Weber đề cập đến mà là sự kết hợp phức tạp hơn thế." },
-        { q: "32. Trong thực tế đời sống hàng ngày, các kiểu loại hành động xã hội của M. Weber thường xuất hiện dưới dạng nào?", opts: { A: "Luôn luôn chỉ thuộc về duy nhất một kiểu loại thuần túy.", B: "Là sự pha trộn của các kiểu loại hành động đã được đề cập.", C: "Hoàn toàn nằm ngoài tầm kiểm soát và không thể phân tích được bằng lý thuyết.", D: "Chỉ bao gồm hành động cảm xúc và hành động truyền thống phối hợp." }, ans: "B", exp: "Trên thực tế thì một hành động xã hội có thể là sự pha trộn của các kiểu loại hành động đã được đề cập." },
-        { q: "33. Việc một chàng trai đưa cô gái sang đường có thể vừa là hành động duy lý công cụ (để làm quen), vừa có thể là hành động duy lý giá trị (coi trọng việc giúp đỡ người khác) chứng minh điều gì?", opts: { A: "Sự thất bại của lý thuyết phân loại hành động xã hội của M. Weber.", B: "Sự pha trộn phức tạp của các kiểu loại hành động trong thực tế đời sống.", C: "Sự áp đặt khiên cưỡng của các nhà xã hội học vào hành vi con người.", D: "Sự biến mất hoàn toàn của hành động truyền thống trong xã hội hiện đại." }, ans: "B", exp: "Ví dụ này chứng minh rằng khó có thể phân định hành động thuộc loại nào hay loại nào, mà trên thực tế một hành động xã hội có thể là sự pha trộn của các kiểu loại hành động đã được đề cập." },
-        { q: "34. Theo quan điểm của M. Weber, khái niệm quan hệ xã hội được thể hiện thông qua khái niệm nào?", opts: { A: "Khái niệm giai cấp xã hội.", B: "Khái niệm hành động xã hội.", C: "Khái niệm thiết chế xã hội.", D: "Khái niệm cơ cấu xã hội." }, ans: "B", exp: "Quan điểm của Weber về quan hệ xã hội được thể hiện thông qua khái niệm hành động xã hội." },
-        { q: "35. Tính chất xã hội trong hành động của con người theo M. Weber tập trung vào khía cạnh nào?", opts: { A: "Tập hợp số lượng đông đảo các cá nhân trong xã hội.", B: "Sự cô lập hoàn toàn của cá nhân đối với xã hội.", C: "Tính tương tác, ảnh hưởng qua lại lẫn nhau giữa các cá nhân trong xã hội.", D: "Sự tuân thủ tuyệt đối mệnh lệnh của giai cấp thống trị." }, ans: "C", exp: "Tính chất xã hội trong hành động của con người không hoàn toàn đối lập với tính chất cá nhân, ở đây tập trung vào tính tương tác, ảnh hưởng qua lại lẫn nhau giữa các cá nhân trong xã hội." },
-        { q: "36. Theo M. Weber, điều gì khẳng định hành động của cá nhân mang tính xã hội?", opts: { A: "Cá nhân đó sở hữu nhiều tài sản và địa vị cao trong xã hội.", B: "Nó có liên quan tới việc nó có hay không liên quan tới hành vi của một cá nhân khác hay tập hợp các cá nhân khác.", C: "Cá nhân đó sống hoàn toàn biệt lập và tự cung tự cấp.", D: "Hành động của cá nhân chỉ dựa trên các phản xạ sinh học không điều kiện." }, ans: "B", exp: "Weber cho rằng hành động của cá nhân là một đặc điểm mang tính xã hội - liên quan tới việc nó có hay không liên quan tới hành vi của một cá nhân khác hay tập hợp các cá nhân khác." },
-        { q: "37. Ai là chủ thể của hành động xã hội theo quan điểm của M. Weber?", opts: { A: "Chỉ có thể là các cơ quan quản lý nhà nước có thẩm quyền tối cao.", B: "Là ít nhất hai cá nhân, mặc dù số thể không phải là vấn đề quan trọng lắm.", C: "Luôn luôn là một đám đông hỗn loạn không có bất kỳ tổ chức nào.", D: "Chỉ là các siêu nhân hoặc vĩ nhân có tầm ảnh hưởng lớn trong lịch sử." }, ans: "B", exp: "Chủ thể của một hành động xã hội là ít nhất 2 cá nhân, mặc dù số thể không phải là vấn đề quan trọng lắm." },
-        { q: "38. Đơn vị cơ bản để phân tích một mối quan hệ xã hội theo M. Weber là gì?", opts: { A: "Một cá nhân đơn lẻ trong trạng thái biệt lập hoàn toàn.", B: "Mối quan hệ giữa hai cá nhân, tuy nhiên mối quan hệ có thể là giữa ba người hoặc nhiều hơn thế.", C: "Sự phát triển sinh học của bộ não con người qua các thời kỳ.", D: "Các chỉ số thống kê kinh tế vĩ mô của một quốc gia." }, ans: "B", exp: "Một mối quan hệ giữa hai cá nhân là đơn vị cơ bản để phân tích, tuy nhiên mối quan hệ có thể là giữa ba người hoặc nhiều hơn thế." },
-        { q: "39. Quan hệ xã hội có thể được thể hiện bằng những biểu hiện nào sau đây theo M. Weber?", opts: { A: "Chỉ có thể là sự yêu thương và hợp tác tuyệt đối, không có mâu thuẫn.", B: "Xung đột, hữu nghị, hấp dẫn giới tính, mối quan hệ bạn bè, sự trung thành hay trao đổi kinh tế...", C: "Chỉ tồn tại khi các bên có sự đồng thuận hoàn toàn về mọi mặt đời sống.", D: "Chỉ là các hoạt động mang tính cưỡng bức vật lý một chiều từ phía nhà nước." }, ans: "B", exp: "Quan hệ xã hội có thể được thể hiện bằng: xung đột, hữu nghị, hấp dẫn giới tính, mối quan hệ bạn bè, sự trung thành hay trao đổi kinh tế... Do đó, định nghĩa này không có sự phân biệt kể cả khi quan hệ của các cá thể là hợp tác hay đối nghịch." },
-        { q: "40. Định nghĩa về quan hệ xã hội của M. Weber có phân biệt giữa quan hệ hợp tác hay đối nghịch không?", opts: { A: "Bắt buộc phải là quan hệ hợp tác, nếu đối nghịch thì không được coi là quan hệ xã hội.", B: "Không có sự phân biệt kể cả khi quan hệ của các cá thể là hợp tác hay đối nghịch.", C: "Chỉ phân biệt trong lĩnh vực kinh tế, còn các lĩnh vực khác thì không cần.", D: "Chỉ có quan hệ đối nghịch mới tạo ra động lực cho quan hệ xã hội thực sự." }, ans: "B", exp: "Định nghĩa quan hệ xã hội của Weber không có sự phân biệt kể cả khi quan hệ của các cá thể là hợp tác hay đối nghịch." },
-        { q: "41. Theo M. Weber, kể cả khi mối quan hệ có xung đột, đối nghịch hay nguy cơ đổ vỡ thì nó có được coi là quan hệ xã hội không?", opts: { A: "Ngay lập tức bị xóa bỏ và không còn tính xã hội nữa.", B: "Vẫn là một kiểu quan hệ xã hội.", C: "Trở thành hành động vật lý bản năng của con người.", D: "Chỉ là hành động cảm xúc nhất thời của một cá nhân đơn lẻ." }, ans: "B", exp: "Weber cho rằng kể cả xung đột hay đối nghịch cũng là một kiểu quan hệ xã hội, ngay cả khi nó có là nguy cơ dẫn đến sự đổ vỡ của một mối quan hệ xuất phát từ việc, giữa các cá thể không chỉ xuất hiện sự cộng tác mà còn có thể là sự phân biệt, khác biệt giữa hai hay nhiều cá thể." },
-        { q: "42. Khái niệm quan hệ xã hội của M. Weber có đồng nghĩa với việc các chủ thể phải hoàn toàn thấu hiểu người khác không?", opts: { A: "Bắt buộc phải thấu hiểu nhau một cách hoàn hảo và trọn vẹn nhất.", B: "Không có nghĩa là chủ thể có thể thấu hiểu người tương tác một cách kỹ lưỡng mà chỉ đơn giản là họ cùng chấp nhận những chuẩn mực chung cho tình huống cụ thể đó.", C: "Chỉ cần một bên thấu hiểu, bên còn lại không cần quan tâm đến chuẩn mực nào.", D: "Không cần chấp nhận bất kỳ chuẩn mực chung nào khi thực hiện tương tác xã hội." }, ans: "B", exp: "Khái niệm quan hệ xã hội của Weber không có nghĩa là chủ thể có thể thấu hiểu người tương tác với mình một cách kỹ lưỡng mà chỉ đơn giản là họ cùng chấp nhận những chuẩn mực chung cho tình huống cụ thể đó." },
-        { q: "43. Hành động của một người ngồi đọc sách một mình trong thư viện, hướng vào cuốn sách mà không có sự tương quan với bất kỳ hành vi của người khác có được coi là hành động xã hội không?", opts: { A: "Có, vì thư viện là địa điểm công cộng có nhiều người qua lại xung quanh.", B: "Không, vì hành động đọc hướng vào khách thể là cuốn sách, không có sự tương quan với hành vi nào của người khác.", C: "Có, vì việc đọc sách giúp nâng cao tri thức xã hội của cá nhân đó.", D: "Có, vì tác giả viết cuốn sách đó là một thành viên của xã hội loài người." }, ans: "B", exp: "Khi ngồi đọc sách một mình, hành động đọc hướng vào khách thể ở đây là cuốn sách, không có sự tương quan với bất kỳ hành vi nào của người khác thì không phải hành động xã hội." },
-        { q: "44. Khi hai người đi xe chẳng may va quệt vào nhau một cách ngẫu nhiên ngoài đường, hành động va quệt mang tính cơ học đó có phải là hành động xã hội không?", opts: { A: "Có, vì có sự tiếp xúc vật lý trực tiếp giữa hai con người trong xã hội.", B: "Không, hành động va quệt mang tính cơ học đó không phải là hành động xã hội.", C: "Có, vì hành động va quệt này gây ảnh hưởng đến giao thông công cộng xung quanh.", D: "Có, vì hai người tham gia giao thông đều là những chủ thể có ý thức đầy đủ." }, ans: "B", exp: "Chẳng hạn khi hai người đi xe chẳng may va quệt vào nhau thì hành động va quệt mang tính cơ học đó không phải là hành động xã hội." },
-        { q: "45. Nếu sau khi va quệt xe ngẫu nhiên, một trong hai người cố tình lao vào cãi vã hoặc xin lỗi người kia, hành động đó có phải hành động xã hội không?", opts: { A: "Vẫn không phải, vì đó chỉ là phản xạ tự nhiên khi gặp tai nạn ngoài ý muốn.", B: "Có, vì lúc này hành động va quệt không thuần túy mang tính cơ học nữa mà định hướng vào hành vi của người kia.", C: "Không, vì hành vi cãi vã bị pháp luật nghiêm cấm nên không được tính là hành động xã hội.", D: "Chỉ có hành động xin lỗi mới là hành động xã hội, còn hành động cãi vã thì không phải." }, ans: "B", exp: "Tuy nhiên, nếu như một trong hai người cố tình va vào người kia thì đó lại là hành động xã hội, hành động va quệt khi đó không thuần túy mang tính cơ học nữa mà định hướng vào hành vi của người kia (thể hiện qua việc cãi vã hoặc xin lỗi sau đó)." },
-        { q: "46. Theo M. Weber, hành động xã hội có thể được định hướng vào hành vi của ai trong dòng thời gian?", opts: { A: "Chỉ định hướng vào hành vi của những người trong quá khứ xa xưa.", B: "Chỉ định hướng vào hành vi của những người trong hiện tại trước mắt.", C: "Định hướng vào hành vi của những người khác trong quá khứ, hiện tại lẫn tương lai.", D: "Chỉ định hướng vào hành vi của những người trong tương lai xa xôi chưa xác định." }, ans: "C", exp: "Hành động xã hội có thể định hướng vào hành vi của những người khác trong quá khứ, hiện tại lẫn tương lai." },
-        { q: "47. Việc một đứa trẻ tiếp tục khóc ăn vạ đòi quà vì trong quá khứ nó từng thấy bố mẹ thỏa hiệp mua đồ cho là ví dụ cho việc hành động xã hội định hướng vào hành vi của người khác ở thời điểm nào?", opts: { A: "Định hướng vào hành vi của người khác trong tương lai xa xôi không xác định.", B: "Định hướng vào hành vi của người khác trong quá khứ.", C: "Không định hướng vào ai mà chỉ là thói quen sinh học ngẫu nhiên bộc phát.", D: "Định hướng hoàn toàn vào thế giới tự nhiên bên ngoài một cách thụ động." }, ans: "B", exp: "Đứa trẻ sử dụng hành động ăn vạ để đòi hỏi bố mẹ thực hiện điều gì đó cho mình bởi trong quá khứ nó từng thấy thực hiện hành động ăn vạ đã từng đạt được mục đích nào đó (định hướng vào hành vi trong quá khứ)." },
-        { q: "48. Một người quyết định đầu tư kinh doanh dựa trên việc phân tích kỹ lưỡng các cơ hội thị trường, tính toán chi phí và doanh thu để đạt lợi nhuận tối đa thuộc loại hành động nào?", opts: { A: "Hành động truyền thống.", B: "Hành động duy lý công cụ.", C: "Hành động duy lý giá trị.", D: "Hành động cảm xúc." }, ans: "B", exp: "Hành động hướng đến việc theo đuổi mục đích thông qua việc tính toán các lợi thế và bất lợi của các phương tiện có thể đạt tới mục đích đó là hành động duy lý công cụ." },
-        { q: "49. Khi một người chấp nhận chịu thiệt hại kinh tế cá nhân để bảo vệ danh dự gia đình vì coi đó là nghĩa vụ đạo đức thiêng liêng. Hành động này thuộc loại nào?", opts: { A: "Hành động cảm xúc bộc phát nhất thời.", B: "Hành động duy lý công cụ vị lợi kinh tế.", C: "Hành động duy lý giá trị.", D: "Hành động truyền thống tự động cơ học." }, ans: "C", exp: "Hành động duy lý giá trị được thực hiện dựa trên niềm tin vào các giá trị đạo đức, thẩm mỹ hoặc một hành vi được coi là đúng đắn, nghĩa vụ phải làm mà không tính nhiều đến lợi ích của bản thân." },
-        { q: "50. Tại sao việc hiểu rõ ý nghĩa chủ quan mà chủ thể gán cho hành động lại cực kỳ quan trọng trong lý thuyết của M. Weber?", opts: { A: "Vì nó giúp đo lường chính xác tốc độ và lực vận động vật lý của cơ thể con người.", B: "Vì các nhà xã hội học cố gắng hiểu cách giải thích về hành động của con người, cái ý nghĩa được gán cho mỗi hành động, chứ không phải chỉ miêu tả một cách khách quan các chuyển động của cơ thể.", C: "Vì ý nghĩa chủ quan luôn luôn giống nhau ở mọi cá nhân trong mọi xã hội loài người.", D: "Vì nó cho phép loại bỏ hoàn toàn các yếu tố tâm lý ra khỏi các nghiên cứu xã hội học." }, ans: "B", exp: "Các nhà xã hội học cố gắng hiểu cách giải thích về hành động của con người, cái ý nghĩa được gán cho mỗi hành động, chứ không phải chỉ miêu tả một cách khách quan các chuyển động của cơ thể." }
-    ];
-
-    let isInstantFeedback = true;
-    let totalScore = 0;
-    let timerInterval;
-
-    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
-
-    function startTimer(duration) {
-        let timer = duration, minutes, seconds;
-        const display = document.getElementById('timer-display');
-        display.style.color = '#ff5252';
-        
-        if (timerInterval) clearInterval(timerInterval);
-        
-        timerInterval = setInterval(function () {
-            minutes = parseInt(timer / 60, 10);
-            seconds = parseInt(timer % 60, 10);
-
-            minutes = minutes < 10 ? "0" + minutes : minutes;
-            seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            display.textContent = minutes + ":" + seconds;
-
-            if (--timer < 0) {
-                clearInterval(timerInterval);
-                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
-                submitQuiz();
-            }
-        }, 1000);
-    }
-
-    function startQuiz() {
-        isInstantFeedback = document.getElementById('instant-feedback').checked;
-        const enableTimer = document.getElementById('enable-timer').checked;
-        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
-
-        document.getElementById('settings-summary').innerHTML = `
-            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
-            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
-        `;
-
-        document.getElementById('setup-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
-        
-        renderQuestions();
-        
-        if (enableTimer && timeVal > 0) {
-            startTimer(timeVal * 60);
-        } else {
-            document.getElementById('timer-display').textContent = "Không giới hạn";
-            document.getElementById('timer-display').style.color = "#00e676";
-        }
-    }
-
-    function renderQuestions() {
-        const container = document.getElementById('questions-container');
-        container.innerHTML = "";
-        questionsData.forEach((q, index) => {
-            container.innerHTML += `
-                <div class="question-card" id="q-${index}">
-                    <div class="question-title">${q.q}</div>
-                    <div class="options">
-                        ${Object.keys(q.opts).map(key => `
-                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
-                                <input type="radio" name="q${index}" value="${key}" style="display:none">
-                                <span><b>${key}.</b> ${q.opts[key]}</span>
-                            </label>
-                        `).join('')}
-                    </div>
-                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
-                </div>
-            `;
-        });
-    }
-
-    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
-        const qCard = document.getElementById(`q-${qIndex}`);
-        if (qCard.classList.contains('answered')) return;
-
-        labelElement.querySelector('input').checked = true;
-
-        const allLabels = qCard.querySelectorAll('.option-label');
-        
-        if (isInstantFeedback) {
-            qCard.classList.add('answered');
-            const correctAns = questionsData[qIndex].ans;
-            
-            if (selectedAns === correctAns) {
-                labelElement.classList.add('correct');
-            } else {
-                labelElement.classList.add('wrong');
-                allLabels.forEach(lbl => {
-                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
-                });
-            }
-            document.getElementById(`exp-${qIndex}`).style.display = 'block';
-            allLabels.forEach(l => l.classList.add('disabled'));
-        } else {
-            allLabels.forEach(l => l.classList.remove('selected'));
-            labelElement.classList.add('selected');
-        }
-    }
-
-    window.submitQuiz = function() {
-        if (timerInterval) clearInterval(timerInterval);
-        totalScore = 0;
-
-        questionsData.forEach((q, index) => {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            const qCard = document.getElementById(`q-${index}`);
-            const allLabels = qCard.querySelectorAll('.option-label');
-            
-            qCard.classList.add('answered');
-            document.getElementById(`exp-${index}`).style.display = 'block';
-            allLabels.forEach(l => l.classList.add('disabled'));
-
-            if (selected) {
-                if (selected.value === q.ans) {
-                    selected.parentElement.classList.add('correct');
-                    totalScore++;
-                } else {
-                    selected.parentElement.classList.add('wrong');
-                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
-                }
-            } else {
-                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
-            }
-        });
-        
-        showFinalResult();
-        document.getElementById('submit-btn').style.display = 'none';
-    }
-
-    function showFinalResult() {
-        document.getElementById('result-box').style.display = 'block';
-        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
-        
-        if (totalScore < questionsData.length) {
-            document.getElementById('redo-btn').style.display = 'inline-block';
-        } else {
-            document.getElementById('redo-btn').style.display = 'none';
-        }
-        
-        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
-    }
-
-    window.redoWrongQuestions = function() {
-        document.getElementById('result-box').style.display = 'none';
-        document.getElementById('submit-btn').style.display = 'block';
-
-        questionsData.forEach((q, index) => {
-            const selected = document.querySelector(`input[name="q${index}"]:checked`);
-            const isCorrect = selected && selected.value === q.ans;
-            const qCard = document.getElementById(`q-${index}`);
-
-            if (isCorrect) {
-                qCard.style.display = 'none';
-            } else {
-                qCard.style.display = 'block';
-                qCard.classList.remove('answered');
-                
-                const allLabels = qCard.querySelectorAll('.option-label');
-                allLabels.forEach(l => {
-                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
-                    l.querySelector('input').checked = false;
-                });
-                
-                document.getElementById(`exp-${index}`).style.display = 'none';
-            }
-        });
-        
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-</script>
 </body>
 </html>
