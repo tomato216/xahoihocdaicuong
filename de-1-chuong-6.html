@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Chương 6</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 1. Chương 6</h1>
+        <p>Quyền lực, bất bình đẳng, phân tầng, di động xã hội</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Quyền lực, bất bình đẳng, phân tầng, di động xã hội</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="#" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="#" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Mục tiêu học tập đầu tiên của Chương 6 là giúp người học làm được điều gì?", opts: { A: "Hiểu và chỉ ra được sự khác nhau của các quan niệm về quyền lực, bất bình đẳng xã hội, phân tầng xã hội và di động xã hội.", B: "Phân tích chi tiết lịch sử hình thành của các lý thuyết xã hội học phương Tây.", C: "Đánh giá tác động của các cuộc cách mạng công nghiệp đối với môi trường tự nhiên.", D: "Xây dựng các mô hình định lượng để đo lường mức độ nghèo đói toàn cầu." }, ans: "A", exp: "Mục tiêu học tập đầu tiên được nêu ra là hiểu và chỉ ra được sự khác nhau của các quan niệm về quyền lực, bất bình đẳng xã hội, phân tầng xã hội và di động xã hội." },
+        { q: "2. Anthony Giddens cho rằng khái niệm nào là quan trọng trong phân tích xã hội học và có thể coi là chiều cạnh liên quan đến mọi quan hệ xã hội?", opts: { A: "Bất bình đẳng.", B: "Phân tầng xã hội.", C: "Quyền lực.", D: "Di động xã hội." }, ans: "C", exp: "Anthony Giddens cho rằng quyền lực là khái niệm quan trọng trong phân tích xã hội học, có thể coi quyền lực là chiều cạnh liên quan đến mọi quan hệ xã hội." },
+        { q: "3. Theo Anthony Giddens, quyền lực được định nghĩa là gì?", opts: { A: "Khả năng can thiệp vào các sự việc/sự kiện để thay đổi chúng theo cách nào đó.", B: "Sự phân bổ không đồng đều của cải và uy tín giữa các nhóm xã hội.", C: "Sự dịch chuyển của cá nhân từ vị thế thấp lên vị thế cao.", D: "Những bất bình đẳng mang tính cấu trúc giữa các nhóm xã hội khác nhau." }, ans: "A", exp: "Anthony Giddens cho rằng quyền lực là khả năng can thiệp vào các sự việc/sự kiện để thay đổi chúng theo cách nào đó." },
+        { q: "4. David Popenoe định nghĩa quyền lực là khả năng của một cá nhân hoặc nhóm trong việc điều khiển điều gì của cá nhân khác, nhóm khác?", opts: { A: "Thu nhập và cơ hội thăng tiến nghề nghiệp.", B: "Hành vi, thái độ, quan điểm, cho dù những người khác đó có hợp tác hay không.", C: "Vị trí trong hệ thống phân tầng xã hội.", D: "Khả năng tiếp cận các dịch vụ công cộng và phúc lợi xã hội." }, ans: "B", exp: "David Popenoe cho rằng quyền lực là khả năng của một cá nhân hoặc nhóm điều khiển hành vi, thái độ, quan điểm của cá nhân khác, nhóm khác cho dù những người khác đó có hợp tác hay không." },
+        { q: "5. Theo quan niệm của Max Weber, quyền lực là gì?", opts: { A: "Sự tích lũy lâu dài về của cải vật chất và uy tín xã hội.", B: "Khả năng mà một người, hoặc một nhóm người thực hiện ý định của mình trong một hành động chung, ngay cả trong trường hợp chống lại phản kháng của người khác.", C: "Phương tiện trung gian giúp thúc đẩy sự hợp lý hóa các hoạt động kinh tế.", D: "Hệ thống các quy định pháp luật điều chỉnh hành vi của mọi công dân." }, ans: "B", exp: "Theo quan niệm của Max Weber, quyền lực là khả năng mà một người, hoặc một nhóm người thực hiện ý định của mình trong một hành động chung, ngay cả trong trường hợp chống lại phản kháng của người khác tham gia vào hành động chung đó." },
+        { q: "6. Nhà xã hội học nào đã bàn về quyền lực như một phương tiện trung gian tương tự như tiền bạc, giúp đạt được các mục tiêu mang tính tổng quát?", opts: { A: "Max Weber.", B: "Talcott Parson.", C: "Steven Lukes.", D: "Michel Foucault." }, ans: "B", exp: "Theo Talcott Parson, quyền lực là khả năng đạt được các mục tiêu xã hội và mục tiêu xã hội mang tính tổng quát, và có thể coi nó tương tự như tiền bạc, một khả năng mang tính khái quát, để đạt được các mục đích." },
+        { q: "7. Theo định nghĩa khái quát, quyền lực là khả năng của cá nhân hoặc nhóm nhằm thực hiện việc gì?", opts: { A: "Loại bỏ hoàn toàn sự phản kháng của các nhóm yếu thế trong xã hội.", B: "Thay đổi thái độ, quan điểm, hành vi của cá nhân khác, nhóm khác; hoặc tác động lên sự kiện/sự việc nhằm thay đổi chúng theo cách nào đó.", C: "Chuyển giao vị thế kinh tế và uy tín từ thế hệ cha mẹ sang con cái.", D: "Tích lũy của cải vật chất và kiểm soát các nguồn tài nguyên thiên nhiên." }, ans: "B", exp: "Quyền lực là khả năng của cá nhân hoặc nhóm thay đổi thái độ, quan điểm, hành vi của cá nhân khác, nhóm khác. Quyền lực là khả năng của cá nhân hoặc nhóm trong việc tác động lên sự kiện/sự việc nhằm thay đổi sự kiện/sự việc theo cách nào đó." },
+        { q: "8. Theo Max Weber, quyền lực xã hội không phải là một sự vật mà là một điều gì?", opts: { A: "Một thiết chế hành chính vững chắc.", B: "Một quan hệ giữa những người tham gia vào hành động chung.", C: "Một công cụ cưỡng chế của nhà nước.", D: "Một giá trị văn hóa truyền thống được truyền lại." }, ans: "B", exp: "Max Weber cho rằng quyền lực xã hội không phải là một sự vật, mà là một quan hệ. Đó là quan hệ giữa những người tham gia vào hành động chung." },
+        { q: "9. Hai đặc điểm quan trọng của quyền lực theo định nghĩa của Max Weber là gì?", opts: { A: "Quyền lực mang tính tuyệt đối và quyền lực phản ánh sự chắc chắn.", B: "Quyền lực đề cập đến khả năng chứ không phải sự chắc chắn; và quyền lực phản ánh tiềm năng.", C: "Quyền lực luôn thuộc về giai cấp thống trị và quyền lực không thể thay đổi.", D: "Quyền lực dựa trên của cải vật chất và quyền lực mang tính cưỡng bách hoàn toàn." }, ans: "B", exp: "Định nghĩa của Weber cho thấy hai đặc điểm quan trọng của quyền lực. Thứ nhất, quyền lực đề cập đến khả năng, chứ không phải sự chắc chắn. Thứ hai, quyền lực phản ánh tiềm năng, tức là năng lực thực hiện điều gì đó." },
+        { q: "10. Max Weber chỉ ra ba loại nguồn gốc tạo ra quyền lực bao gồm những loại nào?", opts: { A: "Truyền thống, lôi cuốn, và duy lý - pháp lý.", B: "Cưỡng bức, tự nguyện, và hành chính.", C: "Kinh tế, chính trị, và văn hóa.", D: "Cá nhân, nhóm, và tổ chức xã hội." }, ans: "A", exp: "Theo Weber thì có ba loại nguồn gốc tạo ra quyền lực: nguồn gốc có tính truyền thống, nguồn gốc có tính lôi cuốn, và nguồn gốc có tính duy lý - mang tính pháp lý." },
+        { q: "11. Loại quyền lực nào được hợp pháp hóa thông qua sự tôn trọng những khuôn mẫu văn hóa được thiết lập lâu đời?", opts: { A: "Quyền lực lôi cuốn.", B: "Quyền lực duy lý - pháp lý.", C: "Quyền lực truyền thống.", D: "Quyền lực cưỡng bức." }, ans: "C", exp: "Quyền lực truyền thống là loại quyền lực được hợp pháp hóa thông qua sự tôn trọng những khuôn mẫu văn hóa được thiết lập lâu đời." },
+        { q: "12. Ví dụ nào được Max Weber đưa ra để minh họa cho loại quyền lực truyền thống?", opts: { A: "Adolf Hitler ở nước Đức thời kỳ phát xít.", B: "Tầng lớp quý tộc cha truyền con nối ở châu Âu thời Trung cổ.", C: "Quyền lực của các nhà doanh nghiệp lớn đứng sau hậu trường.", D: "Chuyên môn y học của một bác sĩ trong bệnh viện hiện đại." }, ans: "B", exp: "Max Weber đưa ra ví dụ về loại quyền lực truyền thống này là tầng lớp quý tộc cha truyền con nối ở châu Âu thời Trung cổ." },
+        { q: "13. Quyền lực lôi cuốn là loại quyền lực bắt nguồn từ đâu?", opts: { A: "Những quy định và luật lệ chính thức của nhà nước.", B: "Những đặc điểm cá nhân, do sự ngưỡng mộ, tôn sùng đối với một cá nhân nào đó.", C: "Việc sở hữu một lượng tài sản và của cải khổng lồ.", D: "Các chuẩn mực đạo đức truyền thống được xã hội thừa nhận." }, ans: "B", exp: "Quyền lực lôi cuốn là loại quyền lực bắt nguồn từ những đặc điểm cá nhân, do sự ngưỡng mộ, tôn sùng đối với một cá nhân nào đó." },
+        { q: "14. Nhân vật nào sau đây là ví dụ điển hình của cá nhân có quyền lực lôi cuốn?", opts: { A: "George Washington.", B: "Adolf Hitler.", C: "Talcott Parson.", D: "Steven Lukes." }, ans: "B", exp: "Adolf Hitler là một điển hình của cá nhân có quyền lực lôi cuốn do sự ngưỡng mộ, tôn sùng đối với cá nhân đó." },
+        { q: "15. Quyền lực duy lý - pháp lý là loại quyền lực được hợp pháp hóa thông qua phương diện nào?", opts: { A: "Những luật lệ và quy định chính thức về mặt pháp lý.", B: "Sức hấp dẫn cá nhân và phẩm chất đạo đức vượt trội.", C: "Sự kế thừa truyền thống gia đình qua nhiều thế hệ.", D: "Khả năng tài chính và uy tín kinh tế của cá nhân." }, ans: "A", exp: "Quyền lực duy lý - mang tính pháp lý là loại quyền lực được hợp pháp hóa thông qua những luật lệ và quy định chính thức về mặt pháp lý." },
+        { q: "16. Xu hướng phát triển của loại quyền lực duy lý - pháp lý trong xã hội hiện đại như thế nào theo Max Weber?", opts: { A: "Ngày càng suy yếu và bị thay thế bởi quyền lực truyền thống.", B: "Ngày càng phổ biến và dần thay thế quyền lực truyền thống.", C: "Giữ nguyên trạng thái ổn định và không có sự thay đổi.", D: "Hoàn toàn biến mất và nhường chỗ cho quyền lực lôi cuốn." }, ans: "B", exp: "Weber cho rằng trong xã hội hiện đại thì loại quyền lực duy lý - pháp lý này ngày càng phổ biến, và nó thay thế dần quyền lực truyền thống." },
+        { q: "17. Theo Anthony Giddens, nhiều tác giả theo quan niệm của Max Weber đã phân chia quyền lực thành hai loại nào?", opts: { A: "Quyền lực một chiều và quyền lực hai chiều.", B: "Quyền lực mang tính cưỡng bức và quyền uy.", C: "Quyền lực kinh tế và quyền lực chính trị.", D: "Quyền lực cá nhân và quyền lực xã hội." }, ans: "B", exp: "Theo Anthony Giddens thì nhiều tác giả theo quan niệm của Weber đã phân chia quyền lực thành hai loại: quyền lực mang tính cưỡng bức và quyền uy." },
+        { q: "18. Steven Lukes đưa ra quan niệm về quyền lực dưới góc nhìn nào?", opts: { A: "Góc nhìn một chiều duy nhất.", B: "Góc nhìn hai chiều đối lập.", C: "Góc nhìn ba chiều về quyền lực.", D: "Góc nhìn đa chiều phi cấu trúc." }, ans: "C", exp: "Steven Lukes đưa ra quan niệm được gọi là góc nhìn ba chiều về quyền lực." },
+        { q: "19. Trong quan niệm của Steven Lukes, quyền lực một chiều đề cập đến hành vi của ai?", opts: { A: "Những người bị trị phục tùng tuyệt đối mong muốn của người khác.", B: "Những người tham gia đưa ra quyết định phản ánh sự mong muốn của chính họ.", C: "Các cá nhân tự do lựa chọn hành vi mà không có sự áp đặt nào.", D: "Các nhóm xã hội cùng đạt được sự đồng thuận chung." }, ans: "B", exp: "Quyền lực một chiều đề cập đến hành vi của những người tham gia đưa ra quyết định phản ánh sự mong muốn của chính họ." },
+        { q: "20. Quan điểm hai chiều về quyền lực theo Steven Lukes nhấn mạnh khía cạnh nào?", opts: { A: "Khả năng của các cá nhân/nhóm có quyền lực đưa ra quyết định mang lại quyền lợi cho chính họ, đồng thời giới hạn sự lựa chọn của người khác.", B: "Sự áp đặt cưỡng bức tuyệt đối bằng bạo lực của giai cấp thống trị.", C: "Sự đồng thuận tự nguyện hoàn toàn của các thành viên trong xã hội.", D: "Việc chia sẻ quyền lực đồng đều cho mọi nhóm trong xã hội." }, ans: "A", exp: "Về quan điểm hai chiều về quyền lực, Lukes nhấn mạnh rằng các cá nhân/nhóm có quyền lực có thể đưa ra quyết định mang lại quyền lợi cho chính họ, đồng thời giới hạn sự lựa chọn của người khác." },
+        { q: "21. Theo Steven Lukes, bản chất của quan điểm ba chiều về quyền lực (quan điểm mang tính cấp tiến) là gì?", opts: { A: "Áp đặt ý muốn bằng bạo lực và sự trừng phạt về pháp lý.", B: "Tìm kiếm sự đồng thuận của người khác thông qua việc hướng dẫn mong muốn và suy nghĩ của họ.", C: "Tập trung toàn bộ nguồn lực kinh tế vào tay một nhóm nhỏ tinh hoa.", D: "Thiết lập một hệ thống pháp luật chặt chẽ để cưỡng chế hành vi." }, ans: "B", exp: "Đối với quan điểm ba chiều về quan hệ quyền lực, Lukes lưu ý đây không phải là việc vận dụng quyền lực tột bậc để làm cho người khác có mong muốn như mình mong muốn, mà chính là việc tìm kiếm sự đồng thuận của người khác thông qua việc hướng dẫn mong muốn và suy nghĩ của họ." },
+        { q: "22. Michel Foucault có quan niệm như thế nào về sự phân bổ của quyền lực?", opts: { A: "Quyền lực tập trung chủ yếu trong thiết chế nhà nước.", B: "Quyền lực chỉ được nắm giữ bởi một cá nhân hoặc nhóm thống trị hàng đầu.", C: "Quyền lực không tập trung vào một thiết chế, mà có ở mọi cấp độ của tương tác xã hội.", D: "Quyền lực chỉ xuất hiện trong các quan hệ sản xuất kinh tế." }, ans: "C", exp: "Michel Foucault cho rằng quyền lực không tập trung vào một thiết chế, chẳng hạn nhà nước, hoặc do một cá nhân hay nhóm nắm giữ. Ông cho rằng quyền lực có ở mọi cấp độ của tương tác xã hội, trong tất cả các thiết chế, bởi tất cả mọi người." },
+        { q: "23. Theo Michel Foucault, quyền lực và yếu tố nào liên hệ gần gũi với nhau và củng cố cho nhau?", opts: { A: "Của cải vật chất.", B: "Kiến thức.", C: "Vị thế xã hội.", D: "Uy tín cá nhân." }, ans: "B", exp: "Michel Foucault cho rằng quyền lực và kiến thức liên hệ gần gũi với nhau, và cũng củng cố cho nhau." },
+        { q: "24. Trong quan niệm của Michel Foucault, ví dụ về kiến thức của một bác sĩ làm gia tăng thêm điều gì trong mối quan hệ với bệnh nhân?", opts: { A: "Sự đối lập gay gắt giữa các giai cấp.", B: "Quyền lực của bác sĩ trong mối quan hệ với bệnh nhân.", C: "Việc áp đặt bạo lực của các thiết chế y tế.", D: "Sự di động xã hội theo chiều ngang của các chuyên gia." }, ans: "B", exp: "Kiến thức về sức khỏe và bệnh tật gia tăng thêm quyền lực của bác sĩ trong mối quan hệ với bệnh nhân." },
+        { q: "25. Bản chất quyền lực theo quan niệm của Michel Foucault là gì?", opts: { A: "Là thứ chỉ được sử dụng bởi các nhóm chi phối trong xã hội.", B: "Là thứ có thể tìm thấy trong mọi quan hệ xã hội, chứ không phải thứ được sử dụng bởi các nhóm chi phối.", C: "Là sự áp đặt cưỡng bức tuyệt đối của một thiết chế nhà nước.", D: "Là hệ thống các quy định pháp luật được ban hành bởi cơ quan tư pháp." }, ans: "B", exp: "Quyền lực theo quan niệm của Foucault là thứ có thể tìm thấy trong mọi quan hệ xã hội, chứ không phải là thứ được sử dụng bởi các nhóm chi phối trong xã hội." },
+        { q: "26. Hiện tượng bất bình đẳng được định nghĩa là một hiện tượng như thế nào?", opts: { A: "Chỉ xuất hiện trong xã hội công nghiệp hiện đại.", B: "Là hiện tượng phổ biến, tồn tại trong mọi giai đoạn phát triển của lịch sử xã hội loài người.", C: "Chỉ xuất hiện ở các quốc gia có nền kinh tế kém phát triển.", D: "Là hiện tượng tạm thời và sẽ biến mất hoàn toàn khi xã hội phát triển." }, ans: "B", exp: "Bất bình đẳng là hiện tượng phổ biến, tồn tại trong mọi giai đoạn phát triển của lịch sử xã hội loài người." },
+        { q: "27. Theo David Popenoe, bất bình đẳng là tình trạng không ngang bằng nhau giữa các cá nhân hay nhóm đối với việc tiếp cận điều gì?", opts: { A: "Các chức vụ quản lý cấp cao trong các cơ quan nhà nước.", B: "Những điều đáng ao ước trong xã hội.", C: "Các cơ hội di động xã hội theo chiều ngang.", D: "Các quyết định chính trị mang tính một chiều." }, ans: "B", exp: "David Popenoe cho rằng bất bình đẳng là tình trạng không ngang bằng nhau giữa các cá nhân hay các nhóm đối với việc tiếp cận những điều đáng ao ước trong xã hội." },
+        { q: "28. Những điều đáng ao ước trong xã hội có thể bao gồm những khía cạnh nào?", opts: { A: "Chỉ bao gồm các giá trị tinh thần như tình yêu và sự kính trọng.", B: "Mang tính phi vật chất (sự kính trọng, tình yêu) hoặc mang tính vật chất (thực phẩm, vàng bạc).", C: "Chỉ gồm những tài sản có giá trị kinh tế lớn được pháp luật bảo vệ.", D: "Những cơ hội học tập ở nước ngoài của các nhóm ưu tú." }, ans: "B", exp: "Những điều đáng mong muốn này có thể khác nhau từ bối cảnh này sang bối cảnh khác, có thể mang tính phi vật chất chẳng hạn sự kính trọng, hay tình yêu, cũng có thể mang tính vật chất chẳng hạn thực phẩm, hoặc vàng bạc." },
+        { q: "29. Theo Từ điển Xã hội học do Turner chủ biên, bất bình đẳng là sự phân bổ không đồng đều của ba yếu tố nào giữa các cá nhân, hộ gia đình, nhóm xã hội?", opts: { A: "Thu nhập, học vấn và nghề nghiệp.", B: "Cơ hội, phần thưởng, và quyền lực.", C: "Sức khỏe, trí tuệ và địa vị.", D: "Tuổi tác, giới tính và sắc tộc." }, ans: "B", exp: "Theo Từ điển Xã hội học do Turner chủ biên thì bất bình đẳng là sự phân bổ không đồng đều cơ hội, phần thưởng, và quyền lực giữa các cá nhân, hộ gia đình, nhóm xã hội." },
+        { q: "30. Laurence A. Basirico, Barbara G. Cashion, và J Ross. Eshleman cho rằng bất bình đẳng là sự khác biệt giữa các nhóm về ba khía cạnh nào?", opts: { A: "Thu nhập, giáo dục, vị thế.", B: "Của cải, uy tín và quyền lực.", C: "Năng lực, nỗ lực và cơ hội.", D: "Giới tính, độ tuổi và dân tộc." }, ans: "B", exp: "Laurence A. Basirico, Barbara G. Cashion, và J Ross. Eshleman lại cho rằng bất bình đẳng là sự khác biệt giữa các nhóm về của cải, uy tín và quyền lực." },
+        { q: "31. Khi xem xét bất bình đẳng xã hội, hai chiều cạnh quan trọng cần phân biệt rõ là gì?", opts: { A: "Bất bình đẳng về thu nhập và bất bình đẳng về của cải.", B: "Bất bình đẳng về cơ hội và bất bình đẳng về kết quả.", C: "Bất bình đẳng về giới tính và bất bình đẳng về độ tuổi.", D: "Bất bình đẳng về kinh tế và bất bình đẳng về chính trị." }, ans: "B", exp: "Khi xem xét bất bình đẳng thì cần sự phân biệt rõ giữa hai chiều cạnh. Thứ nhất là bất bình đẳng về cơ hội, và thứ hai là bất bình đẳng về kết quả." },
+        { q: "32. Hai chiều cạnh của bất bình đẳng xã hội có thể được xem xét trên bốn cấp độ nào?", opts: { A: "Cá nhân, nhóm, tổ chức, và thiết chế.", B: "Cá nhân, gia đình, cộng đồng, và quốc gia.", C: "Kinh tế, chính trị, văn hóa, và xã hội.", D: "Địa phương, quốc gia, khu vực, và toàn cầu." }, ans: "A", exp: "Hai chiều cạnh này lại có thể được xem xét trên bốn cấp độ. Đó là cấp độ cá nhân, cấp độ nhóm, cấp độ tổ chức, và cấp độ thiết chế." },
+        { q: "33. Thu nhập phản ánh điều gì đối với một cá nhân hoặc hộ gia đình?", opts: { A: "Toàn bộ tài sản tích lũy của cá nhân qua nhiều năm làm việc.", B: "Việc nhận tiền hay hàng hóa theo những khoảng thời gian được tính toán như theo giờ, theo ngày, theo tuần, theo tháng, theo năm.", C: "Giá trị của đất đai và các tài nguyên thiên nhiên sở hữu cá nhân.", D: "Các hỗ trợ tài chính phi chính thức từ bạn bè và người thân." }, ans: "B", exp: "Thu nhập phản ánh việc nhận tiền hay hàng hóa theo những khoảng thời gian được tính toán như theo giờ, theo ngày, theo tuần, theo tháng, theo năm." },
+        { q: "34. Xu hướng biến động chung của dòng thu nhập theo những độ tuổi khác nhau của một cá nhân là gì?", opts: { A: "Luôn giữ ở mức cao từ khi còn trẻ cho đến lúc về già.", B: "Tuổi trẻ có thu nhập thấp hoặc không có, đạt đỉnh ở tuổi trung niên, và giảm dần khi về già.", C: "Đạt đỉnh ở tuổi trẻ, sau đó giảm dần ở tuổi trung niên và tăng lại khi về già.", D: "Biến động không ngừng và không có bất kỳ quy luật nào theo độ tuổi." }, ans: "B", exp: "Nói chung giai đoạn tuổi trẻ cá nhân có thu nhập thấp, hoặc không có thu nhập, thu nhập của cá nhân thường đạt đỉnh ở độ tuổi trung niên, và mức thu nhập giảm dần khi cá nhân về già." },
+        { q: "35. Khi phân tích thu nhập của cá nhân, yếu tố nào cần được chú ý ngoài mức thu nhập?", opts: { A: "Nơi cư trú và sở thích mua sắm của cá nhân.", B: "Nguồn thu nhập.", C: "Trình độ học vấn của thế hệ trước trong gia đình.", D: "Số lượng các hợp đồng lao động phi chính thức." }, ans: "B", exp: "Khi phân tích thu nhập cần chú ý cả mức thu nhập lẫn nguồn thu nhập." },
+        { q: "36. Nhân tố quan trọng thường được chú ý để dự đoán mức thu nhập của một cá nhân là gì?", opts: { A: "Tuổi tác.", B: "Nghề nghiệp của cá nhân đó.", C: "Địa bàn sinh sống.", D: "Sở thích cá nhân." }, ans: "B", exp: "Nghề nghiệp của mỗi cá nhân là nhân tố quan trọng để dự đoán thu nhập của cá nhân đó." },
+        { q: "37. Dưới góc nhìn toàn cầu của Anthony Giddens, điều gì đặc trưng cho quy mô gia đình của công dân ở các nước thu nhập cao?", opts: { A: "Thường lớn hơn và con cái có tỷ lệ tử vong cao hơn.", B: "Thường nhỏ hơn và con cái ít bị chết ở tuổi ấu thơ do suy dinh dưỡng hay dịch bệnh.", C: "Hoàn toàn giống với quy mô gia đình ở các nước thu nhập thấp.", D: "Biến động liên tục do tỷ lệ di cư quốc tế tăng cao." }, ans: "B", exp: "Quy mô gia đình của công dân ở các nước thu nhập cao thường nhỏ hơn và con cái ít bị chết ở tuổi ấu thơ do suy dinh dưỡng hay dịch bệnh." },
+        { q: "38. David Popenoe định nghĩa phân tầng xã hội là gì?", opts: { A: "Sự dịch chuyển vị thế xã hội của cá nhân trong suốt cuộc đời.", B: "Khuôn mẫu phân chia con người thành những tầng lớp khác nhau theo vị trí xã hội, dựa trên việc họ tiếp cận những điều đáng mong muốn.", C: "Sự phân bổ đồng đều của cải và quyền lực cho mọi công dân.", D: "Sự đấu tranh giai cấp diễn ra trong xã hội hiện đại." }, ans: "B", exp: "David Popenoe cho rằng phân tầng xã hội là khuôn mẫu phân chia con người thành những tầng lớp khác nhau theo vị trí xã hội, dựa trên việc họ tiếp cận những điều đáng mong muốn." },
+        { q: "39. Theo Anthony Giddens, phân tầng xã hội được hiểu một cách đơn giản là gì?", opts: { A: "Sự khác biệt về mặt sinh học và độ tuổi của các thành viên.", B: "Những bất bình đẳng mang tính cấu trúc giữa các nhóm xã hội khác nhau.", C: "Quá trình di chuyển địa lý của người dân từ nông thôn ra thành thị.", D: "Sự thay đổi địa vị xã hội của thế hệ sau so với thế hệ trước." }, ans: "B", exp: "Phân tầng xã hội được hiểu một cách đơn giản là những bất bình đẳng mang tính cấu trúc giữa các nhóm xã hội khác nhau." },
+        { q: "40. Định nghĩa khái quát về phân tầng xã hội xác định yếu tố nào sau đây là một trong những phương diện ngang bằng nhau giữa các cá nhân trong cùng một tầng xã hội?", opts: { A: "Sở thích nghệ thuật.", B: "Của cải, vị trí xã hội, uy tín, quyền lực, tuổi tác.", C: "Thể lực và năng khiếu cá nhân.", D: "Trình độ ngoại ngữ." }, ans: "B", exp: "Phân tầng xã hội là sự phân chia các cá nhân trong xã hội thành các tầng/lớp nhất định, trong đó mỗi tầng xã hội bao gồm những cá nhân có đặc điểm chung hay có sự ngang bằng nhau về những phương diện nào đó, chẳng hạn như của cải, vị trí xã hội, uy tín, quyền lực, tuổi tác." },
+        { q: "41. Ba khía cạnh của phân tầng xã hội mà Max Weber thảo luận bao gồm những khía cạnh nào?", opts: { A: "Học vấn, nghề nghiệp, và vị trí cư trú.", B: "Sự giàu có, quyền lực, và uy tín.", C: "Giai cấp, giới tính, và chủng tộc.", D: "Tuổi tác, thể lực, và trí tuệ." }, ans: "B", exp: "Max Weber đã bàn đến ba khía cạnh của phân tầng xã hội, bao gồm sự giàu có, quyền lực và uy tín." },
+        { q: "42. Theo David Popenoe, sự giàu có được định nghĩa bao gồm những gì?", opts: { A: "Chỉ tính riêng lượng tiền mặt cá nhân gửi tiết kiệm trong ngân hàng.", B: "Tất cả các tài sản kinh tế của một xã hội, gồm tiền và các sản phẩm vật chất khác như đất đai, nguồn tài nguyên thiên nhiên, lao động, dịch vụ.", C: "Giá trị của các bức thư lịch sử hay tác phẩm nghệ thuật cổ vật.", D: "Tổng thu nhập từ lương hàng năm của một cá nhân lao động." }, ans: "B", exp: "Theo David Popenoe, sự giàu có là tất cả các tài sản kinh tế của một xã hội, không chỉ tiền mà còn các sản phẩm vật chất khác như đất đai, các nguồn tài nguyên thiên nhiên, lao động, dịch vụ." },
+        { q: "43. Khía cạnh nào trong ba khía cạnh phân tầng xã hội của Weber được chỉ ra là khó đo lường nhất?", opts: { A: "Sự giàu có.", B: "Quyền lực.", C: "Uy tín.", D: "Của cải vật chất." }, ans: "B", exp: "Trong ba khía cạnh của phân tầng xã hội, quyền lực là thứ khó đo lường nhất." },
+        { q: "44. Theo John Macionis, nguyên lý thứ nhất của phân tầng xã hội chỉ ra rằng phân tầng xã hội là gì?", opts: { A: "Sự phản ánh đơn giản những khác biệt mang tính cá nhân.", B: "Một đặc điểm của xã hội chứ không đơn thuần là sự khác biệt giữa các cá nhân.", C: "Một hiện tượng tạm thời sẽ biến mất ở các xã hội văn minh.", D: "Sự nỗ lực và năng lực thực tế của từng thành viên trong xã hội." }, ans: "B", exp: "Phân tầng xã hội là một đặc điểm của xã hội chứ không đơn thuần là sự khác biệt giữa các cá nhân." },
+        { q: "45. Theo John Macionis, nguyên lý thứ hai của phân tầng xã hội khẳng định điều gì?", opts: { A: "Phân tầng xã hội luôn thay đổi hoàn toàn sau mỗi thập kỷ.", B: "Phân tầng xã hội chuyển từ thế hệ này sang thế hệ khác.", C: "Phân tầng xã hội chỉ được quyết định bởi ý chí của cá nhân đó.", D: "Phân tầng xã hội hoàn toàn không chịu tác động của yếu tố gia đình." }, ans: "B", exp: "Phân tầng xã hội chuyển từ thế hệ này sang thế hệ khác, khi vị trí xã hội của bố mẹ được trao truyền sang cho con cái." },
+        { q: "46. Nguyên lý thứ ba của phân tầng xã hội theo John Macionis là gì?", opts: { A: "Phân tầng xã hội là phổ biến ở mọi nơi nhưng khác nhau.", B: "Phân tầng xã hội chỉ xuất hiện ở một số khu vực địa lý nhất định.", C: "Phân tầng xã hội luôn có mức độ bất bình đẳng giống nhau ở mọi xã hội.", D: "Phân tầng xã hội hoàn toàn phụ thuộc vào của cải vật chất tích lũy." }, ans: "A", exp: "Phân tầng xã hội phổ biến ở mọi nơi. Tuy nhiên, bất bình đẳng về cái gì, và bất bình đẳng như thế nào do sự phân tầng tạo ra lại khác nhau từ nơi này sang nơi khác." },
+        { q: "47. Khái niệm di động xã hội được Anthony Giddens định nghĩa là gì?", opts: { A: "Sự thay đổi kết cấu dân số giữa các vùng nông thôn và thành thị.", B: "Sự di chuyển của các cá nhân, các nhóm giữa các vị trí kinh tế - xã hội khác nhau.", C: "Sự chênh lệch về mức thu nhập giữa các tầng lớp trong xã hội.", D: "Quá trình đấu tranh giai cấp để xóa bỏ sự phân tầng." }, ans: "B", exp: "Anthony Giddens cho rằng khái niệm di động xã hội đề cập đến sự di chuyển của các cá nhân, các nhóm giữa các vị trí kinh tế - xã hội khác nhau." },
+        { q: "48. David Popenoe định nghĩa di động xã hội là sự dịch chuyển của một cá nhân từ một vị thế xã hội hay giai cấp sang vị thế hay giai cấp khác, bao gồm những hướng nào?", opts: { A: "Chỉ theo hướng đi lên vị thế cao hơn.", B: "Chỉ theo hướng đi xuống vị thế thấp hơn.", C: "Đi từ vị thế cao xuống thấp, từ thấp lên cao, hoặc dịch chuyển sang vị thế tương đương.", D: "Chỉ dịch chuyển địa lý giữa các quốc gia." }, ans: "C", exp: "Di động xã hội có thể là sự dịch chuyển của một cá nhân từ vị thế cao xuống vị thế thấp, hay từ vị thế thấp lên vị thế cao, hoặc là dịch chuyển từ một vị thế sang một vị thế khác tương đương." },
+        { q: "49. Pitirim Sorokin ví các kênh luân chuyển theo chiều dọc trong xã hội có sự phân tầng tương tự như đối tượng nào trong cơ thể?", opts: { A: "Các dây thần kinh truyền dẫn thông tin.", B: "Những kênh luân chuyển máu trong cơ thể.", C: "Các khớp xương hỗ trợ vận động.", D: "Hệ thống hô hấp cung cấp oxy." }, ans: "B", exp: "Sorokin viết rằng những kênh luân chuyển theo chiều dọc tồn tại trong xã hội có sự phân tầng cũng cần thiết như những kênh luân chuyển máu trong cơ thể." },
+        { q: "50. Theo Anthony Giddens, loại di động nào liên quan đến sự dịch chuyển địa lý của cá nhân giữa các vùng, khu vực, thành phố?", opts: { A: "Di động theo chiều dọc.", B: "Di động theo chiều ngang.", C: "Di động nội thế hệ.", D: "Di động liên thế hệ." }, ans: "B", exp: "Di động theo chiều ngang (lateral mobility) liên quan đến sự dịch chuyển của cá nhân giữa các vùng, khu vực, thành phố." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
