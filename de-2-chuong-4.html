@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề 2. Chương 4</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 2. Chương 4</h1>
+        <p>Hành động xã hội, tương tác xã hội, quan hệ xã hội</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 2. Hành động xã hội, tương tác xã hội, quan hệ xã hội</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-4.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-4.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Theo bảng so sánh của Nguyễn Quý Thanh, điểm khác biệt về phản ứng giữa hành động xã hội và hành động vật lý - bản năng là gì?", opts: { A: "Hành động xã hội là phản ứng trực tiếp với các tác nhân, còn hành động vật lý - bản năng là phản ứng gián tiếp qua biểu tượng.", B: "Hành động xã hội là phản ứng gián tiếp thông qua biểu tượng, còn hành động vật lý - bản năng là phản ứng trực tiếp với các tác nhân.", C: "Hành động xã hội không có phản ứng, còn hành động vật lý - bản năng có phản ứng rất chậm.", D: "Cả hai đều là phản ứng trực tiếp với các tác nhân vật lý bên ngoài." }, ans: "B", exp: "Hành động xã hội là phản ứng gián tiếp thông qua biểu tượng, còn hành động vật lý - bản năng là một phản ứng trực tiếp với các tác nhân." },
+        { q: "2. Về tính chuẩn mực, hành động vật lý - bản năng được Nguyễn Quý Thanh xác định như thế nào?", opts: { A: "Có tính chuẩn mực rất cao và nghiêm ngặt.", B: "Được quy định bởi các chuẩn mực pháp luật hiện hành.", C: "Không có tính chuẩn mực.", D: "Tuân theo các giá trị tôn giáo lâu đời." }, ans: "C", exp: "Hành động vật lý - bản năng không có tính chuẩn mực, trong khi hành động xã hội có tính chuẩn mực (các giá trị, chuẩn mực là yếu tố quy định hành động xã hội)." },
+        { q: "3. Hành động rút tay lại ngay lập tức khi chạm vào cốc nước nóng được xem là hành động gì?", opts: { A: "Hành động xã hội duy lý công cụ.", B: "Hành động xã hội truyền thống.", C: "Hành động vật lý bản năng.", D: "Hành động xã hội cảm xúc." }, ans: "C", exp: "Hành động vật lý bản năng mang tính chất bản năng sinh học, được thực hiện bất chấp ý chí hay mong muốn chủ quan của chủ thể hành động. Với hành động vật lý bản năng, yếu tố duy lý và có ý thức rất thấp, phản ứng đáp lại với kích thích từ môi trường diễn ra rất nhanh, dường như không cần tới quá trình tính toán có ý thức của chủ thể hành động, chẳng hạn như chạm vào cốc nước nóng thì rụt tay lại." },
+        { q: "4. Khái niệm 'hành vi' (behavior) được Viện Ngôn ngữ học định nghĩa như thế nào?", opts: { A: "Là những tính toán duy lý của con người nhằm tối đa hóa lợi ích kinh tế cá nhân.", B: "Là việc làm cụ thể nào đó, ít nhiều quan trọng, một cách có ý thức, có mục đích.", C: "Là một sự phản ứng của con người trước một kích thích nào đó, là cách cư xử biểu hiện ra ngoài của một người trong một hoàn cảnh cụ thể nhất định.", D: "Là sự tương tác qua lại giữa các thiết chế xã hội lớn trong một quốc gia." }, ans: "C", exp: "Hành vi được hiểu là một sự phản ứng của con người trước một kích thích nào đó. Từ góc độ ngôn ngữ học, hành vi xã hội là toàn bộ những phản ứng, cách cư xử biểu hiện ra ngoài của một người trong một hoàn cảnh cụ thể nhất định." },
+        { q: "5. Theo Vũ Hào Quang, hành vi xã hội khác hành vi tâm lý, sinh lý ở điểm cốt lõi nào?", opts: { A: "Hành vi xã hội có bộ phần cấu thành thứ hai là sự định hướng của chủ thể vào những người khác trong quá trình tương tác xã hội.", B: "Hành vi xã hội diễn ra nhanh hơn và không cần thông qua hệ thống thần kinh.", C: "Hành vi xã hội không chịu ảnh hưởng của các chuẩn mực văn hóa của cộng đồng.", D: "Hành vi xã hội hoàn toàn mang tính bộc phát sinh học không điều kiện." }, ans: "A", exp: "Hành vi của con người có nhiều loại khác nhau, từ hành vi bản năng vô thức, tâm lý, sinh lý tới hành vi xã hội. Hành vi xã hội có quan hệ mật thiết với hành vi tâm lý, sinh lý nhưng khác về chất ở chỗ nó có bộ phận cấu thành thứ hai là sự định hướng của chủ thể vào những người khác trong quá trình tương tác xã hội." },
+        { q: "6. Theo quan điểm của T. Parsons được J. H. Turner tóm tắt, hành động duy ý chí (voluntaristic action) gồm có bao nhiêu thành tố cơ bản?", opts: { A: "3 thành tố", B: "4 thành tố", C: "5 thành tố", D: "6 thành tố" }, ans: "D", exp: "T. Parsons đề cập đến các thành tố của hành động duy ý chí (voluntaristic action) gồm 6 thành tố cơ bản." },
+        { q: "7. Thành tố thứ nhất của hành động xã hội theo quan điểm của T. Parsons là gì?", opts: { A: "Mục tiêu hành động.", B: "Phương tiện thực hiện hành động.", C: "Chủ thể hành động, được nhìn nhận là các cá thể độc lập.", D: "Các điều kiện hoàn cảnh bên ngoài." }, ans: "C", exp: "Thành tố thứ nhất trong lý thuyết hành động của Parsons là chủ thể hành động, theo quan điểm của Parsons là các cá thể độc lập." },
+        { q: "8. Trong lý thuyết của T. Parsons, chủ thể hành động sử dụng yếu tố nào để đạt được mục tiêu?", opts: { A: "Sử dụng các phương tiện để đạt đến mục tiêu.", B: "Sử dụng các phản xạ sinh học không điều kiện.", C: "Chỉ sử dụng các kích thích vật lý trực tiếp từ môi trường.", D: "Sử dụng tâm lý đám đông để áp đặt người khác." }, ans: "A", exp: "Thành tố thứ ba chỉ ra phương tiện: chủ thể hành động là người sở hữu các phương tiện để đạt đến mục đích." },
+        { q: "9. Thành tố 'Điều kiện hoàn cảnh' của hành động xã hội theo T. Parsons bao gồm những yếu tố nào?", opts: { A: "Các quyết định hành chính chính thức của nhà nước.", B: "Các yếu tố như thể chất của họ, tính di truyền cũng như những thúc ép từ môi trường sinh thái đa dạng bên ngoài.", C: "Mức độ giàu có về mặt kinh tế của các nhóm xã hội.", D: "Các chuẩn mực đạo đức và tôn giáo của gia đình." }, ans: "B", exp: "Điều kiện hoàn cảnh là chủ thể hành động phải đối diện với các điều kiện tình huống khác nhau có ảnh hưởng đến sự lựa chọn mục tiêu và phương tiện của chủ thể hành động. Điều kiện tình huống bao gồm các yếu tố như thể chất của họ, tính di truyền cũng như những thúc ép từ môi trường sinh thái đa dạng bên ngoài." },
+        { q: "10. Vai trò của thành tố 'Giá trị, chuẩn mực' trong lý thuyết hành động của T. Parsons là gì?", opts: { A: "Là những yếu tố kích thích phản ứng cơ học tức thời của cơ thể.", B: "Là những yếu tố chi phối chủ thể hành động, theo đó có thể tác động đến mục đích và các phương tiện được lựa chọn để đạt tới mục đích đó.", C: "Là các công cụ kỹ thuật giúp tối ưu hóa lợi nhuận kinh tế.", D: "Là những quy định pháp lý buộc cá nhân phải tuân theo một cách thụ động." }, ans: "B", exp: "Giá trị, chuẩn mực là những yếu tố chi phối chủ thể hành động, theo đó có thể tác động đến mục đích và các phương tiện được lựa chọn để đạt tới mục đích đó." },
+        { q: "11. Sơ đồ các yếu tố cấu thành hành động theo quan điểm của T. Parsons chỉ ra việc lựa chọn phương tiện hành động còn phụ thuộc vào hai yếu tố nào?", opts: { A: "Thu nhập cá nhân và địa vị chính trị trong xã hội.", B: "Chuẩn mực, giá trị, quan niệm xã hội và hoàn cảnh, môi trường hành động.", C: "Tuổi tác và giới tính của chủ thể hành động.", D: "Quy mô dân số và tốc độ đô thị hóa của cộng đồng." }, ans: "B", exp: "Sơ đồ chỉ ra việc lựa chọn các phương tiện hành động phụ thuộc vào hai yếu tố khác: (1) chuẩn mực, giá trị và quan niệm xã hội của chủ thể hành động và (2) hoàn cảnh và môi trường hành động." },
+        { q: "12. Khi sinh viên trong cùng một lớp có mục đích đạt điểm cao nhưng có người tự học chăm chỉ, có người lại gian lận thi cử, T. Parsons giải thích hiện tượng này như thế nào?", opts: { A: "Do các sinh viên này có hoàn cảnh kinh tế gia đình hoàn toàn giống nhau.", B: "Do sự khác biệt về chuẩn mực, giá trị trung thực được lựa chọn dẫn đến kết quả hành động hoàn toàn trái ngược nhau.", C: "Do sinh viên bị tác động bởi tâm lý đám đông nhất thời.", D: "Do nhà trường áp dụng các biện pháp kỷ luật quá lỏng lẻo." }, ans: "B", exp: "Các sinh viên trong cùng một lớp đều mong muốn đạt điểm cao, tuy nhiên sinh viên tuân theo quy định của nhà trường sẽ lựa chọn cách ôn tập thật tốt, ngược lại sinh viên không tuân thủ quy định sẽ chọn cách gian lận. Như vậy, dù mục đích giống nhau, nhưng giá trị và chuẩn mực của chủ thể hành động khác nhau dẫn tới kết quả hành động không giống nhau." },
+        { q: "13. Vilfredo Pareto (1848-1923) là nhà khoa học thuộc quốc gia nào?", opts: { A: "Đức", B: "Pháp", C: "Ý", D: "Mỹ" }, ans: "C", exp: "V. Pareto (1848-1923) là một kỹ sư người Ý, đồng thời ông cũng là một nhà kinh tế học và xã hội học." },
+        { q: "14. V. Pareto phân chia hành động của con người thành hai kiểu loại cơ bản nào?", opts: { A: "Hành động duy lý công cụ và hành động duy lý giá trị.", B: "Hành động truyền thống và hành động cảm xúc.", C: "Hành động lôgich và hành động phi lôgich.", D: "Hành động hợp pháp và hành động phi pháp." }, ans: "C", exp: "Ông phân biệt xã hội học với kinh tế học dựa vào bản chất của hành động. Đây là hành động lựa chọn hợp lý dựa hầu hết trên phương tiện để thực hiện nó liên quan đến sự khan hiếm nguồn lực... Ngược lại, xã hội học quan tâm tới những hành động phi lôgich được tạo ra từ đời sống xã hội." },
+        { q: "15. Hành động lôgich theo quan điểm của V. Pareto được thực hiện dựa trên cơ sở nào?", opts: { A: "Sự khan hiếm nguồn lực và sự lựa chọn hợp lý phương tiện để thực hiện dựa trên mối liên hệ lôgich của con người.", B: "Sự bùng nổ cảm xúc bộc phát không thể kiểm soát của cá nhân.", C: "Việc tuân thủ mù quáng các thói quen và phong tục lâu đời.", D: "Niềm tin vào các thế lực siêu nhiên thần bí." }, ans: "A", exp: "Hành động lôgich là hành động lựa chọn hợp lý dựa hầu hết trên phương tiện để thực hiện nó liên quan đến sự khan hiếm nguồn lực trong việc tiếp cận và sử dụng các phương tiện này." },
+        { q: "16. Hành động phi lôgich theo V. Pareto được tạo ra từ đâu?", opts: { A: "Từ các tính toán chi phí và lợi ích kinh tế một cách khoa học.", B: "Từ đời sống xã hội, được quan tâm bởi chúng không thể phân tích được khi chỉ dựa trên phương pháp quan sát và những suy diễn hợp lý vì chúng có thể được nhìn nhận dưới yếu tố cảm tính nhiều hơn là khoa học.", C: "Từ sự ép buộc bằng bạo lực của các cơ quan quản lý nhà nước.", D: "Từ các quy luật toán học và vật lý học khách quan." }, ans: "B", exp: "Những hành động loại này được quan tâm bởi chúng không thể phân tích được khi chỉ dựa trên phương pháp quan sát và những suy diễn hợp lý vì chúng có thể được nhìn nhận dưới yếu tố cảm tính nhiều hơn là khoa học." },
+        { q: "17. Để hiểu được hành động phi lôgich của con người, đôi khi chúng ta cần làm gì theo V. Pareto?", opts: { A: "Bỏ qua hoàn toàn các yếu tố văn hóa và tôn giáo của chủ thể.", B: "Đối chiếu và xem xét hệ thống giá trị, chuẩn mực, văn hóa có ảnh hưởng và chi phối hành động 'có vẻ' như là phi lôgich đó.", C: "Chỉ cần quan sát các chuyển động cơ học của cơ thể chủ thể hành động.", D: "Sử dụng các hình phạt pháp lý để buộc chủ thể giải thích hành vi." }, ans: "B", exp: "Để hiểu được hành động phi lôgich, đôi khi người lý giải cần đối chiếu và xem xét hệ thống giá trị, chuẩn mực, văn hóa có ảnh hưởng và chi phối hành động 'có vẻ' như là phi lôgich đó." },
+        { q: "18. Steve Bruce và Steven Yearly (2006) định nghĩa thuật ngữ tương tác xã hội như thế nào?", opts: { A: "Là sự đấu tranh sinh tồn giữa các cá nhân trong môi trường tự nhiên khắc nghiệt.", B: "Thuật ngữ tương tác xã hội không có một ý nghĩa chính xác duy nhất, thường được sử dụng để nhấn mạnh quan điểm rằng khi một người tương tác họ làm như vậy là do theo sự mong đợi xã hội và những giả định nền tảng mà họ sẽ đem đến cuộc gặp gỡ.", C: "Là các quy định hành chính bắt buộc mọi cá nhân phải tham gia các tổ chức chính trị.", D: "Là sự trao đổi hàng hóa và dịch vụ nhằm mục đích tối đa hóa lợi nhuận kinh tế." }, ans: "B", exp: "Theo Steve Bruce và Steven Yearly (2006), thuật ngữ tương tác xã hội không có một ý nghĩa chính xác duy nhất. Thuật ngữ này thường được sử dụng để nhấn mạnh quan điểm rằng khi một người tương tác họ làm như vậy là do theo sự mong đợi xã hội và những giả định nền tảng mà họ sẽ đem đến cuộc gặp gỡ." },
+        { q: "19. J. Charon (1989) định nghĩa ngắn gọn về tương tác xã hội như thế nào?", opts: { A: "Là hành động xã hội qua lại.", B: "Là sự xung đột giai cấp sâu sắc.", C: "Là hoạt động lao động sản xuất vật chất.", D: "Là sự tuân thủ các nghi lễ tôn giáo." }, ans: "A", exp: "Về mặt định nghĩa tương tác xã hội, J. Charon (1989) cho rằng tương tác xã hội là hành động xã hội qua lại." },
+        { q: "20. Theo James Zanden (1988), tương tác xã hội bao gồm những khía cạnh nào?", opts: { A: "Chỉ bao gồm các cuộc gặp gỡ chính thức được pháp luật thừa nhận.", B: "Gồm các hành động của con người, chính xác hơn là các hành động xã hội, có sự cân nhắc, xem xét đến người khác, có ảnh hưởng lẫn nhau giữa hành động của bạn và hành động của người khác.", C: "Là những hành vi bộc phát của đám đông ngoài đường phố.", D: "Là sự áp đặt ý chí một chiều từ phía chủ thể hành động lên đối tượng." }, ans: "B", exp: "Theo James Zanden (1988) thì đời sống xã hội bao gồm các hành động của con người, chính xác hơn là các hành động xã hội. Khi thực hiện hành động xã hội, chủ thể hành động đều có sự cân nhắc, xem xét đến người khác... tương tác xã hội bao gồm sự ảnh hưởng lẫn nhau giữa hành động của bạn và hành động của người khác." },
+        { q: "21. Lý do thứ nhất khiến chúng ta cần nghiên cứu về tương tác xã hội theo J. Charon là gì?", opts: { A: "Tương tác ảnh hưởng tới cách con người hành động, tương tác trở thành nguyên nhân quan trọng của hành động của mỗi chủ thể.", B: "Tương tác giúp tối đa hóa lợi nhuận trong hoạt động kinh doanh thương mại.", C: "Tương tác là cách duy nhất để duy trì nòi giống của loài người.", D: "Tương tác loại bỏ hoàn toàn các mâu thuẫn giai cấp trong xã hội." }, ans: "A", exp: "Lý do thứ nhất: Tương tác ảnh hưởng tới cách con người hành động. Tương tác trở thành nguyên nhân quan trọng của hành động của mỗi chủ thể." },
+        { q: "22. Theo J. Charon, nhờ có tương tác xã hội mà con người đạt được điều gì trong tiến trình phát triển?", opts: { A: "Sự tích lũy của cải vật chất một cách nhanh chóng.", B: "Nhờ có tương tác mà con người được xã hội hóa.", C: "Khả năng kiểm soát hoàn toàn thế giới tự nhiên xung quanh.", D: "Sự xóa bỏ mọi chuẩn mực đạo đức lỗi thời của dòng họ." }, ans: "B", exp: "Lý do thứ hai: Tương tác định hình việc cá nhân sẽ trở thành người như thế nào. Nhờ có tương tác mà con người được xã hội hóa." },
+        { q: "23. Ai là người khởi xướng lý thuyết trao đổi xã hội xem 'Tương tác như là sự trao đổi'?", opts: { A: "Talcott Parsons", B: "George C. Homans", C: "George Herbert Mead", D: "Harold Garfinkel" }, ans: "B", exp: "Nhìn tương tác xã hội như là một sự trao đổi xã hội là quan điểm của lý thuyết trao đổi xã hội với các đại diện tiêu biểu là George C. Homans và Peter Blau." },
+        { q: "24. Nội dung của 'Mệnh đề thành công' (Mệnh đề I) trong thuyết trao đổi của George Homans là gì?", opts: { A: "Đối với mọi hành động của con người, hành động cụ thể nào càng thường xuyên được thưởng thì nhiều khả năng con người lặp lại hành động đó.", B: "Con người chỉ thực hiện hành động khi biết chắc chắn sẽ thành công 100%.", C: "Sự thành công của hành động phụ thuộc hoàn toàn vào các yếu tố di truyền sinh học.", D: "Hành động càng thành công thì càng ít được xã hội thừa nhận." }, ans: "A", exp: "Mệnh đề thành công chỉ ra: Với mọi hành động của con người, hành động cụ thể nào càng thường xuyên được thưởng thì nhiều khả năng con người lặp lại hành động đó." },
+        { q: "25. 'Mệnh đề tác nhân' (Mệnh đề II) của George Homans phát biểu như thế nào?", opts: { A: "Con người sẽ từ bỏ hành động nếu gặp phải các tác nhân kích thích từ môi trường tự nhiên.", B: "Nếu trong quá khứ một tác nhân cụ thể nào đó là cơ hội mà hành động con người được thưởng thì sau đó, tác nhân hiện tại càng tương đồng với tác nhân quá khứ, nhiều khả năng con người sẽ thực hiện lại hành động đó hoặc thực hiện một hành động tương tự.", C: "Các tác nhân kích thích luôn gây ra những phản ứng cơ học giống nhau ở mọi cá nhân.", D: "Tác nhân hiện tại phải hoàn toàn khác biệt với tác nhân quá khứ thì hành động mới được thực hiện." }, ans: "B", exp: "Mệnh đề tác nhân chỉ ra: Nếu trong quá khứ một tác nhân cụ thể nào đó là cơ hội mà hành động con người được thưởng thì sau đó, tác nhân hiện tại càng tương đồng với tác nhân quá khứ, nhiều khả năng con người sẽ thực hiện lại hành động đó hoặc thực hiện một hành động tương tự." },
+        { q: "26. Theo 'Mệnh đề giá trị' (Mệnh đề III) của George Homans, điều gì kích thích con người thực hiện hành động?", opts: { A: "Kết quả của hành động càng có giá trị đối với con người thì nhiều khả năng con người sẽ thực hiện hành động đó.", B: "Giá trị của hành động phải được tính bằng tiền mặt hoặc tài sản vật chất tương đương.", C: "Hành động càng ít giá trị thì con người càng có xu hướng thực hiện nhiều lần.", D: "Giá trị của hành động chỉ do các cơ quan quản lý nhà nước ấn định." }, ans: "A", exp: "Mệnh đề giá trị chỉ ra: Kết quả của hành động càng có giá trị đối với con người thì nhiều khả năng con người sẽ thực hiện hành động đó." },
+        { q: "27. Nội dung của 'Mệnh đề sự tước đoạt/sự thỏa mãn' (Mệnh đề IV) trong thuyết của George Homans là gì?", opts: { A: "Một phần thưởng càng có giá trị khi cá nhân bị tước đoạt nó hoàn toàn trong thời gian dài.", B: "Một phần thưởng cụ thể trong quá khứ càng thường xuyên lặp lại ở hiện tại thì phần thưởng đó càng trở nên có ít giá trị hơn đối với con người.", C: "Sự thỏa mãn của con người là vô hạn và không thể bị tước đoạt bởi các chuẩn mực xã hội.", D: "Phần thưởng càng ít xuất hiện thì con người càng nhanh chóng cảm thấy thỏa mãn và dừng hành động." }, ans: "B", exp: "Mệnh đề sự tước đoạt/sự thỏa mãn chỉ ra: Một phần thưởng cụ thể trong quá khứ càng thường xuyên lặp lại ở hiện tại thì phần thưởng đó càng trở nên có ít giá trị hơn đối với con người." },
+        { q: "28. Theo 'Mệnh đề sự công kích/sự tán thành' (Phần A) của George Homans, điều gì xảy ra khi một người không nhận được phần thưởng như mong đợi?", opts: { A: "Anh ta sẽ im lặng chấp nhận và tiếp tục thực hiện hành động cũ một cách chăm chỉ hơn.", B: "Anh ta sẽ giận dữ và nhiều khả năng thực hiện hành động công kích, kết quả của hành vi như vậy trở nên có giá trị với anh ta hơn.", C: "Anh ta sẽ ngay lập tức chuyển đổi tôn giáo hoặc nơi cư trú của mình.", D: "Anh ta sẽ tự động cảm thấy thỏa mãn vì đã nỗ lực hết mình." }, ans: "B", exp: "Mệnh đề sự công kích/sự tán thành (Phần A) chỉ ra: Khi hành động của một người không nhận được phần thưởng mà anh ta mong đợi hoặc nhận được sự trừng phạt mà anh ta không mong đợi, anh ta sẽ giận dữ và nhiều khả năng thực hiện hành động công kích và kết quả của hành vi như vậy trở nên có giá trị với anh ta hơn." },
+        { q: "29. 'Mệnh đề duy lý' (Mệnh đề VI) của George Homans khẳng định khi lựa chọn hành động, con người sẽ làm gì?", opts: { A: "Lựa chọn hành động dựa trên cảm xúc bộc phát nhất thời mà không cần suy tính.", B: "Con người sẽ chọn một hành động mà theo nhận thức của anh ta hay cô ta vào thời điểm đó, giá trị của kết quả, xác suất nhận được kết quả của hành động đó lớn hơn.", C: "Lựa chọn hành động có chi phí thực hiện cao nhất để thể hiện đẳng cấp xã hội.", D: "Hoàn toàn tuân theo sự chỉ đạo ngẫu nhiên của những người xung quanh trong đám đông." }, ans: "B", exp: "Mệnh đề duy lý chỉ ra: Khi lựa chọn hành động, con người sẽ chọn một hành động mà theo nhận thức của anh ta hay cô ta vào thời điểm đó, giá trị của kết quả, xác suất nhận được kết quả của hành động đó lớn hơn." },
+        { q: "30. Nguyên lý thứ nhất của Peter Blau: 'Nguyên lý duy lý' (Rational principle) có nội dung là gì?", opts: { A: "Lợi ích con người mong chờ từ người khác trong việc tạo ra một hoạt động cụ thể càng nhiều, càng có nhiều khả năng họ tạo ra hoạt động đó.", B: "Con người hành động hoàn toàn vô lý trí khi tham gia vào các quan hệ tình cảm gia đình.", C: "Mọi tương tác xã hội đều phải được ghi chép và ký kết bằng hợp đồng pháp lý chính thức.", D: "Con người luôn lựa chọn phương án hành động có rủi ro cao nhất để thử thách bản thân." }, ans: "A", exp: "Nguyên lý duy lý của Blau chỉ ra: Lợi ích con người mong chờ từ người khác trong việc tạo ra một hoạt động cụ thể càng nhiều, càng có nhiều khả năng họ tạo ra hoạt động đó." },
+        { q: "31. Theo Peter Blau, 'Nguyên lý trao đổi qua lại' (Reciprocal principle - Phần a) nghĩa là gì?", opts: { A: "Con người càng trao đổi nhiều phần thưởng với một người khác, nghĩa vụ đối ứng xuất hiện và chỉ dẫn các trao đổi tiếp theo giữa họ.", B: "Trao đổi xã hội luôn là sự áp đặt một chiều từ phía người có địa vị cao hơn.", C: "Con người sẽ dừng ngay việc tương tác nếu đối phương có ý định đền ơn hoặc đáp lễ.", D: "Sự trao đổi chỉ diễn ra khi có sự giám sát trực tiếp của các cơ quan tư pháp." }, ans: "A", exp: "Nguyên lý trao đổi qua lại (Phần a) chỉ ra: Con người càng trao đổi nhiều phần thưởng với một người khác, nghĩa vụ đối ứng xuất hiện và chỉ dẫn các trao đổi tiếp theo giữa họ." },
+        { q: "32. Nội dung của 'Nguyên lý công bằng' (Justice principle - Phần a) trong thuyết của Peter Blau là gì?", opts: { A: "Những mối quan hệ trao đổi được thiết lập càng nhiều, càng có nhiều khả năng chúng bị chi phối bởi chuẩn mực trao đổi công bằng.", B: "Sự công bằng trong trao đổi xã hội chỉ mang tính hình thức và không bao giờ tồn tại thực tế.", C: "Con người luôn cảm thấy bất công khi nhận được phần thưởng lớn hơn mức mong đợi.", D: "Chuẩn mực công bằng do từng cá nhân tự quy định và không liên quan đến cộng đồng." }, ans: "A", exp: "Nguyên lý công bằng (Phần a) chỉ ra: Những mối quan hệ trao đổi được thiết lập càng nhiều, càng có nhiều khả năng chúng bị chi phối bởi chuẩn mực trao đổi công bằng." },
+        { q: "33. 'Nguyên lý vị lợi cận biên' (Marginal utility principle) của Peter Blau phát biểu như thế nào?", opts: { A: "Lợi ích thu được từ hành động càng nhiều thì hành động đó càng nhanh chóng bị cấm đoán.", B: "Các phần thưởng càng nhiều sắp xuất hiện trong một hoạt động cụ thể, hoạt động càng có ít giá trị và ít khả năng nó xuất hiện.", C: "Con người luôn có xu hướng tích lũy vô hạn một loại phần thưởng duy nhất trong suốt cuộc đời.", D: "Sự thỏa mãn cận biên của con người sẽ liên tục tăng lên sau mỗi lần nhận thưởng." }, ans: "B", exp: "Nguyên lý vị lợi cận biên chỉ ra: Các phần thưởng càng nhiều sắp xuất hiện trong một hoạt động cụ thể, hoạt động càng có ít giá trị và ít khả năng nó xuất hiện." },
+        { q: "34. 'Nguyên lý mất cân bằng' (Imbalance principle) của Peter Blau giải thích hiện tượng gì trong quan hệ xã hội?", opts: { A: "Sự ổn định vĩnh viễn của mọi cấu trúc xã hội bất chấp các cuộc cách mạng kinh tế.", B: "Một số mối quan hệ trao đổi đơn vị xã hội, các mối quan hệ trao đổi khác có nhiều khả năng trở nên mất cân bằng và không ổn định.", C: "Việc các cá nhân có địa vị kinh tế bằng nhau luôn có xu hướng xung đột lẫn nhau.", D: "Sự biến mất hoàn toàn của các chuẩn mực đạo đức trong các giao dịch kinh tế thương mại." }, ans: "B", exp: "Nguyên lý mất cân bằng chỉ ra: Một số mối quan hệ trao đổi đơn vị xã hội, các mối quan hệ trao đổi khác có nhiều khả năng trở nên mất cân bằng và không ổn định." },
+        { q: "35. Trường phái tương tác biểu trưng (Symbolic Interactionism) gắn liền với tên tuổi của nhà lý thuyết nào?", opts: { A: "George Herbert Mead", B: "Talcott Parsons", C: "Karl Marx", D: "Vilfredo Pareto" }, ans: "A", exp: "Trường phái tương tác biểu trưng ra đời gắn liền với tên tuổi của George Herbert Mead, mặc dù ông không phải là người đưa ra thuật ngữ tương tác biểu trưng." },
+        { q: "36. Theo Henslin (2006), ví dụ nào sau đây cho thấy tầm quan trọng tối thượng của 'biểu tượng' trong đời sống xã hội của con người?", opts: { A: "Khả năng chạy trốn nhanh chóng của các loài động vật khi gặp nguy hiểm.", B: "Nếu không có biểu tượng, chúng ta khó có thể xác định được mối quan hệ thế nào với người khác, không có phim ảnh, âm nhạc, bệnh viện, chính phủ hay sách vở...", C: "Sự phát triển tự phát của các rạn san hô dưới đáy biển sâu.", D: "Phản xạ rụt tay lại của con người khi chạm vào vật nóng." }, ans: "B", exp: "Biểu tượng cho phép nhận thức không chỉ mối quan hệ mà còn nhận thức về xã hội. Nếu không có biểu tượng, chúng ta khó có thể kết nối hành động của mình với hành động của người khác. Chúng ta không thể lập kế hoạch về ngày, giờ, địa điểm... Không có biểu tượng, chúng ta không có phim ảnh, âm nhạc, bệnh viện, chính phủ và ca tôn giáo, không có lớp học và sách vở." },
+        { q: "37. Các nhà lý thuyết tương tác biểu trưng tập trung nghiên cứu khía cạnh nào ở con người?", opts: { A: "Việc phân chia giai cấp dựa trên quyền sở hữu tư liệu sản xuất.", B: "Cách con người sử dụng các biểu tượng như thế nào để bày tỏ quan điểm của mình về thế giới và để giao tiếp với người khác.", C: "Các phản xạ sinh lý của cơ thể trước các thay đổi của thời tiết và khí hậu.", D: "Sự vận hành của các bộ máy hành chính nhà nước ở cấp vĩ mô." }, ans: "B", exp: "Các nhà lý thuyết tương tác biểu trưng nghiên cứu con người sử dụng các biểu tượng như thế nào để bày tỏ quan điểm của mình về thế giới và để giao tiếp với người khác." },
+        { q: "38. Theo quan điểm tương tác biểu trưng, sự tự đánh giá bản thân (cái tôi) của một cá nhân được hình thành từ đâu?", opts: { A: "Từ các chỉ số xét nghiệm sinh học và bản đồ gen di truyền của cá nhân đó.", B: "Từ việc giải mã các phản ứng của người khác đối với hành động của mình thông qua hệ thống biểu tượng trong quá trình tương tác đối mặt.", C: "Do cá nhân tự quyết định một cách độc lập từ khi mới sinh ra mà không cần quan tâm đến ai.", D: "Do các cơ quan hành chính nhà nước cấp giấy chứng nhận định kỳ." }, ans: "B", exp: "Chúng ta nghiên cứu tương tác đối mặt, chúng ta nhìn vào cách họ tạo dựng và xây dựng một cuộc đối thoại có nghĩa. Tương tác biểu trưng là cách chúng ta tương tác với người khác, chúng ta điều chỉnh quan điểm của mình về việc chúng ta đang là ai dựa trên cái chúng ta giải mã phản ứng của người khác." },
+        { q: "39. Thuyết phương pháp luận dân tộc học (Ethnomethodology) về tương tác xã hội do nhà xã hội học nào đề xuất?", opts: { A: "Harold Garfinkel", B: "George Herbert Mead", C: "Peter Blau", D: "George Homans" }, ans: "A", exp: "Phương pháp luận dân tộc học là quan điểm thứ ba về tương tác, do Harold Garfinkel đề xuất." },
+        { q: "40. Mục tiêu nghiên cứu chính của phương pháp luận dân tộc học là gì?", opts: { A: "Đo lường tỷ lệ tăng trưởng kinh tế của các bộ tộc thiểu số ở vùng sâu vùng xa.", B: "Tìm hiểu làm thế nào mọi người (thành viên) xây dựng thế giới của họ thông qua các quy tắc hiển nhiên điều khiển sự tương tác thường ngày.", C: "Phân tích lịch sử tiến hóa của các loài động vật linh trưởng trong tự nhiên.", D: "Biên soạn các bộ luật hình sự chính thức cho các quốc gia hiện đại." }, ans: "B", exp: "Phương pháp luận dân tộc học được đề xuất để tìm hiểu làm thế nào mọi người (thành viên) xây dựng thế giới của họ. Nói cách khác, nghiên cứu xem con người sử dụng trong quá trình tương tác hàng ngày, đặc biệt là những điều mà con người nói ra." },
+        { q: "41. Khái niệm 'giả định ngầm định' hay 'quy tắc hiển nhiên' trong thuyết của Garfinkel nghĩa là gì?", opts: { A: "Các quy định pháp luật được ghi chép rõ ràng trong hiến pháp của một quốc gia.", B: "Những quy tắc hiển nhiên điều khiển sự tương tác giữa con người với con người trong đời sống hàng ngày mà bình thường chúng ta ít khi bộc lộ hay bàn luận trực tiếp.", C: "Những công thức toán học dùng để tính toán quỹ đạo chuyển động của các hành tinh.", D: "Các giáo lý tôn giáo buộc mọi tín đồ phải học thuộc lòng từ nhỏ." }, ans: "B", exp: "Phương pháp luận dân tộc học nghiên cứu những quy tắc hiển nhiên điều khiển sự tương tác giữa con người với con người trong đời sống hàng ngày." },
+        { q: "42. Thí nghiệm của Garfinkel yêu cầu sinh viên về nhà cư xử như những 'khách trọ' đối với bố mẹ nhằm mục đích gì?", opts: { A: "Để kiểm tra lòng hiếu thảo của sinh viên đối với gia đình.", B: "Để làm bộc lộ các giả định ngầm định của cha mẹ và người thân, minh họa cho việc các quy tắc này điều khiển hành vi của chúng ta như thế nào.", C: "Để giúp sinh viên tiết kiệm chi phí sinh hoạt hàng tháng.", D: "Để rèn luyện kỹ năng giao tiếp lịch sự của sinh viên ở nơi công cộng." }, ans: "B", exp: "Garfinkel đã thực hiện hai dạng nghiên cứu. Thứ nhất là thí nghiệm về sự gián đoạn trong cuộc sống hàng ngày. Thí nghiệm này yêu cầu các học sinh về nhà cư xử như thể họ là khách trọ và phản ứng của cha mẹ và người thân là bất ngờ, lúc đầu họ bối rối và sau đó khó chịu và phản ứng lại. Thí nghiệm này là sự minh họa cho trật tự xã hội trong đời sống hàng ngày được xây dựng lên như thế nào." },
+        { q: "43. Daniel Silver và Monica Lee (2012) chỉ ra rằng theo Simmel, đời sống xã hội thực tế luôn có đặc điểm gì?", opts: { A: "Luôn luôn đơn giản, dễ dàng dự đoán trước bằng các mô hình toán học.", B: "Luôn phức tạp hơn một xã hội theo 'lý thuyết', trong đó các cá nhân đan xen, phối hợp với nhau thông qua hiện thực cuộc sống.", C: "Chỉ bao gồm các tương tác một chiều từ phía nhà nước đối với công dân.", D: "Hoàn toàn hỗn loạn và không có bất kỳ mối liên hệ bền vững nào giữa các cá nhân." }, ans: "B", exp: "Daniel Silver và Monica Lee cho rằng, theo Simmel, đời sống xã hội thực tế luôn phức tạp hơn một xã hội theo lý thuyết. Trong xã hội đó, các cá nhân đan xen, phối hợp với nhau thông qua hiện thực cuộc sống." },
+        { q: "44. Trong phân loại quan hệ xã hội theo vị thế của các cá nhân hoặc nhóm, 'quan hệ chiều ngang' là gì?", opts: { A: "Quan hệ giữa những cá nhân, những nhóm có vị thế xã hội ngang bằng nhau.", B: "Quan hệ giữa người có vị thế cao và người có vị thế thấp trong hệ thống phân tầng.", C: "Quan hệ giữa các thiết chế chính trị ở trung ương và địa phương.", D: "Quan hệ kinh tế giữa các quốc gia có chủ quyền độc lập trên thế giới." }, ans: "A", exp: "Xét theo vị thế của cá nhân hoặc nhóm chiếm giữ trong cơ cấu xã hội thì có quan hệ xã hội theo chiều ngang: là quan hệ giữa những cá nhân, những nhóm có vị thế xã hội ngang bằng nhau." },
+        { q: "45. 'Quan hệ xã hội ở cấp độ vĩ mô' theo phân loại của chủ thể quan hệ xã hội là gì?", opts: { A: "Các tương tác đối mặt hàng ngày giữa hai người bạn thân trong lớp học.", B: "Hành động của một đứa trẻ khóc ăn vạ đòi bố mẹ mua đồ chơi.", C: "Quan hệ giữa các nhóm xã hội lớn, các tập đoàn hay toàn bộ xã hội hội, chiếm giữ những vị trí khác nhau trong xã hội.", D: "Sự tự tương tác trong suy nghĩ nội tâm của một cá nhân đơn lẻ." }, ans: "C", exp: "Ở cấp độ vĩ mô: Lúc này chủ thể hành động là các cá nhân xã hội, các nhà xã hội học phương Tây gần như đồng nhất quan hệ xã hội với quan hệ giữa các cá nhân, song thực tế, quan hệ của các cá nhân chỉ đạo thành một bộ phận quan trọng của toàn bộ các quan hệ xã hội mà thôi. Quan hệ vĩ mô là quan hệ giữa các nhóm xã hội lớn, các tập đoàn hay toàn bộ xã hội." },
+        { q: "46. Dựa vào tính chất chuẩn mực và bối cảnh giao tiếp, quan hệ xã hội được chia thành hai loại nào?", opts: { A: "Quan hệ kinh tế và quan hệ chính trị.", B: "Quan hệ sơ cấp (mang tính tình cảm thuần túy, gia đình, họ hàng) và quan hệ thứ cấp (mang tính chuẩn mực chính thức như luật pháp, quy chế).", C: "Quan hệ vĩnh viễn và quan hệ tạm thời.", D: "Quan hệ trong nước và quan hệ quốc tế." }, ans: "B", exp: "Tuỳ nội dung, hoặc tính chất xã hội của từng loại quan hệ mà quan hệ mang nhiều tính chất xã hội ít tính chất xã hội. Chẳng hạn như quan hệ tình cảm thuần tuý thì đây là quan hệ trong gia đình, họ hàng... cũng có cơ chế hình thành như các quan hệ xã hội khác như: tương tác dài lâu, ổn định... những tương tác xã hội ở đây căn cứ trên đặc điểm sinh hoạt, tâm lý sẵn có của họ. Ngược lại, quan hệ thứ cấp mang tính chuẩn mực chính thức được thiết lập dựa trên các văn bản chính thống như: Pháp luật, quy định, quy chế... hoặc chuẩn mực chính thức như chuẩn mực bất thành văn." },
+        { q: "47. Khái niệm 'Xung đột' (Conflict) trong đời sống xã hội được hiểu như thế nào?", opts: { A: "Là sự nhất trí hoàn toàn giữa các cá nhân về mọi mặt của đời sống.", B: "Là hình thức mà trong đó một hay nhiều người tìm cách chống lại nhau, hoặc cho đối phương mất hết hiệu lực.", C: "Là hoạt động lao động chung nhằm đạt được một mục tiêu chung của nhóm.", D: "Là sự thi đua lành mạnh tuân thủ các quy tắc hòa bình của cộng đồng." }, ans: "B", exp: "Xung đột là hình thức mà trong đó một hay nhiều người tìm cách chống lại nhau, hoặc cho đối phương mất hết hiệu lực. Danh từ xung đột thường được dùng một cách rộng rãi với nhiều ý nghĩa." },
+        { q: "48. Một số ví dụ về xung đột xã hội được đề cập bao gồm những gì?", opts: { A: "Chiến tranh bằng khí giới, xung đột ý kiến giữa chủ và thợ, xung đột quyền lợi giữa các chính đảng, sự đua tranh.", B: "Sự giúp đỡ lẫn nhau của các thành viên trong gia đình vào ngày tết.", C: "Việc học sinh đứng dậy chào giáo viên khi giáo viên bước vào lớp học.", D: "Hành động thắp hương thờ cúng tổ tiên vào ngày rằm hàng tháng." }, ans: "A", exp: "Một vài ví dụ về xung đột có thể kể tới như: Chiến tranh bằng khí giới, xung đột ý kiến giữa thế hệ mới và cũ, xung đột trong kỹ nghệ giữa chủ và thợ, xung đột quyền lợi giữa các chính đảng, xung đột cụ thể qua các lời nói, cử chỉ nhục mạ, khinh rẻ, sự đua tranh." },
+        { q: "49. 'Hợp tác' (Cooperation) được định nghĩa là gì trong các hoạt động xã hội?", opts: { A: "Việc một cá nhân đơn phương áp đặt ý chí của mình lên người khác bằng bạo lực.", B: "Là một hình thức diễn biến xã hội trong đó hai hay nhiều người cùng cộng tác với nhau để theo đuổi mục đích chung.", C: "Sự cạnh tranh quyết liệt nhằm loại bỏ đối phương ra khỏi thị trường.", D: "Việc cá nhân từ bỏ mọi mối liên hệ xã hội để sống biệt lập." }, ans: "B", exp: "Hợp tác là một hình thức diễn biến xã hội trong đó hai hay nhiều người cùng cộng tác với nhau để theo đuổi mục đích chung. Sự hợp tác là sự tương tác của cả hai phía cùng đóng góp (mặc dù sự đóng góp này có thể không ngang bằng nhau)." },
+        { q: "50. Đặc điểm nổi bật của hoạt động 'Thi đua' (Competition) là gì?", opts: { A: "Việc các bên tìm cách tiêu diệt và loại bỏ đối phương bằng mọi thủ đoạn phi pháp.", B: "Quá trình trong đó nhiều người cùng cố gắng đạt đến một mục tiêu, các bên chú ý trước hết đến mục tiêu mà mình muốn đạt tới, sau đó mới chú ý đến tính cạnh tranh với nhau, tính cạnh tranh khá ôn hòa bởi các cá nhân hướng tới việc đạt được mục tiêu chứ không phải hướng tới việc chiến thắng người khác.", C: "Sự thỏa thuận ngầm định để cùng nhau gian lận trong các kỳ thi cử.", D: "Việc cá nhân từ bỏ mọi mối liên hệ xã hội để sống biệt lập." }, ans: "B", exp: "Thi đua nói tới quá trình xã hội trong đó nhiều người cùng cố gắng đạt đến một mục tiêu. Trong thi đua, các bên chú ý trước hết đến mục tiêu mà mình muốn đạt tới, sau đó mới chú ý đến tính cạnh tranh với nhau, tính cạnh tranh khá ôn hòa bởi các cá nhân hướng tới việc đạt được mục tiêu chứ không phải hướng tới việc chiến thắng người khác." }
+    ];
+
+    let currentQuestions = [];
+    let score = 0;
+    let timerInterval;
+    let timeLeft = 0;
+
+    function startQuiz() {
+        const timeLimitInput = document.getElementById('time-limit').value;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        if (enableTimer) {
+            timeLeft = timeLimitInput * 60;
+            document.getElementById('timer-display').innerText = formatTime(timeLeft);
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                document.getElementById('timer-display').innerText = formatTime(timeLeft);
+                if (timeLeft <= 0) { clearInterval(timerInterval); submitQuiz(); }
+            }, 1000);
+        }
+
+        renderQuestions();
+    }
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${s < 10 ? '0' + s : s}`;
+    }
+
+    function renderQuestions(data = questionsData) {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = '';
+        currentQuestions = data;
+        
+        data.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `q-${index}`;
+            card.innerHTML = `
+                <p><strong>${item.q}</strong></p>
+                <div class="options">
+                    ${Object.entries(item.opts).map(([key, val]) => `
+                        <label class="option-label" onclick="selectOption(this, '${key}', '${item.ans}', ${index})">
+                            <input type="radio" name="q${index}" value="${key}" style="display:none"> ${key}. ${val}
+                        </label>
+                    `).join('')}
+                </div>
+                <div class="explanation" id="exp-${index}">${item.exp}</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    function selectOption(el, selected, correct, index) {
+        if (el.parentElement.querySelector('.selected')) return;
+        
+        el.classList.add('selected');
+        const instant = document.getElementById('instant-feedback').checked;
+        
+        if (instant) {
+            const options = el.parentElement.querySelectorAll('.option-label');
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.innerText.startsWith(correct)) opt.classList.add('correct');
+                else if (opt.classList.contains('selected') && selected !== correct) opt.classList.add('wrong');
+            });
+            document.getElementById(`exp-${index}`).style.display = 'block';
+        }
+    }
+
+    function submitQuiz() {
+        clearInterval(timerInterval);
+        let correctCount = 0;
+        currentQuestions.forEach((item, index) => {
+            const selected = document.querySelector(`#q-${index} .option-label.selected`);
+            if (selected && selected.innerText.startsWith(item.ans)) correctCount++;
+            
+            document.querySelector(`#q-${index} .explanation`).style.display = 'block';
+            const options = document.querySelectorAll(`#q-${index} .option-label`);
+            options.forEach(opt => {
+                opt.classList.add('disabled');
+                if (opt.innerText.startsWith(item.ans)) opt.classList.add('correct');
+                else if (opt.classList.contains('selected') && !opt.innerText.startsWith(item.ans)) opt.classList.add('wrong');
+            });
+        });
+
+        document.getElementById('score-details').innerText = `Bạn đạt: ${correctCount}/${currentQuestions.length} câu đúng`;
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('submit-btn').style.display = 'none';
+        window.scrollTo(0, document.getElementById('result-box').offsetTop);
+    }
+
+    function redoWrongQuestions() {
+        const wrongQuestions = currentQuestions.filter((item, index) => {
+            const selected = document.querySelector(`#q-${index} .option-label.selected`);
+            return !selected || !selected.innerText.startsWith(item.ans);
+        });
+        
+        if (wrongQuestions.length === 0) {
+            alert("Chúc mừng! Bạn đã trả lời đúng tất cả.");
+            return;
+        }
+        
+        renderQuestions(wrongQuestions);
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+        window.scrollTo(0, 0);
+    }
+
+    document.getElementById('enable-timer').onchange = (e) => {
+        document.getElementById('time-limit').disabled = !e.target.checked;
+    };
+</script>
+</body>
+</html>
