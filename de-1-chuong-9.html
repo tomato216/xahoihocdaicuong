@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đề 1. Xã hội hoá</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 1. Chương 9</h1>
+        <p>Xã hội hoá</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Xã hội hoá</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="index.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="index.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Nghiên cứu về cô bé Anna bị nuôi nhốt trong buồng cách ly với xã hội từ nhỏ là của nhà nghiên cứu nào?", opts: { A: "Sigmund Freud", B: "George Herbert Mead", C: "Kingsley Davis", D: "Karl Marx" }, ans: "C", exp: "Nghiên cứu của Kingsley Davis (1940) đã chỉ ra rằng trẻ em được nuôi dưỡng trong môi trường cô lập, không tiếp xúc với con người, chúng tỏ ra không có tình cảm và hành vi hoàn toàn bản năng, hoang dã." },
+        { q: "2. Theo quan điểm duy tâm, con người được giải thích từ sự sáng tạo và chi phối của yếu tố nào?", opts: { A: "Điều kiện kinh tế và môi trường xã hội", B: "Thánh thần và từ ý thức trừu tượng", C: "Các quy luật sinh học và di truyền", D: "Quá trình lao động và giao tiếp" }, ans: "B", exp: "Theo quan điểm duy tâm: con người được giải thích từ sự sáng tạo và chi phối của thánh thần và từ ý thức trừu tượng. Thể xác con người là vật chất và linh hồn thật sự là ý thức của con người." },
+        { q: "3. Câu nói “Tôi tư duy là tôi tồn tại” là của nhà tư tưởng nào?", opts: { A: "Aristote", B: "G.V. Hegel", C: "René Descartes", D: "Karl Marx" }, ans: "C", exp: "Theo René Descartes (1596-1650) tôi tư duy là tôi tồn tại. Sự tồn tại của con người thực chất là sự tồn tại linh hồn chứ không phải tồn tại về thể xác." },
+        { q: "4. Theo quan điểm duy vật từ thời Aristote, con người sinh ra đã có tính chất gì?", opts: { A: "Tính cá nhân", B: "Tính xã hội", C: "Tính bản năng hoang dã", D: "Tính thần thánh" }, ans: "B", exp: "Theo quan điểm duy vật: từ thời Aristote đến các nhà duy vật Pháp thế kỷ XVIII đều cho rằng: con người là một sinh vật - xã hội sinh ra đã có tính xã hội." },
+        { q: "5. Theo K.Marx, bản chất của con người trong tính hiện thực của nó là gì?", opts: { A: "Là một cá nhân trừu tượng, thuần túy sinh học", B: "Là hiện thân của ý niệm tuyệt đối", C: "Là tổng hòa những mối quan hệ xã hội", D: "Là sản phẩm của sự tiến hóa tự nhiên" }, ans: "C", exp: "K.Marx vạch rõ: Trong tính hiện thực của nó, bản chất của con người là tổng hòa những mối quan hệ xã hội." },
+        { q: "6. Quan điểm của các nhà xã hội học theo thuyết sinh học hóa cho rằng yếu tố nào quyết định sự hình thành hành vi, tính cách của con người?", opts: { A: "Môi trường giáo dục", B: "Yếu tố sinh học", C: "Môi trường xã hội", D: "Giao tiếp cá nhân" }, ans: "B", exp: "Quan điểm của các nhà xã hội học theo thuyết sinh học hóa: cũng cho rằng yếu tố sinh học quyết định sự hình thành hành vi, tính cách của con người. Tính di truyền ảnh hưởng lớn tới hành vi con người." },
+        { q: "7. Đại diện tiêu biểu cho quan điểm của các nhà xã hội học theo thuyết sinh học hóa là ai?", opts: { A: "Charles Horton Cooley", B: "Georg Herbert Mead", C: "Sigmund Freud", D: "J.G. Fichter" }, ans: "C", exp: "Đại diện cho quan điểm này là Sigmund Freud. Freud cho rằng: con người như là cá thể sinh vật đối lập với xã hội và xem sức mạnh của con người là sức mạnh của khả năng vô thức, trong đó đam mê tình dục giữ vai trò chủ đạo." },
+        { q: "8. Theo thuyết quyết định luận xã hội, nhân cách được hình thành trên cơ sở nào?", opts: { A: "Yếu tố di truyền từ cha mẹ", B: "Đa số những sự tác động của con người với thế giới xung quanh", C: "Khả năng vô thức của cá nhân", D: "Sự phát triển thể chất của cơ thể" }, ans: "B", exp: "Quan điểm này cho rằng yếu tố xã hội có tính quyết định tới quá trình xã hội hóa của từng cá nhân, nhân cách được hình thành trên cơ sở đa số những sự tác động của con người với thế giới xung quanh." },
+        { q: "9. Khái niệm con người bao gồm một thể vật chất, cảm quan, hữu tình và một khía cạnh tâm linh khác với thể chất, nhưng lại tồn tại trên cơ sở thể chất ấy. Đây là quan điểm của ai?", opts: { A: "Sigmund Freud", B: "Isunesaburo Makiguchi", C: "Karl Marx", D: "L.A. Feuerbach" }, ans: "B", exp: "Theo Isunesaburo Makiguchi: Khái niệm con người không chỉ bao hàm một thể vật chất, cảm quan, hữu tình mà còn bao gồm một khía cạnh tâm linh khác với thể chất, nhưng lại tồn tại trên cơ sở thể chất ấy." },
+        { q: "10. Theo J.G. Fichter, con người khác với loài vật ở điểm nào?", opts: { A: "Có bản năng sinh tồn mạnh mẽ hơn", B: "Khả năng suy tư, trừu tượng, có thể quyết định và lựa chọn", C: "Chỉ có thể tồn tại khi sống thành bầy đàn", D: "Phụ thuộc hoàn toàn vào môi trường tự nhiên" }, ans: "B", exp: "Theo J.G.Fichter: Con người khác với loài vật ở chỗ, có khả năng suy tư, trừu tượng, có thể quyết định và lựa chọn. Con người là con vật tự điều khiển lấy mình." },
+        { q: "11. Định nghĩa “Xã hội hóa là quá trình mà trong đó cá nhân học cách thức hoạt động tương ứng với vai trò của mình” là của nhà xã hội học nào?", opts: { A: "Macionis", B: "Neil Smelser", C: "T. Bilton", D: "Diana Kendall" }, ans: "B", exp: "Theo Neil Smelser (nhà xã hội học Mỹ): Xã hội hoá là quá trình mà trong đó cá nhân học cách thức hoạt động tương ứng với vai trò của mình." },
+        { q: "12. Theo Macionis, xã hội hóa là phương tiện để làm gì?", opts: { A: "Dạy văn hóa cho mỗi thế hệ", B: "Đạt được quyền lực trong xã hội", C: "Thay đổi bản chất sinh học của con người", D: "Cạnh tranh sinh tồn giữa các cá nhân" }, ans: "A", exp: "Theo Macionis: xã hội hóa là một quá trình qua đó kinh nghiệm xã hội cung cấp cho cá nhân những phẩm chất và năng lực mà chúng ta kết hợp với tình trạng con người hoàn toàn đối với xã hội nói chung. Xã hội hóa là phương tiện dạy văn hóa cho mỗi thế hệ." },
+        { q: "13. Theo Diana Kendall, xã hội hóa là quá trình tương tác diễn ra trong thời gian bao lâu?", opts: { A: "Chỉ trong giai đoạn tuổi ấu thơ", B: "Từ lúc sinh ra đến khi trưởng thành", C: "Suốt đời của một cá nhân với xã hội", D: "Từ khi bắt đầu đi học đến khi đi làm" }, ans: "C", exp: "Theo Diana Kendall (2004), xã hội hóa là quá trình tương tác suốt đời của một cá nhân với xã hội, thông qua đó, cá nhân tạo được bản sắc riêng của mình và thu được các kỹ năng về xã hội." },
+        { q: "14. Theo Andreeva, quá trình xã hội hóa là quá trình hai mặt. Mặt thứ nhất là gì?", opts: { A: "Cá nhân tái sản xuất một cách chủ động hệ thống các mối quan hệ xã hội", B: "Cá nhân tiếp nhận kinh nghiệm xã hội bằng cách thâm nhập vào môi trường xã hội", C: "Cá nhân tách rời khỏi môi trường xã hội để phát triển bản ngã", D: "Cá nhân thay đổi hoàn toàn các giá trị của xã hội" }, ans: "B", exp: "Theo Andreeva (nhà xã hội học Nga): Xã hội hóa là quá trình hai mặt - một mặt cá nhân tiếp nhận kinh nghiệm xã hội bằng cách thâm nhập vào môi trường xã hội, vào hệ thống các quan hệ xã hội." },
+        { q: "15. Trong quá trình xã hội hóa, mặt thứ hai thể hiện sự tác động của con người trở lại môi trường xã hội thông qua hoạt động của mình được gọi là gì?", opts: { A: "Thu nhận kinh nghiệm", B: "Tái sản xuất", C: "Đóng vai", D: "Bắt chước" }, ans: "B", exp: "Mặt thứ hai của quá trình xã hội hóa này thể hiện sự tác động của con người trở lại môi trường xã hội thông qua hoạt động của mình. Cá nhân không đơn thuần thu nhận kinh nghiệm mà còn chuyển nó thành những giá trị, tâm thế, xu hướng của cá nhân để tái sản xuất chúng trong xã hội." },
+        { q: "16. Quá trình xã hội hóa bắt đầu từ khi nào theo quan điểm phổ biến nhất?", opts: { A: "Khi con người bắt đầu đi học", B: "Khi con người được sinh ra", C: "Khi con người bước vào tuổi vị thành niên", D: "Khi con người bắt đầu lao động" }, ans: "B", exp: "Nhìn chung, các nhà khoa học khi nghiên cứu về quá trình xã hội hóa đều cho rằng nó bắt đầu từ khi con người được sinh ra." },
+        { q: "17. Có ý kiến cho rằng quá trình xã hội hóa có thể bắt đầu từ khi thai nhi được bao nhiêu tháng tuổi?", opts: { A: "1-2 tháng tuổi", B: "3-4 tháng tuổi", C: "6-7 tháng tuổi", D: "8-9 tháng tuổi" }, ans: "C", exp: "Tuy nhiên cũng có ý kiến cho rằng xã hội hóa bắt đầu khi thai nhi có thể phản ứng với tác động từ bên ngoài. Đã có những nghiên cứu chứng minh rằng khi thai nhi được 6-7 tháng tuổi có thể tiếp nhận những tác động từ bên ngoài như ánh sáng, âm thanh..." },
+        { q: "18. Theo quan điểm phổ biến của các nhà xã hội học, quá trình xã hội hóa kết thúc khi nào?", opts: { A: "Khi cá nhân trưởng thành về mặt sinh lý", B: "Khi cá nhân bắt đầu lao động", C: "Khi cá nhân về hưu", D: "Kéo dài suốt đời và chỉ chấm dứt khi cuộc sống chấm dứt" }, ans: "D", exp: "Tuy vậy, quan điểm phổ biến của các nhà xã hội học khi xem xét quá trình xã hội hóa cho rằng đó là một quá trình kéo dài. Ranh giới giữa các giai đoạn này không phải lúc nào cũng rõ ràng... quá trình xã hội hóa chỉ chấm dứt khi cuộc sống của chúng ta chấm dứt mà thôi." },
+        { q: "19. Theo B. Skinner, hành vi của con người chịu ảnh hưởng của yếu tố nào?", opts: { A: "Kết quả mà chính nó gây ra", B: "Sự quy định của bộ gen di truyền", C: "Những khát vọng vô thức", D: "Áp lực từ những người xung quanh" }, ans: "A", exp: "B.Skinner cho rằng hành vi chịu ảnh hưởng của kết quả mà chính nó gây ra. Con người luôn muốn giành được những gì tốt đẹp nhiều nhất có thể như thành công, hạnh phúc, và tránh những hậu quả xấu." },
+        { q: "20. Theo G.H. Mead, quá trình hình thành nhân cách bao gồm mấy giai đoạn khác nhau?", opts: { A: "2 giai đoạn", B: "3 giai đoạn", C: "4 giai đoạn", D: "5 giai đoạn" }, ans: "B", exp: "Mead cho rằng: quá trình hình thành nhân cách bao gồm ba giai đoạn khác nhau: sự bắt chước những mẫu hành vi của người lớn, giai đoạn trò chơi khi em tiếp nhận những hành vi của mọi người, như thực hiện đóng vai trò chơi tập thể." },
+        { q: "21. Trong lý thuyết của Mead, giai đoạn nào trẻ sao chụp lại hành vi của những người xung quanh một cách chủ động hoặc bị động?", opts: { A: "Trò chơi", B: "Đóng vai", C: "Bắt chước", D: "Học tập" }, ans: "C", exp: "Bắt chước: đây là giai đoạn trẻ sao chụp lại hành vi của những người xung quanh một cách chủ động hoặc bị động." },
+        { q: "22. Trong lý thuyết của Mead, giai đoạn nào giúp con người hiểu được những suy nghĩ và hành động của người khác khi họ thực hiện vai trò của mình?", opts: { A: "Bắt chước", B: "Đóng vai", C: "Trò chơi", D: "Tái sản xuất" }, ans: "B", exp: "Đóng vai: đây là giai đoạn mà con người đã nhận thức được những hành vi tương ứng với vai trò xã hội nhất định... Giai đoạn này giúp cho con người hiểu được những suy nghĩ và hành động của người khác khi họ thực hiện vai trò của mình." },
+        { q: "23. Theo Sigmund Freud, nhân cách được tạo nên bởi ba nhân tố nào?", opts: { A: "Thể xác, tâm lý, môi trường", B: "Cái nó (id), cái tôi (ego) và cái siêu tôi (super-ego)", C: "Nhận thức, tình cảm, hành vi", D: "Bản năng, ý thức, tiềm thức" }, ans: "B", exp: "Ông cho rằng, nhân cách được tạo nên bởi ba nhân tố: cái nó (id), cái tôi (ego) và cái siêu tôi (super- ego)." },
+        { q: "24. Theo Freud, nhân tố nào hoạt động theo nguyên tắc thỏa mãn, cung cấp những động lực sinh học vô thức?", opts: { A: "Cái siêu tôi", B: "Cái tôi", C: "Cái nó", D: "Cái tôi trong gương" }, ans: "C", exp: "Trong đó cái nó cung cấp những động lực sinh học vô thức... Cái nó hoạt động theo nguyên tắc thoả mãn." },
+        { q: "25. Theo Freud, nhân tố nào là trung gian giữa những yêu cầu của xã hội được mỗi cá nhân tiếp thu và cái nó, hoạt động theo nguyên tắc thực tiễn?", opts: { A: "Cái nó", B: "Cái tôi", C: "Cái siêu tôi", D: "Cái ngã" }, ans: "B", exp: "Cái tôi là cái trung gian giữa những yêu cầu của xã hội được mỗi cá nhân tiếp thu và cái nó... Cái tôi hoạt động theo nguyên tắc thực tiễn." },
+        { q: "26. Giai đoạn môi miệng (oral stage) theo phân chia của Sigmund Freud diễn ra ở độ tuổi nào?", opts: { A: "Từ khi sinh ra đến 1,5 tuổi", B: "Từ 1,5 - 3 tuổi", C: "Từ 3 - 5 tuổi", D: "Từ 5 tuổi trở lên đến tuổi vị thành niên" }, ans: "A", exp: "Giai đoạn môi miệng (oral stage): từ khi sinh ra đến 1,5 tuổi. Sự thoả mãn được thực hiện qua ăn uống, mút, bú mẹ." },
+        { q: "27. Trong giai đoạn đương vật (phallic stage) từ 3 - 5 tuổi theo Freud, có mặt phát triển chính nào?", opts: { A: "Học cách kiểm soát cơ thể qua việc đại tiện", B: "Thăng hoa tình yêu đối với bố mẹ", C: "Phát triển của siêu tôi, mở rộng phạm vi quá trình bảo vệ cái tôi", D: "Thể nhận thức và ý thức hành vi ở người lớn" }, ans: "C", exp: "Giai đoạn đương vật (phallic stage): từ 3 - 5 tuổi. Trong giai đoạn này có 3 mặt phát triển chính: hứng thú tình dục, phát triển của siêu tôi, mở rộng phạm vi quá trình bảo vệ cái tôi." },
+        { q: "28. Theo Eric Erickson, quá trình xã hội hóa tương ứng với bao nhiêu giai đoạn phát triển tâm lý?", opts: { A: "3 giai đoạn", B: "5 giai đoạn", C: "6 giai đoạn", D: "8 giai đoạn" }, ans: "D", exp: "Theo Eric Erickson, quá trình xã hội hóa tương ứng với 8 giai đoạn phát triển tâm lý. Mỗi giai đoạn được đặc trưng bởi một dạng khủng hoảng tâm lý." },
+        { q: "29. Trong lý thuyết của Erickson, giai đoạn 1 (từ 0-1 tuổi) được đặc trưng bởi sự khủng hoảng tâm lý nào?", opts: { A: "Tự chủ và nghi ngờ, xấu hổ", B: "Niềm tin và nghi ngờ", C: "Chăm chỉ và kém cỏi", D: "Sáng tạo và ngừng trệ" }, ans: "B", exp: "Giai đoạn 1 (từ 0-1 tuổi): Niềm tin và nghi ngờ. Sự quan tâm, chăm sóc của bố mẹ tạo niềm tin, cảm giác được thỏa mãn. Nếu được giải quyết thỏa đáng vấn đề này, bé có ý thức về sự an toàn, ngược lại, bé sẽ nảy sinh cảm giác mất lòng tin, lo lắng và sợ hãi." },
+        { q: "30. Theo Erickson, \"Thể hiện bản thân và sự lẫn lộn về vai trò\" là đặc trưng của giai đoạn nào?", opts: { A: "Giai đoạn 3 (từ 3-6 tuổi)", B: "Giai đoạn 4 (từ 6-12 tuổi)", C: "Giai đoạn 5 (vị thành niên)", D: "Giai đoạn 6 (mới trưởng thành)" }, ans: "C", exp: "Giai đoạn 5 (vị thành niên): Thể hiện bản thân và sự lẫn lộn về vai trò. Giai đoạn trẻ chuyển từ trẻ em sang người lớn. Trẻ vị thành niên phải đối mặt với nhiệm vụ để trở thành người lớn." },
+        { q: "31. Theo Andreeva, quá trình xã hội hóa được phân đoạn dựa trên cơ sở nào?", opts: { A: "Sự phát triển sinh lý", B: "Các hoạt động chủ đạo của cá nhân trong suốt cuộc đời", C: "Sự khủng hoảng tâm lý", D: "Quá trình nhận thức đạo đức" }, ans: "B", exp: "Andreeva đưa ra cách phân đoạn dựa trên các hoạt động chủ đạo của cá nhân trong suốt cuộc đời của mình – Theo bà, quá trình xã hội hóa bao gồm 3 giai đoạn." },
+        { q: "32. Giai đoạn học hành theo phân chia của Andreeva thuộc về giai đoạn lớn nào?", opts: { A: "Giai đoạn trước lao động", B: "Giai đoạn lao động", C: "Giai đoạn sau lao động", D: "Giai đoạn hưu trí" }, ans: "A", exp: "Giai đoạn trước lao động: Bao gồm toàn bộ thời kỳ con người sinh ra đến khi họ bắt đầu hoạt động lao động chính thức. Giai đoạn này được phân chia thành 2 giai đoạn nhỏ: Giai đoạn trẻ thơ... Giai đoạn học hành." },
+        { q: "33. Theo Andreeva, hoạt động chủ đạo trong giai đoạn trẻ thơ là gì?", opts: { A: "Thu thập kiến thức khoa học", B: "Vui chơi trong các vườn trẻ, nhà mẫu giáo", C: "Bắt chước người lớn làm việc", D: "Giao tiếp với nhóm bạn đồng trang lứa" }, ans: "B", exp: "Giai đoạn trẻ thơ: là giai đoạn xã hội hóa sớm, bắt đầu từ khi trẻ mới sinh cho đến khi đi học. Đứa trẻ tiếp thu thụ động và máy móc các hành vi. Hoạt động chủ đạo là vui chơi trong các vườn trẻ, nhà mẫu giáo." },
+        { q: "34. Theo Andreeva, giai đoạn nào cá nhân không chỉ thu nhận những kinh nghiệm xã hội, mà còn tái tạo chúng?", opts: { A: "Giai đoạn trẻ thơ", B: "Giai đoạn học hành", C: "Giai đoạn lao động", D: "Giai đoạn sau lao động" }, ans: "C", exp: "Giai đoạn lao động: Bắt đầu từ khi con người bước vào quá trình lao động chính thức cho đến khi kết thúc quá trình này là lao động trí óc hoặc lao động chân tay. Ở thời kỳ này cá nhân không chỉ thu nhận những kinh nghiệm xã hội, mà còn tái tạo chúng." },
+        { q: "35. Quá trình xã hội hóa hướng tới một trong những mục đích cơ bản nào sau đây?", opts: { A: "Cá nhân phải từ bỏ hoàn toàn cá tính riêng", B: "Cá nhân cần phải được dạy các kỹ năng cần thiết mà xã hội đòi hỏi có, để hòa nhập vào xã hội", C: "Cá nhân chỉ tập trung phát triển thể chất", D: "Cá nhân cách ly khỏi các nhóm xã hội để tự hoàn thiện" }, ans: "B", exp: "Quá trình xã hội hóa hướng tới mục đích cơ bản sau đây: Cá nhân cần phải được dạy các kỹ năng cần thiết mà xã hội đòi hỏi có, để cho cá nhân đó hoà nhập vào xã hội của chính họ." },
+        { q: "36. Quan niệm nào cho rằng: Xã hội hóa là diễn tiến theo đó xã hội truyền văn hoá của mình từ một thế hệ qua thế hệ tiếp theo và làm cho cá nhân thích ứng bởi những nếp sống, sinh hoạt?", opts: { A: "Quan niệm khách quan", B: "Quan niệm chủ quan", C: "Quan niệm dung hòa", D: "Quan niệm sinh học hóa" }, ans: "A", exp: "Quan niệm khách quan: xã hội ảnh hưởng tới cá nhân. Xã hội hoá là diễn tiến theo đó xã hội truyền văn hoá của mình từ một thế hệ qua thế hệ tiếp theo và làm cho cá nhân thích ứng bởi những nếp sống, sinh hoạt được chấp nhận." },
+        { q: "37. Theo quan niệm chủ quan, tiêu chuẩn hóa nghĩa là gì?", opts: { A: "Xã hội bắt buộc mọi người phải giống hệt nhau", B: "Được thể hiện trong sự cố gắng của cá nhân muốn giống những người khác", C: "Cá nhân tạo ra các quy tắc mới cho xã hội", D: "Sự loại bỏ những cá nhân không tuân thủ luật pháp" }, ans: "B", exp: "Tiêu chuẩn hóa: được thể hiện trong sự cố gắng của cá nhân muốn giống những người khác, được thể hiện trong sự nắm vững những phương pháp giao tiếp chung và hoạt động chung." },
+        { q: "38. Khái niệm “Cái tôi trong gương” được phân tích qua các bước bởi nhà nghiên cứu nào?", opts: { A: "Joseph.H.Fichter", B: "Lawrence Kohlberg", C: "Charles Horton Cooley", D: "Sigmund Freud" }, ans: "C", exp: "Charles Horton Cooley lưu ý trong tác phẩm bản tính con người và trật tự xã hội... Quá trình này được phân tích thông qua khái niệm phản ứng “cái tôi trong gương” theo các bước." },
+        { q: "39. Bước cuối cùng trong quá trình \"Cái tôi trong gương\" của Cooley là gì?", opts: { A: "Cá nhân thực hiện hành vi", B: "Cá nhân tiếp nhận và lý giải những phản ứng của người khác", C: "Cá nhân dự đoán hành động của người khác", D: "Cá nhân phản ứng lại với những đánh giá của những người khác bằng sự kiêu hãnh hay xấu hổ" }, ans: "D", exp: "Quá trình này được phân tích thông qua khái niệm phản ứng “cái tôi trong gương” theo các bước... Sau đó, cá nhân phản ứng lại với những đánh giá của những người khác bằng sự kiêu hãnh hay xấu hổ." },
+        { q: "40. Lawrence Kohlberg xác định ba mức độ phát triển đạo đức hình thành trong quá trình xã hội hóa là gì?", opts: { A: "Bắt chước, đóng vai, trò chơi", B: "Tiền quy ước, quy ước, và hậu quy ước", C: "Bản năng, ý thức, vô thức", D: "Nhận thức, thái độ, hành vi" }, ans: "B", exp: "Lawrence Kohlberg xác định ba mức độ phát triển đạo đức hình thành trong quá trình xã hội hóa gồm ba giai đoạn: tiền quy ước, quy ước, và hậu quy ước." },
+        { q: "41. Theo Kohlberg, ở giai đoạn nào hành vi đạo đức cá nhân chịu sự chi phối của các tiêu chuẩn chế tài (khen thưởng hay trừng phạt)?", opts: { A: "Giai đoạn tiền quy ước", B: "Giai đoạn quy ước", C: "Giai đoạn hậu quy ước", D: "Giai đoạn trưởng thành" }, ans: "A", exp: "Giai đoạn tiền quy ước, trong đó hành vi đạo đức cá nhân chịu sự chi phối của các tiêu chuẩn chế tài (khen thưởng hay trừng phạt)." },
+        { q: "42. Môi trường xã hội hóa nào được xem là quan trọng bậc nhất của cá nhân, bởi vì quá trình xã hội hóa bắt đầu diễn ra tại đây?", opts: { A: "Nhà trường", B: "Gia đình", C: "Các nhóm bạn", D: "Mạng xã hội" }, ans: "B", exp: "Gia đình: Đây là môi trường xã hội hoá quan trọng bậc nhất của cá nhân, bởi vì quá trình xã hội hoá của con người từ những năm tháng đầu tiên của cuộc đời có ảnh hưởng, quyết định tới những thái độ và hành vi khi đã lớn; mà hầu hết mỗi cá nhân đều sinh ra và lớn lên trong gia đình." },
+        { q: "43. Trong giai đoạn tuổi ấu thơ, trẻ sơ sinh hướng về thế giới xung quanh và bắt đầu quá trình học hỏi thông qua điều gì?", opts: { A: "Bắt chước bạn bè", B: "Các giác quan (nghe, nhìn, ăn uống, cảm giác nóng lạnh)", C: "Xem tivi và internet", D: "Lắng nghe các bài giảng đạo đức" }, ans: "B", exp: "Chỉ sau khi sinh ra không lâu, trẻ sơ sinh đã hướng về thế giới xung quanh và bắt đầu quá trình học hỏi. Các giác quan của trẻ hoạt động thể hiện ở các cảm giác nghe, nhìn, ăn uống, cảm giác nóng lạnh." },
+        { q: "44. Theo T.Bilton, môi trường xã hội đầu tiên mà bọn trẻ tiếp xúc được những suy nghĩ và hành vi khác với những điều mà chúng học ở nhà là môi trường nào?", opts: { A: "Nhóm bạn đồng trang lứa", B: "Các câu lạc bộ thể thao", C: "Trường học", D: "Truyền thông đại chúng" }, ans: "C", exp: "Theo T.Bilton đây là “môi trường xã hội đầu tiên mà bọn trẻ tiếp xúc được những suy nghĩ và hành vi khác với những điều mà chúng học ở nhà”. Đây là một thiết chế, lập ra một cách có chủ định, được cấu trúc và tổ chức cao. Đó chính là trường học." },
+        { q: "45. Đặc điểm nổi bật của trường học là một thiết chế được xây dựng như thế nào?", opts: { A: "Lập ra một cách tự phát, không có luật lệ", B: "Lập ra một cách có chủ định, được cấu trúc và tổ chức cao nhằm phổ biến những kỹ năng và kiến thức cần thiết", C: "Chủ yếu để phục vụ nhu cầu giải trí của trẻ", D: "Chỉ tập trung vào việc phát triển thể chất" }, ans: "B", exp: "Đây là một thiết chế, lập ra một cách có chủ định, được cấu trúc và tổ chức cao nhằm phổ biến những kỹ năng và kiến thức cần thiết, nhằm thực hiện các quy luật mà xã hội mong đợi." },
+        { q: "46. Trong các môi trường xã hội hóa, nhóm nào đặc biệt là nhóm mang tính chất ngang hàng?", opts: { A: "Gia đình", B: "Trường học", C: "Cơ quan nhà nước", D: "Các nhóm xã hội (nhóm bạn)" }, ans: "D", exp: "Bên cạnh hai môi trường xã hội hóa trên, các nhóm xã hội (đặc biệt là nhóm bạn ngang hàng) cũng là một môi trường xã hội hóa quan trọng có ảnh hưởng lớn đến sự hình thành nhân cách của mỗi cá nhân." },
+        { q: "47. Truyền thông đại chúng cung cấp điều gì giúp cho quá trình xã hội hóa cá nhân được khuyến khích để làm như vậy?", opts: { A: "Những quy định pháp luật bắt buộc", B: "Kinh nghiệm gián tiếp về các sự kiện và quá trình xảy ra vượt khỏi nghiệm xã hội của chúng ta", C: "Kinh nghiệm trực tiếp thông qua lao động chân tay", D: "Những hình phạt nghiêm khắc" }, ans: "B", exp: "Bilton đã viết “truyền thông cung cấp cho chúng ta kinh nghiệm gián tiếp về các sự kiện và quá trình xảy ra vượt kinh nghiệm xã hội của chúng ta. Chúng ta ngày càng biết nhiều hơn, và được khuyến khích để làm như vậy thông qua các kinh nghiệm trung gian ở ti vi, phim ảnh... -\"." },
+        { q: "48. Theo T.Bilton, thông tin phản ảnh thế giới xã hội từ truyền thông đại chúng có đặc điểm gì?", opts: { A: "Luôn đúng đắn và phản ánh khách quan tuyệt đối", B: "Không đơn giản cung cấp thông tin phản ảnh thế giới xã hội con người mà đúng ra chúng cấu trúc thế giới đó cho chúng ta", C: "Chỉ có tác dụng tiêu cực đến đạo đức con người", D: "Chỉ đóng vai trò giải trí, không có ý nghĩa giáo dục" }, ans: "B", exp: "“không đơn giản cung cấp thông tin phản ảnh thế giới xã hội con người mà đúng ra chúng cấu trúc thế giới đó cho chúng ta thông qua cách bằng cách gia tăng tri thức của chúng ta về thế giới mà còn giúp chúng ta có ý thức về nó”." },
+        { q: "49. Các yếu tố của môi trường xã hội hóa tác động mạnh nhẹ khác nhau, truyền thông đại chúng cũng vậy, điều này phụ thuộc vào yếu tố nào của cá nhân?", opts: { A: "Chiều cao và cân nặng", B: "Năng lực thể chất", C: "Các đặc điểm kinh tế - xã hội - chính trị - địa lý", D: "Yếu tố di truyền từ cha mẹ" }, ans: "C", exp: "Các yếu tố của môi trường xã hội hóa tác động mạnh nhẹ khác nhau, truyền thông đại chúng cũng vậy, điều này phụ thuộc vào các đặc điểm kinh tế - xã hội - chính trị - địa lý của cá nhân." },
+        { q: "50. Khi trưởng thành, các cá nhân tham gia vào các tổ chức xã hội cụ thể, một trong những môi trường chiếm một khoảng thời gian lớn đối với những người đang trong độ tuổi lao động là gì?", opts: { A: "Môi trường trường học", B: "Nơi làm việc", C: "Vườn trẻ, nhà mẫu giáo", D: "Câu lạc bộ hưu trí" }, ans: "B", exp: "Nơi làm việc thường chiếm một khoảng thời gian lớn đối với những người đang trong độ tuổi lao động. Tại nơi làm việc, con người tiếp tục được xã hội hóa thành nghề nghiệp và ứng xử phù hợp với nghề nghiệp đó." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
