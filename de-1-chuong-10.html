@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Biến đổi xã hội</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 1. Chương 10</h1>
+        <p>Biến đổi xã hội</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Biến đổi xã hội</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-6.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-6.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Nhà triết học cổ đại Heraclit đã phát biểu câu nói nổi tiếng nào để bàn về tính liên tục của biến đổi xã hội?", opts: { A: "Không ai tắm hai lần trên một dòng sông", B: "Vạn vật đều chảy và không có gì tĩnh lặng", C: "Xã hội luôn vận động không ngừng", D: "Sự biến đổi là thước đo của thời gian" }, ans: "A", exp: "Bàn về biến đổi xã hội, cho đến nay nhiều người vẫn nhắc lại câu nói nổi tiếng mà nhà triết học cổ đại Heraclit đã phát biểu: Không ai tắm hai lần trên một dòng sông." },
+        { q: "2. John Macionis quan niệm biến đổi xã hội đề cập đến sự thay đổi của yếu tố nào theo thời gian?", opts: { A: "Các tầng lớp và giai cấp xã hội", B: "Văn hóa và các thiết chế xã hội", C: "Hệ thống chính trị và pháp luật", D: "Các cá nhân và nhóm nhỏ" }, ans: "B", exp: "John Macionis phát biểu rằng, biến đổi xã hội đề cập đến sự thay đổi của văn hóa và các thiết chế xã hội qua thời gian." },
+        { q: "3. Biến đổi xã hội là khái niệm phản ánh bất cứ sự thay đổi nào của yếu tố nào trong xã hội?", opts: { A: "Cấu trúc xã hội hoặc thiết chế xã hội", B: "Quan hệ sản xuất và lực lượng sản xuất", C: "Đời sống tinh thần và vật chất", D: "Cá nhân và cộng đồng" }, ans: "A", exp: "Từ quan điểm của các tác giả vừa đề cập đến, chúng ta có thể khái quát thành quan niệm: Biến đổi xã hội là khái niệm phản ánh bất cứ sự thay đổi nào của cấu trúc xã hội hoặc của thiết chế xã hội." },
+        { q: "4. Khi xem xét biến đổi xã hội, người nghiên cứu cần phải chỉ ra cụ thể khía cạnh nào của cấu trúc xã hội, hay thiết chế xã hội được xem xét và đặt nó vào yếu tố nào?", opts: { A: "Hai không gian khác nhau", B: "Hai thời điểm khác nhau", C: "Hai nền văn hóa khác nhau", D: "Hai tầng lớp xã hội khác nhau" }, ans: "B", exp: "Khi xem xét biến đổi xã hội, chúng ta phải chỉ ra cụ thể khía cạnh nào của cấu trúc xã hội, hay khía cạnh nào của thiết chế xã hội được xem xét. Tiếp đó, chỉ ra sự thay đổi của khía cạnh đó qua hai thời điểm khác nhau." },
+        { q: "5. Theo John Macionis, biến đổi xã hội có bao nhiêu đặc điểm cơ bản?", opts: { A: "Hai đặc điểm", B: "Ba đặc điểm", C: "Bốn đặc điểm", D: "Năm đặc điểm" }, ans: "C", exp: "Theo quan điểm của John Macionis, biến đổi xã hội có bốn đặc điểm sau: diễn ra liên tục, có thể được đặt kế hoạch trước cũng có thể không có dự tính trước, thường gây tranh cãi, có ý nghĩa lớn hơn những biến đổi khác." },
+        { q: "6. Đặc điểm đầu tiên của biến đổi xã hội theo John Macionis là gì?", opts: { A: "Thường gây tranh cãi", B: "Có thể được đặt kế hoạch trước", C: "Diễn ra liên tục", D: "Mang tính đồng nhất" }, ans: "C", exp: "Thứ nhất, biến đổi xã hội diễn ra liên tục. Các khía cạnh khác nhau của thiết chế xã hội và cấu trúc xã hội không ngừng thay đổi theo thời gian." },
+        { q: "7. Việc tạo ra mạng internet lại làm thay đổi toàn bộ thế giới phản ánh đặc điểm nào của biến đổi xã hội?", opts: { A: "Biến đổi xã hội diễn ra liên tục", B: "Biến đổi xã hội có ý nghĩa lớn hơn những biến đổi khác", C: "Biến đổi xã hội thường gây tranh cãi", D: "Biến đổi xã hội có thể được đặt kế hoạch trước" }, ans: "B", exp: "Thứ tư, có những biến đổi xã hội có ý nghĩa lớn hơn những biến đổi khác. Chẳng hạn, nếu việc thay đổi mốt thời trang của một nhóm người nào đó chỉ là một biến đổi xã hội mang ý nghĩa không lớn lắm thì việc tạo ra máy tính và mạng internet lại làm thay đổi toàn bộ thế giới." },
+        { q: "8. Lý thuyết tiến hóa về biến đổi xã hội cho rằng các xã hội tiến hóa theo xu hướng nào?", opts: { A: "Từ phức tạp thành đơn giản", B: "Từ đơn giản, nguyên sơ thành xã hội phức tạp, tiến bộ", C: "Vận động theo chu kỳ sinh ra và diệt vong", D: "Luôn giữ ở trạng thái cân bằng" }, ans: "B", exp: "Lý thuyết tiến hóa về sự biến đổi cho rằng các xã hội tiến hóa từ những xã hội đơn giản, nguyên sơ thành xã hội phức tạp, tiến bộ." },
+        { q: "9. Dưới góc nhìn của lý thuyết xung đột, biến đổi xã hội bắt nguồn từ đâu?", opts: { A: "Sự phân công lao động chuyên môn hóa", B: "Sự đấu tranh của những nhóm bị áp bức để thay đổi số phận của họ", C: "Trạng thái cân bằng của các thiết chế xã hội", D: "Sự tổng hợp giữa trật tự và xung đột" }, ans: "B", exp: "Dưới góc nhìn của lý thuyết xung đột, biến đổi xã hội bắt nguồn từ sự đấu tranh của những nhóm bị áp bức để thay đổi số phận của họ. Biến đổi xã hội là kết quả của xung đột và đấu tranh." },
+        { q: "10. Lý thuyết chu kỳ về biến đổi xã hội quan niệm các xã hội phát triển theo quá trình nào?", opts: { A: "Trật tự - Xung đột - Lấy lại trật tự", B: "Hình thành, trưởng thành, suy tàn, và diệt vong", C: "Đơn giản - Phức tạp - Đơn giản", D: "Tích hợp liên tục các giá trị văn hóa" }, ans: "B", exp: "Lý thuyết chu kỳ về biến đổi xã hội cho rằng các xã hội hình thành, trưởng thành, suy tàn, và diệt vong. Không có xã hội nào tồn tại mãi mãi." },
+        { q: "11. Theo tiếp cận cấu trúc chức năng, xã hội là một hệ thống cân bằng. Khi những sự kiện bên ngoài xã hội làm đảo lộn sự cân bằng này, các thiết chế xã hội sẽ phản ứng như thế nào?", opts: { A: "Tự sụp đổ và tiêu vong", B: "Có những điều chỉnh để khôi phục sự cân bằng", C: "Chuyển sang một hình thái kinh tế xã hội mới", D: "Tạo ra xung đột giai cấp gay gắt" }, ans: "B", exp: "Khi mà những sự kiện bên trong hay bên ngoài xã hội làm đảo lộn sự cân bằng của xã hội thì các thiết chế xã hội có những điều chỉnh để khôi phục sự cân bằng." },
+        { q: "12. Lý thuyết nào khẳng định các xã hội cố gắng giữ trạng thái ổn định, và khi mâu thuẫn diễn ra, xung đột xuất hiện và tạo nên biến đổi xã hội để hướng tới kết quả có thể tốt đẹp hơn?", opts: { A: "Lý thuyết tiến hóa", B: "Lý thuyết xung đột", C: "Lý thuyết cấu trúc chức năng", D: "Lý thuyết tích hợp" }, ans: "D", exp: "Lý thuyết tích hợp về biến đổi xã hội khẳng định các xã hội biến đổi, các xã hội cố gắng giữ trạng thái ổn định... Khi mà những điều này diễn ra, xung đột xã hội xuất hiện và tạo nên biến đổi xã hội. Biến đổi này tạo ra kết quả tốt đẹp hơn, nhưng cũng có thể không tốt đẹp hơn." },
+        { q: "13. Một trong những nguyên nhân quan trọng tạo nên biến đổi xã hội là biến đổi tự nhiên. Điều này thường thể hiện qua yếu tố nào?", opts: { A: "Sự gia tăng dân số", B: "Thảm họa tự nhiên như động đất, núi lửa phun trào", C: "Các cuộc cách mạng công nghiệp", D: "Xung đột giữa các giai cấp" }, ans: "B", exp: "Biến đổi tự nhiên là một trong những nguyên nhân quan trọng tạo nên biến đổi xã hội. Thảm họa tự nhiên như động đất, núi lửa phun trào, hay lũ lụt thường tạo nên những biến đổi xã hội sâu sắc." },
+        { q: "14. Nguyên nhân thứ hai tạo nên những biến đổi xã hội là sự thay đổi dân số, thể hiện chủ yếu ở khía cạnh nào?", opts: { A: "Sự suy giảm tuổi thọ", B: "Sự suy giảm dân số ở các nước đang phát triển", C: "Sự gia tăng hay suy giảm dân số, việc di cư", D: "Sự triệt tiêu các cộng đồng nông thôn" }, ans: "C", exp: "Nguyên nhân thứ hai tạo nên những biến đổi xã hội là sự thay đổi dân số. Trước hết, sự gia tăng hay suy giảm dân số có thể tạo ra những biến đổi xã hội... Cùng với sự gia tăng hay suy giảm dân số, việc di cư cũng là nhân tố tạo nên những biến đổi xã hội." },
+        { q: "15. Dòng di cư từ nông thôn ra đô thị tạo nên những biến đổi xã hội trên nhiều mặt, biểu hiện rõ nhất qua điều gì?", opts: { A: "Sự mở rộng nhiều thành phố, thay đổi cấu trúc dân cư của cộng đồng nông thôn", B: "Sự gia tăng xung đột sắc tộc tại đô thị", C: "Sự quay trở lại của văn hóa truyền thống", D: "Sự sụp đổ của các thiết chế tôn giáo" }, ans: "A", exp: "Những dòng di cư từ nông thôn ra đô thị, từ thành phố này đến thành phố khác... tạo nên những biến đổi xã hội trên nhiều mặt. Đó là sự mở rộng nhiều thành phố, sự thay đổi cấu trúc dân cư của các cộng đồng nông thôn." },
+        { q: "16. Thomas L.Friedman trong quyển sách \"Thế giới phẳng\" đã gọi giai đoạn sau năm 2000 cho đến nay là gì?", opts: { A: "Toàn cầu hóa 1.0", B: "Toàn cầu hóa 2.0", C: "Toàn cầu hóa 3.0", D: "Hiện đại hóa hậu công nghiệp" }, ans: "C", exp: "Bàn về internet và những thay đổi lớn lao của nhân loại trong giai đoạn hiện nay, Thomas L.Friedman qua quyển sách nổi tiếng: “Thế giới phẳng” đã cho rằng sau năm 2000 cho đến nay, nhân loại bước vào một giai đoạn toàn cầu hóa, mà ông gọi là toàn cầu hóa 3.0." },
+        { q: "17. Karl Marx đã từng coi điều gì là nguồn gốc tạo nên những biến đổi xã hội, chuyển đổi xã hội từ giai đoạn lịch sử này sang giai đoạn lịch sử khác?", opts: { A: "Biến đổi tự nhiên", B: "Sự gia tăng dân số", C: "Các phát minh khoa học", D: "Xung đột giữa các giai cấp" }, ans: "D", exp: "Nguyên nhân quan trọng thứ tư dẫn đến biến đổi xã hội là xung đột xã hội. Karl Marx đã từng coi rằng xung đột giữa các giai cấp là nguồn gốc tạo nên những biến đổi xã hội." },
+        { q: "18. Theo Max Weber, điều gì đã khuyến khích sự phát triển của Chủ nghĩa tư bản ở châu Âu?", opts: { A: "Sự suy giảm dân số", B: "Đạo đức Tin lành và tinh thần của chủ nghĩa tư bản", C: "Sự mở rộng của các thành phố", D: "Động đất và thảm họa thiên nhiên" }, ans: "B", exp: "Weber cho rằng những tư tưởng, giá trị mới của đạo Tin Lành về lao động, tiết kiệm, và sự thịnh vượng đã khuyến khích sự phát triển của Chủ nghĩa tư bản ở châu Âu." },
+        { q: "19. Hiện đại hóa là một quá trình biến đổi xã hội khởi đầu bằng sự kiện nào?", opts: { A: "Toàn cầu hóa 3.0", B: "Cách mạng thông tin", C: "Công nghiệp hóa", D: "Đô thị hóa" }, ans: "C", exp: "Sự hiện đại là những khuôn mẫu xã hội do công nghiệp hóa mang lại. Còn hiện đại hóa là một quá trình biến đổi xã hội khởi đầu bằng công nghiệp hóa." },
+        { q: "20. Theo Samuel Huntington, sự khác biệt cốt lõi giữa xã hội truyền thống và xã hội hiện đại là gì?", opts: { A: "Tỷ lệ sinh thấp", B: "Sự kiểm soát lớn hơn, mạnh hơn của con người đối với môi trường tự nhiên và xã hội trên cơ sở mở rộng tri thức khoa học", C: "Sự phân công lao động chuyên môn hóa cao", D: "Sự sụp đổ của các thiết chế tôn giáo" }, ans: "B", exp: "Samuel Huntington nhấn mạnh rằng điểm cốt lõi khác biệt giữa xã hội truyền thống và xã hội hiện đại là sự kiểm soát lớn hơn, mạnh hơn của con người đối với môi trường tự nhiên và môi trường xã hội trên cơ sở mở rộng tri thức khoa học và công nghệ." },
+        { q: "21. Tonnies cho rằng hiện đại hóa là quá trình mất đi các cộng đồng truyền thống đi liền với sự gia tăng yếu tố nào?", opts: { A: "Gia tăng dân số, phát triển các đô thị, và gia tăng tương tác xã hội mang tính cá nhân", B: "Gia tăng quyền lực của nhà nước", C: "Gia tăng tính gắn kết họ hàng", D: "Gia tăng các chuẩn mực tôn giáo" }, ans: "A", exp: "Tonnies cho rằng hiện đại hóa là quá trình mất đi các cộng đồng truyền thống đi liền với sự gia tăng dân số, phát triển các đô thị, và gia tăng tương tác xã hội ít mang tính cảm xúc cá nhân." },
+        { q: "22. Durkheim cho rằng hiện đại hóa được xác định bởi yếu tố nào?", opts: { A: "Sự duy lý hóa", B: "Sự gia tăng phân công lao động", C: "Sự suy tàn của tôn giáo", D: "Sự kiểm soát môi trường" }, ans: "B", exp: "Khác với Tonnies, Durkheim cho rằng hiện đại hóa được xác định bởi sự gia tăng sự phân công lao động, hay các hoạt động kinh tế được chuyên môn hóa." },
+        { q: "23. Dưới góc nhìn của Weber, hiện đại hóa có nghĩa là thay đổi thế giới quan truyền thống bằng điều gì?", opts: { A: "Tư duy duy lý", B: "Lối sống cá nhân chủ nghĩa", C: "Sự chuyên môn hóa lao động", D: "Mạng lưới giao tiếp ảo" }, ans: "A", exp: "Dưới một góc nhìn khác, Weber lại cho rằng hiện đại có nghĩa là thay đổi thế giới quan truyền thống bằng tư duy duy lý." },
+        { q: "24. Theo Berger (1977), hiện đại hóa làm suy yếu điều gì?", opts: { A: "Sự phân công lao động", B: "Lựa chọn cá nhân", C: "Các cộng đồng nhỏ mang tính truyền thống", D: "Sự đa dạng xã hội" }, ans: "C", exp: "Đặc điểm thứ nhất theo Berger là sự suy tàn của các cộng đồng nhỏ mang tính truyền thống... Beger đã cho rằng sự hiện đại hóa làm suy yếu, nếu không muốn nói là phá hủy các cộng đồng có tính cố kết tương đối." },
+        { q: "25. Sự mở rộng sự lựa chọn cá nhân trong xã hội hiện đại được nhà xã hội học Berger gọi là gì?", opts: { A: "Chủ nghĩa tự do", B: "Chủ nghĩa duy lý", C: "Chủ nghĩa cá nhân", D: "Chủ nghĩa thế tục" }, ans: "C", exp: "Thứ hai là sự mở rộng sự lựa chọn cá nhân. Trong các xã hội truyền thống, người ta quan niệm cuộc sống của họ bị chi phối bởi các lực lượng siêu nhân... Chuỗi bất tận những lựa chọn này được nhà xã hội học Berger gọi là chủ nghĩa cá nhân (individualism)." },
+        { q: "26. Sự phát triển của các thành phố, sự mở rộng bộ máy quan liêu, kết hợp với sự pha trộn của các tầng lớp xã hội đa dạng đã thúc đẩy điều gì theo quan điểm của Berger?", opts: { A: "Sự suy giảm lựa chọn cá nhân", B: "Sự đa dạng niềm tin và hành vi", C: "Sự trở lại của các cộng đồng làng xã", D: "Sự đồng nhất về văn hóa" }, ans: "B", exp: "Thứ ba, sự đa dạng xã hội gia tăng... Sự phát triển của các thành phố, sự mở rộng bộ máy quan liêu, kết hợp với sự pha trộn của các tầng lớp xã hội đa dạng đã thúc đẩy sự đa dạng niềm tin và hành vi." },
+        { q: "27. Đặc điểm thứ tư của hiện đại hóa theo Berger là sự định hướng vào đâu?", opts: { A: "Quá khứ", B: "Tương lai và sự gia tăng mối quan tâm đối với thời gian", C: "Môi trường tự nhiên", D: "Cộng đồng truyền thống" }, ans: "B", exp: "Thứ tư, sự định hướng tương lai và sự gia tăng mối quan tâm đối với thời gian. Trong các xã hội tiền công nghiệp, cách sống của con người thường theo khuôn mẫu đã có trong quá khứ. Ngược lại, trong xã hội hiện đại, người ta nghĩ nhiều hơn đến tương lai." },
+        { q: "28. Theo Huntington (1971), quá trình làm thay đổi cơ bản và toàn diện khuôn mẫu đời sống của con người thể hiện đặc điểm nào của hiện đại hóa?", opts: { A: "Là một quá trình phức tạp", B: "Là một quá trình mang tính hệ thống", C: "Là quá trình mang tính cách mạng", D: "Là một quá trình toàn cầu" }, ans: "C", exp: "Thứ nhất, hiện đại hóa là quá trình mang tính cách mạng chuyển xã hội truyền thống sang xã hội hiện đại. Quá trình này cũng làm thay đổi cơ bản và toàn diện khuôn mẫu đời sống của con người." },
+        { q: "29. Đặc điểm \"hiện đại hóa là quá trình mang tính toàn cầu\" của Huntington được hiểu như thế nào?", opts: { A: "Quá trình này chỉ xảy ra ở châu Âu", B: "Quá trình này bắt đầu từ châu Âu vào thế kỷ XV, XVI nhưng đã mở rộng ra trên phạm vi toàn thế giới", C: "Mọi quốc gia đều hiện đại hóa cùng một tốc độ", D: "Quá trình này bắt đầu từ châu Á và lan sang phương Tây" }, ans: "B", exp: "Thứ tư, hiện đại hóa là quá trình toàn cầu. Quá trình này bắt đầu từ châu Âu vào thế kỷ XV, XVI nhưng đã mở rộng ra trên phạm vi toàn thế giới. Các xã hội trên thế giới đã trở nên hiện đại hoặc trong quá trình trở thành xã hội hiện đại." },
+        { q: "30. Mặc dù tốc độ quá trình hiện đại hóa gia tăng nhưng thời gian để chuyển từ truyền thống sang hiện đại vẫn tính theo thế hệ. Điều này thể hiện đặc điểm nào?", opts: { A: "Quá trình không thể đảo ngược", B: "Quá trình đồng nhất hóa", C: "Quá trình lâu dài", D: "Quá trình diễn ra theo giai đoạn" }, ans: "C", exp: "Thứ năm, hiện đại hóa là quá trình lâu dài... Mặc dù tốc độ quá trình hiện đại hóa gia tăng nhưng thời gian để chuyển từ truyền thống sang hiện đại vẫn tính theo thế hệ." },
+        { q: "31. Đặc điểm nào của hiện đại hóa chỉ ra rằng các xã hội hiện đại chia sẻ với nhau nhiều đặc điểm chung qua liên kết, phụ thuộc lẫn nhau?", opts: { A: "Quá trình tiến bộ", B: "Quá trình mang tính hệ thống", C: "Quá trình không thể đảo ngược", D: "Quá trình đồng nhất hóa" }, ans: "D", exp: "Thứ bảy, hiện đại hóa là quá trình đồng nhất hóa. Nhiều kiểu xã hội truyền thống đa dạng đã tồn tại. Trong khi đó, các xã hội hiện đại chia sẻ với nhau nhiều đặc điểm chung qua liên kết, phụ thuộc lẫn nhau." },
+        { q: "32. Khái niệm toàn cầu hóa được sử dụng phổ biến trong thời gian nào?", opts: { A: "Hơn 100 năm trước", B: "Trong thời gian gần đây, mặc dù 30 năm trước hầu như chưa được đề cập đến", C: "Từ thế kỷ XV", D: "Từ thời kỳ cổ đại" }, ans: "B", exp: "Khái niệm này 30 năm trước thì hầu như chưa được đề cập đến, nhưng hiện nay nó được sử dụng một cách phổ biến. Tuy khái niệm toàn cầu hóa mới được sử dụng phổ biến trong thời gian gần đây, nhưng Giddens lưu ý rằng toàn cầu hóa là quá trình đã bắt đầu từ rất lâu..." },
+        { q: "33. Theo Giddens (2009), toàn cầu hóa để cập tới thực tế là chúng ta đang sống trong một thế giới như thế nào?", opts: { A: "Các cá nhân, các nhóm, các quốc gia ngày càng phụ thuộc nhau", B: "Các quốc gia ngày càng đóng cửa kinh tế", C: "Mọi người đều có chung một bản sắc văn hóa duy nhất", D: "Chỉ có sự di chuyển của hàng hóa, không có sự di chuyển của con người" }, ans: "A", exp: "Giddens cho rằng: Toàn cầu hóa để cập tới thực tế chúng ta đang sống trong một thế giới mà ở đó các cá nhân, các nhóm, các quốc gia ngày càng phụ thuộc nhau." },
+        { q: "34. Toàn cầu hóa có phải là một quá trình mới không?", opts: { A: "Có, nó hoàn toàn mới xuất hiện sau năm 2000", B: "Không, nhưng quá trình này dường như diễn ra ngày càng mạnh mẽ và nhanh chóng trong khoảng 50 năm qua", C: "Có, nó bắt đầu cùng với sự ra đời của mạng internet", D: "Không, nó đã phát triển với tốc độ ổn định từ hàng ngàn năm trước" }, ans: "B", exp: "Trong khi đó, toàn cầu hóa không phải là quá trình mới. Tuy nhiên, quá trình này dường như diễn ra ngày càng mạnh mẽ và nhanh chóng trong khoảng 50 năm qua." },
+        { q: "35. Sự kết nối tạo ra bởi toàn cầu hóa bao hàm các chiều cạnh nào?", opts: { A: "Chỉ kinh tế", B: "Chỉ chính trị và quân sự", C: "Kinh tế, chính trị, xã hội, kỹ thuật, môi trường, văn hóa", D: "Chỉ kỹ thuật số" }, ans: "C", exp: "Dù người ta thường liên hệ toàn cầu hóa về mặt kinh tế, sự phức tạp của những kết nối tạo ra bởi toàn cầu hóa bao hàm nhiều chiều cạnh: kinh tế, chính trị, xã hội, kỹ thuật, môi trường, văn hóa..." },
+        { q: "36. Meyer và Geschiere (1999) nhấn mạnh nghịch lý gì của toàn cầu hóa?", opts: { A: "Sự gia tăng tự do cá nhân đi kèm với mất dân chủ", B: "Việc gia tăng các dòng hàng hóa, nhân lực theo hướng đóng kín, nhấn mạnh sự khác biệt văn hóa, và ấn định bản sắc", C: "Sự giàu có gia tăng nhưng tuổi thọ giảm sút", D: "Công nghệ phát triển nhưng tri thức khoa học đi xuống" }, ans: "B", exp: "Bàn về toàn cầu hóa, Meyer và Geschiere... nhấn mạnh nghịch lý: việc gia tăng các dòng hàng hóa, nhân lực, hình ảnh đi cùng với những nỗ lực kiên quyết theo hướng đóng kín, nhấn mạnh sự khác biệt văn hóa, và ấn định bản sắc." },
+        { q: "37. Theo Thomas L. Friedman, giai đoạn Toàn cầu hóa 1.0 bắt đầu từ khi nào đến năm nào?", opts: { A: "1492 đến 1800", B: "1800 đến 2000", C: "1900 đến 2000", D: "2000 đến nay" }, ans: "A", exp: "Giai đoạn đầu ông gọi là giai đoạn 1.0. Giai đoạn này bắt đầu từ khi Columbus mở đường giao thương từ châu Âu sang châu Mỹ cho đến những năm 1800." },
+        { q: "38. Động lực thúc đẩy toàn cầu hóa trong giai đoạn Toàn cầu hóa 1.0 nằm ở đâu?", opts: { A: "Máy tính cá nhân và internet", B: "Sức ngựa, sức gió, sức hơi nước", C: "Công ty đa quốc gia", D: "Cáp quang và viễn thông" }, ans: "B", exp: "Trong giai đoạn này, động lực thúc đẩy toàn cầu hóa nằm ở sức ngựa, sức gió, sức hơi nước và cách sử dụng các sức mạnh đó. Các quốc gia, các chính phủ là nhân tố thúc đẩy toàn cầu hóa." },
+        { q: "39. Giai đoạn Toàn cầu hóa 1.0 làm cho thế giới thu nhỏ lại từ kích thước lớn xuống kích thước nào?", opts: { A: "Kích thước trung bình", B: "Kích thước nhỏ", C: "Kích cỡ siêu nhỏ", D: "Không thay đổi kích thước" }, ans: "A", exp: "Toàn cầu hóa ở giai đoạn này làm cho thế giới thu nhỏ lại từ kích thước lớn xuống trung bình." },
+        { q: "40. Trong giai đoạn Toàn cầu hóa 2.0, động lực chính của toàn cầu hóa dựa trên sự sụt giảm chi phí của yếu tố nào?", opts: { A: "Máy tính cá nhân", B: "Giao thông và liên lạc", C: "Sức ngựa và sức gió", D: "Phần mềm làm việc" }, ans: "B", exp: "Động lực của toàn cầu hóa ở giai đoạn nửa đầu của thời kỳ này dựa trên việc giảm chi phí giao thông... Động lực của toàn cầu hóa trong giai đoạn sau của thời kỳ này dựa trên sự sụt giảm chi phí liên lạc." },
+        { q: "41. Nhân tố thúc đẩy toàn cầu hóa trong giai đoạn Toàn cầu hóa 2.0 là gì?", opts: { A: "Các quốc gia, các chính phủ", B: "Các cá nhân, nhóm nhỏ", C: "Các công ty đa quốc gia", D: "Các tổ chức phi chính phủ" }, ans: "C", exp: "Trong thời kỳ này, nhân tố thúc đẩy toàn cầu hóa là các công ty đa quốc gia." },
+        { q: "42. Động lực của toàn cầu hóa 3.0 là một loại động lực mới, đó là việc trao quyền cho đối tượng nào để cộng tác và cạnh tranh trên thị trường toàn cầu?", opts: { A: "Các chính phủ", B: "Các liên minh châu lục", C: "Các công ty xuyên quốc gia lớn", D: "Các cá nhân, các nhóm nhỏ" }, ans: "D", exp: "Trong giai đoạn này, động lực của toàn cầu hóa là một loại động lực mới. Đó là việc cá nhân, các nhóm nhỏ được trao quyền, được tạo điều kiện để cộng tác và cạnh tranh trên thị trường toàn cầu." },
+        { q: "43. Trong toàn cầu hóa 3.0, cá nhân ở khắp mọi nơi trên thế giới có thể vươn ra toàn cầu để hợp tác và cạnh tranh với nhau là nhờ vào công cụ nào?", opts: { A: "Động cơ hơi nước", B: "Sự ra đời của các công ty đa quốc gia", C: "Máy tính cá nhân, hệ thống cáp quang và phần mềm xử lý công việc", D: "Đường sắt và tàu thủy" }, ans: "C", exp: "Với máy tính cá nhân, hệ thống cáp quang và phần mềm xử lý công việc, các cá nhân ở khắp mọi nơi trên thế giới... có thể vươn ra toàn cầu để hợp tác với nhau và cạnh tranh với nhau." },
+        { q: "44. Toàn cầu hóa 3.0 làm thế giới phẳng ra và co lại tới kích cỡ nào?", opts: { A: "Trung bình", B: "Nhỏ", C: "Siêu nhỏ", D: "Khổng lồ" }, ans: "C", exp: "Toàn cầu hóa 3.0 làm thế giới phẳng ra và co lại từ cỡ nhỏ xuống cỡ siêu nhỏ." },
+        { q: "45. Trong số 10 nhân tố làm \"phẳng thế giới\" mà Thomas Friedman đưa ra, nhân tố nào thuộc về địa chính trị?", opts: { A: "Phần mềm Windows", B: "Sự sụp đổ của bức tường Berlin", C: "Trình duyệt Netscape", D: "Chuỗi cung cấp hàng hóa" }, ans: "B", exp: "Nhìn một cách tổng thể mười nhân tố này có thể chia thành mấy nhóm sau đây. Thứ nhất là nhân tố địa chính trị... sự sụp đổ của bức tường Berlin, sự mở rộng liên minh châu Âu..." },
+        { q: "46. Theo Friedman, nhân tố nào là \"phần mềm đã xóa đi rào cản về giới hạn thông tin\" và sự xuất hiện của nó cho phép mọi người kết nối và giải mã tất cả các thông tin?", opts: { A: "Trình duyệt Netscape", B: "Việc thuê nhân lực bên ngoài (outsourcing)", C: "Thiết bị truyền tin không dây", D: "Tìm kiếm Google" }, ans: "A", exp: "Friedman nhấn mạnh: Phần mềm Windows đã xóa đi rào cản về giới hạn thông tin. Sự xuất hiện của trình duyệt Netscape cho phép mọi người kết nối và giải mã tất cả các thông tin của họ." },
+        { q: "47. Nhóm nhân tố thứ ba làm phẳng thế giới của Friedman liên quan đến hệ thống kinh tế. Yếu tố nào sau đây thuộc nhóm này?", opts: { A: "Sự sụp đổ của bức tường Berlin", B: "Sự mở rộng liên minh châu Âu", C: "Trình duyệt Netscape", D: "Việc thuê làm bên ngoài, chuỗi cung cấp hàng hóa, sản xuất phân loại" }, ans: "D", exp: "Thứ ba là nhóm các nhân tố liên quan đến hệ thống kinh tế... Việc thuê làm bên ngoài là cách thức để tận dụng lợi thế về tài nguyên... Việc tạo ra chuỗi cung cấp hàng hóa, đóng gói, giao hàng, v.v... diễn ra liên tục không ngừng." },
+        { q: "48. Theo Anthony Giddens (2009), nhóm yếu tố nào tạo nên quá trình toàn cầu hóa hiện nay?", opts: { A: "Công nghệ thông tin và truyền thông, kinh tế, và chính trị", B: "Tôn giáo, văn hóa, và giáo dục", C: "Dân số học, sinh thái học, và địa lý", D: "Quân sự, ngoại giao, và lịch sử" }, ans: "A", exp: "Dưới một góc nhìn khác... Anthony Giddens (2009) đề cập đến ba nhóm yếu tố, bao gồm: sự phát triển của công nghệ thông tin và truyền thông; các nhân tố kinh tế, và những thay đổi chính trị." },
+        { q: "49. Giddens nhấn mạnh việc sử dụng phổ biến thiết bị điện thoại di động và internet đã làm gia tăng mức độ nào của con người?", opts: { A: "Gia tăng khoảng cách thế hệ", B: "Gia tăng mức độ quá trình hòa đồng qua việc con người ngày càng kết nối với nhau trên nền tảng những công nghệ này", C: "Gia tăng tính biệt lập của các nhóm nhỏ", D: "Gia tăng giới hạn về thông tin" }, ans: "B", exp: "Liên quan đến sự phát triển của công nghệ thông tin và truyền thông, Giddens... nhấn mạnh rằng với việc sử dụng phổ biến điện thoại di động và internet đã làm gia tăng mức độ quá trình hòa đồng qua việc con người ngày càng kết nối với nhau trên nền tảng những công nghệ này." },
+        { q: "50. Theo Giddens, các công ty xuyên quốc gia với những chuỗi hàng hóa toàn cầu tạo nên mạng lưới lao động và sản xuất trải dài trên toàn cầu đóng vai trò là nhân tố nào thúc đẩy toàn cầu hóa?", opts: { A: "Nhân tố chính trị", B: "Nhân tố văn hóa", C: "Nhân tố kinh tế", D: "Nhân tố công nghệ" }, ans: "C", exp: "Đối với các nhân tố kinh tế, Giddens chú ý đặc biệt tới các công ty xuyên quốc gia với những chuỗi hàng hóa toàn cầu tạo nên mạng lưới lao động và sản xuất trải dài trên toàn cầu để làm ra các loại hàng hóa, sản phẩm." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
