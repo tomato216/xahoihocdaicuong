@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Chương 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 1. Chương 1</h1>
+        <p>Đối tượng, cơ cấu, chức năng của xã hội học</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Đối tượng, cơ cấu, chức năng của xã hội học</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="index.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="index.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Ai là người đã khai sinh ra ngành Xã hội học với việc đặt tên cho ngành khoa học này vào năm 1839?", opts: { A: "Emile Durkheim", B: "Max Weber", C: "Auguste Comte", D: "Anthony Giddens" }, ans: "C", exp: "Auguste Comte là người khai sinh ra ngành Xã hội học với việc đặt tên cho ngành khoa học này là xã hội học vào năm 1839." },
+        { q: "2. Trước khi đưa ra tên gọi Xã hội học, Auguste Comte đã gọi ngành khoa học này bằng thuật ngữ nào?", opts: { A: "Triết học xã hội", B: "Vật lý học xã hội", C: "Nhân học văn hóa", D: "Tâm lý học xã hội" }, ans: "B", exp: "Trước khi đưa ra tên gọi Xã hội học, Auguste Comte đã gọi ngành khoa học này là Vật lý học xã hội." },
+        { q: "3. Thuật ngữ xã hội học (Sociology) được cấu thành từ các chữ có nguồn gốc từ ngôn ngữ nào?", opts: { A: "Chữ Latin và chữ Hy Lạp", B: "Chữ Anh và chữ Pháp", C: "Chữ Đức và chữ Latin", D: "Chữ Hy Lạp và chữ Ả Rập" }, ans: "A", exp: "Thuật ngữ xã hội học (Sociology) được có nguồn gốc từ chữ Latin socius và chữ Hy lạp ology." },
+        { q: "4. Theo Auguste Comte, việc nghiên cứu cơ cấu xã hội của hệ thống xã hội được gọi là gì?", opts: { A: "Động học xã hội", B: "Tĩnh học xã hội", C: "Sự kiện xã hội", D: "Hành động xã hội" }, ans: "B", exp: "Nghiên cứu các thiết chế trong một hệ thống và cơ cấu cũng như chức năng của chúng, hay cách nghiên cứu các hệ thống xã hội trong trạng thái tĩnh tại và lĩnh vực này được gọi là tĩnh học xã hội." },
+        { q: "5. Theo Auguste Comte, động học xã hội (social dynamics) là lĩnh vực nghiên cứu về vấn đề gì?", opts: { A: "Cơ cấu xã hội của hệ thống xã hội", B: "Các loại hình lý tưởng", C: "Sự biến đổi, phát triển, tiến bộ của các thiết chế và hệ thống qua thời gian", D: "Khuôn mẫu hành vi của các nhóm xã hội" }, ans: "C", exp: "Nghiên cứu sự biến đổi, phát triển, tiến bộ của các thiết chế và hệ thống qua thời gian là lĩnh vực mà Auguste Comte gọi là động học xã hội." },
+        { q: "6. Quan niệm đối tượng nghiên cứu của Xã hội học của Auguste Comte được tiếp cận từ góc nhìn nào?", opts: { A: "Góc nhìn vi mô", B: "Góc nhìn vĩ mô", C: "Góc nhìn trung mô", D: "Góc nhìn cá nhân" }, ans: "B", exp: "Khái quát, Auguste Comte quan niệm đối tượng nghiên cứu của Xã hội học là cơ cấu xã hội và biến đổi xã hội, chúng ta có thể Auguste Comte quan niệm đối tượng nghiên cứu của Xã hội học từ góc nhìn vĩ mô." },
+        { q: "7. Emile Durkheim cho rằng đối tượng nghiên cứu của xã hội học là gì?", opts: { A: "Hệ thống phức hợp", B: "Hành động xã hội", C: "Các sự kiện xã hội", D: "Hành vi con người" }, ans: "C", exp: "Emile Durkheim cho rằng đối tượng nghiên cứu của xã hội học là các sự kiện xã hội." },
+        { q: "8. Theo Emile Durkheim, sự kiện xã hội là những cách hành động, cách suy nghĩ, cách cảm nhận mang tính chất gì?", opts: { A: "Cá nhân", B: "Tập thể", C: "Duy lý", D: "Cảm xúc" }, ans: "B", exp: "Sự kiện xã hội là những hiện tượng xã hội cụ thể. Đó là những cách hành động, cách suy nghĩ, cách cảm nhận mang tính tập thể." },
+        { q: "9. Quan niệm của Emile Durkheim về đối tượng nghiên cứu của Xã hội học được tiếp cận từ cấp độ nào?", opts: { A: "Cấp độ vi mô", B: "Cấp độ vĩ mô", C: "Cấp độ trung bình", D: "Cấp độ cá nhân" }, ans: "C", exp: "Quan niệm của Emile Durkheim về đối tượng nghiên cứu của Xã hội học được tiếp cận từ cấp độ trung bình bởi vì khuôn mẫu chung, hay cách hành động, cách suy nghĩ, cách cảm nhận mang tính tập thể không ở cấp độ cá nhân/vi mô mà cũng không ở cấp độ xã hội/vĩ mô." },
+        { q: "10. Max Weber nhấn mạnh rằng Xã hội học phải bắt đầu với việc nghiên cứu đối tượng nào?", opts: { A: "Sự kiện xã hội", B: "Hành động của con người", C: "Cơ cấu xã hội", D: "Thiết chế xã hội" }, ans: "B", exp: "Max Weber nhấn mạnh rằng Xã hội học phải bắt đầu với việc nghiên cứu hành động của con người." },
+        { q: "11. Để thấu hiểu ý nghĩa được gắn cho các hành động xã hội, Max Weber cho rằng khoa học xã hội phải sử dụng công cụ nào?", opts: { A: "Các loại hình lý tưởng", B: "Sự kiện xã hội", C: "Tĩnh học xã hội", D: "Động học xã hội" }, ans: "A", exp: "Max Weber nhấn mạnh rằng khoa học xã hội phải sử dụng các loại hình lý tưởng để thấu hiểu ý nghĩa được gắn cho các hành động xã hội." },
+        { q: "12. Theo Max Weber, hành động nào là hành động phản ánh việc chủ thể hành động theo đuổi những mục đích mà chủ thể thấy là đạt lựa chọn mà sự lựa chọn này bị ảnh hưởng bởi quan điểm của chủ thể về môi trường?", opts: { A: "Hành động truyền thống", B: "Hành động xúc cảm", C: "Hành động duy lý giá trị", D: "Hành động duy lý công cụ" }, ans: "D", exp: "Hành động duy lý công cụ phản ánh việc chủ thể hành động theo đuổi những mục đích mà chủ thể thấy là đạt lựa chọn mà sự lựa chọn này bị ảnh hưởng bởi quan điểm của chủ thể về môi trường." },
+        { q: "13. Hành động xuất hiện khi chủ thể hành động lựa chọn phương tiện hữu hiệu nhất để đạt mục đích trên cơ sở niềm tin của chủ thể vào những tập hợp giá trị phổ quát hơn là loại hành động nào theo Max Weber?", opts: { A: "Hành động truyền thống", B: "Hành động duy lý giá trị", C: "Hành động xúc cảm", D: "Hành động duy lý công cụ" }, ans: "B", exp: "Hành động duy lý giá trị là hành động xuất hiện khi chủ thể hành động lựa chọn phương tiện hữu hiệu nhất để đạt mục đích trên cơ sở niềm tin của chủ thể vào những tập hợp giá trị phổ quát hơn." },
+        { q: "14. Max Weber nhìn đối tượng nghiên cứu của Xã hội học từ góc độ nào?", opts: { A: "Góc độ vĩ mô", B: "Góc độ trung mô", C: "Góc độ vi mô", D: "Góc độ toàn cầu" }, ans: "C", exp: "Với việc quan niệm đối tượng nghiên cứu của Xã hội học là hành động xã hội, chúng ta thấy Max Weber nhìn đối tượng nghiên cứu của Xã hội học từ góc độ vi mô." },
+        { q: "15. Tác giả John Macionis nhìn đối tượng nghiên cứu của xã hội học từ góc nhìn vĩ mô lại cho rằng xã hội học nghiên cứu một cách có hệ thống về vấn đề gì?", opts: { A: "Sự tương tác xã hội", B: "Hành vi cá nhân", C: "Xã hội loài người", D: "Cảm xúc con người" }, ans: "C", exp: "Tác giả John Macionis từ góc nhìn vĩ mô lại cho rằng xã hội học nghiên cứu một cách hệ thống xã hội loài người." },
+        { q: "16. David Popenoe quan niệm Xã hội học phải chú ý đến xã hội như một tổng thể, đồng thời cũng cần nhận diện các nhóm xã hội và khuôn mẫu hành vi. Cách quan niệm này mang tính chất gì?", opts: { A: "Chỉ từ góc độ vi mô", B: "Chỉ từ góc độ vĩ mô", C: "Mang tính tổng hợp, từ góc độ vĩ mô lẫn vi mô", D: "Bỏ qua các quy tắc định hình hành vi" }, ans: "C", exp: "Dưới một góc nhìn nhất định, cách quan niệm của Popenoe về đối tượng nghiên cứu của xã hội học mang tính tổng hợp – tức là từ góc độ vĩ mô lẫn vi mô." },
+        { q: "17. Khái niệm chung nhất về đối tượng nghiên cứu của xã hội học là gì?", opts: { A: "Tập trung vào hệ thống chính trị và quyền lực", B: "Đời sống xã hội và nguyên nhân cũng như hệ quả của hành vi con người", C: "Các quy luật chung nhất của tự nhiên, xã hội và tư duy", D: "Sản xuất, phân phối và tiêu dùng hàng hóa" }, ans: "B", exp: "Đối tượng nghiên cứu của xã hội học là đời sống xã hội và nguyên nhân cũng như hệ quả của hành vi con người." },
+        { q: "18. \"Nhìn cái chung thông qua cái riêng\" trong góc nhìn xã hội học có nghĩa là gì?", opts: { A: "Coi hành vi cá nhân hoàn toàn do cá nhân quyết định", B: "Tìm ra những khuôn mẫu xã hội chung thông qua hành vi của từng cá nhân cụ thể", C: "Nghiên cứu cuộc sống của những người bên lề xã hội", D: "Lựa chọn cá nhân không phụ thuộc vào bối cảnh xã hội" }, ans: "B", exp: "Nhìn cái chung thông qua cái riêng có nghĩa là nhà xã hội học, nhà nghiên cứu phải tìm ra những khuôn mẫu xã hội chung thông qua hành vi của từng cá nhân cụ thể." },
+        { q: "19. Việc nhận ra những khuôn mẫu hành vi giúp chúng ta hiểu phần nào bản chất của xã hội. Tuy nhiên, để nhận ra khuôn mẫu này, chúng ta phải thu thập thông tin về yếu tố nào?", opts: { A: "Hành vi của từng cá nhân và từ hành vi từng các cá nhân mới khái quát chỉ ra hành vi của nhóm", B: "Chỉ số kinh tế vĩ mô của quốc gia", C: "Các hiện tượng tự nhiên và môi trường", D: "Sự phát triển của công nghệ thông tin" }, ans: "A", exp: "Để nhận ra khuôn mẫu hành vi đó chúng ta phải thu thập thông tin về hành vi của từng cá nhân và từ hành vi từng các cá nhân mới khái quát chỉ ra hành vi của nhóm." },
+        { q: "20. Góc nhìn xã hội học \"nhìn cái lạ trong cái quen\" yêu cầu nhà xã hội học phải tránh quan điểm nào?", opts: { A: "Tránh coi các sự kiện xã hội là vật", B: "Tránh quan điểm cho rằng hành vi của cá nhân đơn thuần là do cá nhân đó hoàn toàn quyết định", C: "Tránh nghiên cứu các nhóm xã hội nhỏ", D: "Tránh sử dụng phương pháp định lượng" }, ans: "B", exp: "Nhìn cái lạ trong cái quen có nghĩa là nhà xã hội học phải tránh quan điểm cho rằng hành vi của cá nhân đơn thuần là do cá nhân đó hoàn toàn quyết định. Trên thực tế, xã hội nhào nặn nên quyết định của cá nhân." },
+        { q: "21. Ví dụ về số con trung bình của một phụ nữ ở Ấn Độ, Yemen và Niger nhằm minh họa cho chiều cạnh nào của góc nhìn xã hội học?", opts: { A: "Nhìn cái lạ trong cái quen", B: "Nhìn xã hội khi cá nhân ở trong tình huống khủng hoảng", C: "Nhìn cái chung thông qua cái riêng", D: "Nhìn lựa chọn cá nhân trong bối cảnh xã hội" }, ans: "D", exp: "Nhìn lựa chọn cá nhân trong bối cảnh xã hội có nghĩa là những lựa chọn của cá nhân thường phụ thuộc vào bối cảnh xã hội. Chẳng hạn, số con mà mỗi người phụ nữ quyết định sinh phụ thuộc vào bối cảnh xã hội nơi chị ấy sống." },
+        { q: "22. Khi cá nhân ở bên lề xã hội hay ở trong tình trạng khủng hoảng xã hội, cá nhân sẽ trải nghiệm sâu sắc hơn yếu tố nào định hình nên cuộc sống của mình?", opts: { A: "Lực lượng tự nhiên", B: "Lực lượng siêu nhiên", C: "Lực xã hội", D: "Tâm lý cá nhân" }, ans: "C", exp: "Nếu ở bên lề xã hội hay ở trong tình trạng khủng hoảng xã hội, cá nhân sẽ trải nghiệm sâu sắc hơn cái được gọi là “lực xã hội” định hình nên cuộc sống cá nhân." },
+        { q: "23. Dựa trên tiêu chí cấp độ phân tích (levels of analysis), cơ cấu của xã hội học được phân chia thành những bộ phận nào?", opts: { A: "Xã hội học đại cương và Xã hội học chuyên ngành", B: "Xã hội học lý thuyết và Xã hội học thực nghiệm", C: "Xã hội học vĩ mô và Xã hội học vi mô", D: "Xã hội học tự nhiên và Xã hội học văn hóa" }, ans: "C", exp: "Dựa trên tiêu chí cấp độ phân tích (levels of analysis), các nhà xã hội học thường đề cập đến xã hội học vĩ mô và xã hội học vi mô." },
+        { q: "24. Xã hội học vi mô chú trọng nghiên cứu hành vi của cá nhân trong bối cảnh nào?", opts: { A: "Những hệ thống xã hội lớn", B: "Tương tác mặt đối mặt", C: "Toàn cầu hóa", D: "Biến đổi cấu trúc dân số" }, ans: "B", exp: "Xã hội học vi mô chú trọng nghiên cứu hành vi của cá nhân trong đời sống hàng ngày trong các bối cảnh tương tác mặt đối mặt." },
+        { q: "25. Một trong những chức năng của xã hội học là giúp chúng ta hiểu sự khác biệt văn hóa, điều này giúp mang lại lợi ích gì?", opts: { A: "Loại bỏ các giá trị văn hóa truyền thống", B: "Giúp chúng ta có cái nhìn đa chiều về thế giới", C: "Đồng nhất hóa mọi lối sống", D: "Phê phán lối sống của nhóm mình là ưu việt nhất" }, ans: "B", exp: "Xã hội học giúp chúng ta hiểu sự khác biệt văn hóa và điều này giúp chúng ta có cái nhìn đa chiều về thế giới." },
+        { q: "26. John Macionis nhấn mạnh rằng xã hội học giúp chúng ta tránh được việc nhìn nhận đời sống, lối sống của các nhóm xã hội khác trên cơ sở nào?", opts: { A: "Cơ sở khách quan khoa học", B: "Cơ sở đời sống của chính nhóm xã hội mình, cộng đồng mình, xã hội mình", C: "Cơ sở của các loại hình lý tưởng", D: "Cơ sở phân tích vĩ mô" }, ans: "B", exp: "Điều này có nghĩa là xã hội học giúp chúng ta tránh được việc nhìn nhận đời sống, lối sống của các nhóm xã hội khác, cộng đồng khác, xã hội khác trên cơ sở đời sống của chính nhóm xã hội mình, cộng đồng mình, xã hội mình." },
+        { q: "27. Đối với việc xây dựng chính sách, nghiên cứu xã hội học cung cấp cho những người làm chính sách điều gì?", opts: { A: "Quyền lực chính trị", B: "Nguồn tài chính vô tận", C: "Cơ sở khoa học để xây dựng các chính sách phù hợp với cuộc sống", D: "Các nguyên lý triết học trừu tượng" }, ans: "C", exp: "Dựa trên các kết quả của các nghiên cứu xã hội học, những người làm chính sách có thêm cơ sở khoa học để xây dựng các chính sách phù hợp với cuộc sống." },
+        { q: "28. Giddens lưu ý điều gì về hệ quả của các chính sách, chương trình trong thực tế?", opts: { A: "Luôn luôn đạt được mục đích đề ra", B: "Hoàn toàn không có tác dụng", C: "Những kết quả nghiên cứu của xã hội học cho chúng ta biết thực sự những thành công và hạn chế hay thất bại của việc thực thi một chính sách cụ thể nào đó", D: "Không cần thiết phải đánh giá lại sau khi ban hành" }, ans: "C", exp: "Giddens lưu ý rằng trên thực tế, những kết quả nghiên cứu của xã hội học cho chúng ta biết thực sự những thành công và hạn chế hay thất bại của việc thực thi một chính sách cụ thể nào đó thông qua những bằng chứng, dữ liệu, thông tin từ các công trình nghiên cứu." },
+        { q: "29. Chức năng thứ ba của xã hội học là giúp nâng cao nhận thức của các nhóm xã hội để từ đó đưa ra điều gì?", opts: { A: "Quyết định di cư sang khu vực khác", B: "Những hành động thực tiễn để mang lại đổi mới hữu ích cho cuộc sống", C: "Các đạo luật trừng phạt nghiêm khắc", D: "Quan điểm bài trừ khoa học" }, ans: "B", exp: "Thứ ba, xã hội học giúp nâng cao nhận thức của các nhóm xã hội và từ đó các nhóm xã hội có thể đưa ra những hành động thực tiễn để mang lại đổi mới hữu ích cho cuộc sống." },
+        { q: "30. Đối với sự phát triển của cá nhân, xã hội học hữu ích trong việc gì?", opts: { A: "Đảm bảo mọi cá nhân đều trở thành chính trị gia", B: "Cung cấp tri thức để đánh giá lại những quan niệm không phản ánh được bản chất của vấn đề, nhận ra những cơ hội và thách thức", C: "Giúp cá nhân thoát ly hoàn toàn khỏi xã hội", D: "Tính toán chính xác thu nhập trong tương lai" }, ans: "B", exp: "Với kiến thức của xã hội học, cá nhân có thể hiểu được thực chất, bản chất của các vấn đề, sự kiện, hiện tượng, quá trình xã hội. Nói cách khác, với kiến thức của xã hội học cá nhân có cơ sở để đánh giá lại những quan niệm không phản ánh được bản chất của vấn đề. Kiến thức xã hội học cũng giúp cá nhân nhận ra những cơ hội và thách thức trong cuộc sống." },
+        { q: "31. Triết học là khoa học nghiên cứu về vấn đề gì?", opts: { A: "Quyền lực và chính phủ", B: "Hành vi của cá nhân trong tương tác mặt đối mặt", C: "Những quy luật chung nhất của tự nhiên, xã hội và tư duy con người", D: "Quá trình sản xuất và tiêu dùng" }, ans: "C", exp: "Triết học là khoa học về những quy luật chung nhất của tự nhiên, xã hội và tư duy con người." },
+        { q: "32. Lê Ngọc Hùng nhấn mạnh cần tránh quan điểm coi xã hội học là gì đối với triết học?", opts: { A: "Là nền tảng cơ sở", B: "Là một bộ phận của triết học, đồng thời cũng tránh quan điểm coi xã hội học tách rời biệt lập với triết học", C: "Là một môn học thay thế hoàn toàn triết học", D: "Là lĩnh vực hoàn toàn đối lập với triết học" }, ans: "B", exp: "Lê Ngọc Hùng nhấn mạnh rằng cần tránh quan điểm coi xã hội học là một bộ phận của triết học, đồng thời cũng tránh quan điểm coi xã hội học tách rời biệt lập với triết học." },
+        { q: "33. Xã hội học góp phần làm phong phú tri thức triết học, còn triết học cung cấp điều gì cho nghiên cứu xã hội học?", opts: { A: "Công cụ thống kê định lượng", B: "Dữ liệu thực nghiệm cụ thể", C: "Cách tiếp cận, phương pháp luận", D: "Kỹ năng phỏng vấn sâu" }, ans: "C", exp: "Trên thực tế, xã hội học góp phần làm phong phú tri thức triết học, còn triết học cung cấp cách tiếp cận, phương pháp luận cho nghiên cứu xã hội học." },
+        { q: "34. Kinh tế học nghiên cứu về lĩnh vực nào?", opts: { A: "Quyền lực nhà nước", B: "Các quá trình văn hóa và tôn giáo", C: "Hàng hóa, dịch vụ, của cải được sản xuất, phân phối, tiêu thụ như thế nào", D: "Hoạt động tinh thần và tâm lý" }, ans: "C", exp: "Kinh tế học nghiên cứu hàng hóa, dịch vụ, của cải được sản xuất như thế nào, được phân phối ra sao và được tiêu thụ như thế nào trong các xã hội." },
+        { q: "35. Khi nghiên cứu kinh tế, xã hội học quan tâm đến khía cạnh nào của các quá trình sản xuất, phân phối và tiêu dùng?", opts: { A: "Tối đa hóa lợi nhuận tài chính", B: "Tính toán tỷ giá hối đoái", C: "Những bình diện xã hội của các quá trình này, chẳng hạn doanh nghiệp như một tổ chức xã hội, ảnh hưởng của tôn giáo, giáo dục", D: "Cấu tạo vật lý của hàng hóa" }, ans: "C", exp: "Xã hội học quan tâm đến những bình diện xã hội của các quá trình sản xuất, phân phối, và tiêu dùng hàng hóa và dịch vụ, chẳng hạn: doanh nghiệp như là một tổ chức xã hội, ảnh hưởng của tôn giáo, giáo dục lên sức sản xuất và tiêu thụ hàng hóa." },
+        { q: "36. Khoa học chính trị nghiên cứu về vấn đề gì?", opts: { A: "Quá trình hỏi, phát triển cá nhân", B: "Quyền lực, chính phủ và các quá trình chính trị", C: "Đời sống văn hóa của các cộng đồng tiền công nghiệp", D: "Sự phân bố dân cư theo địa lý" }, ans: "B", exp: "Khoa học chính trị nghiên cứu quyền lực, chính phủ và các quá trình chính trị." },
+        { q: "37. Ngành khoa học nào được chia thành nhân học tự nhiên và nhân học văn hóa và xã hội?", opts: { A: "Triết học", B: "Tâm lý học", C: "Nhân học", D: "Địa lý học" }, ans: "C", exp: "Nhân học được chia thành hai hợp phần lớn là nhân học tự nhiên (physical anthropology) và nhân học văn hóa và xã hội (social and cultural anthropology)." },
+        { q: "38. Điểm khác biệt thường thấy trong hướng nghiên cứu giữa xã hội học và nhân học văn hóa - xã hội là gì?", opts: { A: "Nhân học nghiên cứu quyền lực, xã hội học nghiên cứu kinh tế", B: "Nhân học thường nghiên cứu một xã hội một cách tổng thể ở các xã hội tiền công nghiệp, xã hội học thường trọng tâm ở các xã hội công nghiệp, hiện đại", C: "Nhân học chỉ nghiên cứu cá nhân, xã hội học nghiên cứu nhóm", D: "Nhân học dùng phương pháp định lượng, xã hội học dùng định tính" }, ans: "B", exp: "Nhân học thường nghiên cứu một xã hội một cách tổng thể, trong khi đó xã hội học thường tập trung vào các chiều cạnh cụ thể của xã hội. Các nhà nhân học thường nghiên cứu các nền văn hóa, các cộng đồng, trong khi đó các xã hội học thường so sánh các quá trình xã hội, các cấu trúc xã hội." },
+        { q: "39. Tâm lý học chủ yếu quan tâm đến vấn đề gì?", opts: { A: "Các quá trình tâm lý và các hành vi của cá nhân", B: "Sự phân bố các loài thực vật", C: "Quá trình bầu cử", D: "Các thiết chế tôn giáo vĩ mô" }, ans: "A", exp: "Tâm lý học chủ yếu quan tâm đến các quá trình tâm lý và các hành vi của cá nhân." },
+        { q: "40. Tâm lý học xã hội đặc biệt gần gũi với xã hội học vì nó quan tâm đến vấn đề gì?", opts: { A: "Chữa bệnh tâm thần phân liệt", B: "Ảnh hưởng của hành vi xã hội lên cá nhân và ảnh hưởng tương tác của cá nhân với cá nhân khác và với nhóm xã hội", C: "Chỉ số IQ của con người", D: "Cấu trúc sinh học của não bộ" }, ans: "B", exp: "Tâm lý lý học xã hội quan tâm đến ảnh hưởng của hành vi xã hội lên cá nhân và ảnh hưởng tương tác của cá nhân với cá nhân khác và với nhóm xã hội, trong khi đó một trong những mối quan tâm của xã hội học là các nhóm xã hội và các hệ thống xã hội." },
+        { q: "41. Khoa học nào quan tâm tới những sự kiện diễn ra trong quá khứ trong khi xã hội học quan tâm đến sự thực tế tổng quát của xã hội?", opts: { A: "Địa lý học", B: "Sử học", C: "Nhân học tự nhiên", D: "Công tác xã hội" }, ans: "B", exp: "Sử học quan tâm tới những sự kiện diễn ra trong quá khứ trong khi đó xã hội học quan tâm đến sự thực tế tổng quát của xã hội." },
+        { q: "42. Có những nhà sử học vận dụng phương pháp xã hội học để phân tích điều gì ảnh hưởng đến các sự kiện lịch sử cụ thể?", opts: { A: "Biến đổi khí hậu", B: "Lực lượng siêu nhiên", C: "Các lực xã hội (social forces)", D: "Hệ Gen của con người" }, ans: "C", exp: "Có những nhà sử học còn vận dụng phương pháp xã hội học để phân tích các lực xã hội (social forces) ảnh hưởng đến các sự kiện lịch sử cụ thể." },
+        { q: "43. Địa lý học thường được coi là khoa học gì?", opts: { A: "Khoa học xã hội", B: "Khoa học tự nhiên", C: "Khoa học nhân văn", D: "Khoa học hành vi" }, ans: "B", exp: "Địa lý học thường được coi là khoa học tự nhiên." },
+        { q: "44. Lĩnh vực nào của địa lý học có đối tượng nghiên cứu chia sẻ nhiều mối quan tâm với xã hội học?", opts: { A: "Địa lý tự nhiên", B: "Địa lý vật lý", C: "Địa lý nhân văn và địa lý văn hóa", D: "Địa lý khí hậu" }, ans: "C", exp: "Tuy nhiên, các nhà địa lý xã hội và văn hóa lại chia sẻ nhiều mối quan tâm với các nhà xã hội học." },
+        { q: "45. Ngành nào là lĩnh vực vận dụng các nguyên lý, lý thuyết của các ngành khoa học xã hội, nhất là xã hội học để giải quyết các vấn đề thực tế?", opts: { A: "Nhân học", B: "Công tác xã hội", C: "Kinh tế học", D: "Triết học" }, ans: "B", exp: "Công tác xã hội là lĩnh vực vận dụng các nguyên lý, lý thuyết của các ngành khoa học xã hội, nhất là xã hội học để giải quyết các vấn đề thực tế." },
+        { q: "46. Xã hội học và công tác xã hội có những mối quan tâm chung nhưng khác nhau ở điểm nào?", opts: { A: "Xã hội học không quan tâm đến con người, công tác xã hội quan tâm đến con người", B: "Xã hội học không triển khai nghiên cứu, công tác xã hội làm nghiên cứu", C: "Thêm nữa, cũng cần lưu ý rằng công tác xã hội chỉ đơn thuần vận dụng kết quả nghiên cứu của xã hội học", D: "Không có điểm khác biệt nào" }, ans: "C", exp: "Thêm nữa, cũng cần lưu ý rằng công tác xã hội chỉ đơn thuần vận dụng kết quả nghiên cứu của xã hội học." },
+        { q: "47. Trong lĩnh vực giáo dục và nghiên cứu, người tốt nghiệp ngành xã hội học có thể làm công việc gì?", opts: { A: "Giảng dạy và nghiên cứu", B: "Quản lý tài chính doanh nghiệp", C: "Thiết kế phần mềm", D: "Chỉ đạo quân sự" }, ans: "A", exp: "Trước hết là công việc giảng dạy và nghiên cứu xã hội học. Rất nhiều trường đại học, viện nghiên cứu nơi những người tốt nghiệp ngành xã hội học có thể giảng dạy và nghiên cứu." },
+        { q: "48. Những người được đào tạo xã hội học có thể làm việc trong các cơ quan nhà nước, đảm nhiệm công việc gì?", opts: { A: "Điều hành ngân hàng thương mại", B: "Sản xuất và tiêu thụ hàng hóa", C: "Thiết kế, xây dựng chính sách và đánh giá chính sách của nhiều lĩnh vực", D: "Thiết kế các công trình kiến trúc" }, ans: "C", exp: "Thứ hai, những người được đào tạo xã hội học có thể làm việc trong các cơ quan nhà nước... đảm nhiệm nhiều công việc khác nhau như thiết kế, xây dựng chính sách và đánh giá chính sách của nhiều lĩnh vực." },
+        { q: "49. Trong các doanh nghiệp, người có chuyên môn xã hội học có thể làm việc trong lĩnh vực nào?", opts: { A: "Phân tích các thành phần hóa học", B: "Quản trị nội bộ doanh nghiệp, quảng bá sản phẩm, nghiên cứu thị trường", C: "Bảo trì hệ thống máy móc", D: "Nghiên cứu sinh học phân tử" }, ans: "B", exp: "Thứ ba, những người được đào tạo xã hội học có thể làm việc trong các doanh nghiệp... có thể đảm nhận các công việc liên quan đến tư vấn quản lý, quan hệ khách hàng, quản trị nội bộ doanh nghiệp, quảng bá sản phẩm, nghiên cứu thị trường." },
+        { q: "50. Alva Myrdal, người được nhận giải Nobel Hòa bình năm 1982, là ví dụ điển hình cho những người có chuyên môn xã hội học làm việc trong lĩnh vực nào?", opts: { A: "Giảng dạy đại học", B: "Cơ quan an ninh", C: "Dịch vụ công/tổ chức phi lợi nhuận", D: "Nghiên cứu kinh tế vĩ mô" }, ans: "C", exp: "Thứ năm, những người có chuyên môn xã hội học có thể làm việc trong lĩnh vực dịch vụ công... nêu một ví dụ điển hình trong lĩnh vực này là nhà xã hội học Thụy Điển Alva Myrdal được nhận giải Nobel Hòa bình năm 1982 cho những nỗ lực của bà trong việc nâng cao nhận thức về mối hiểm họa của vũ trang hạt nhân." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
