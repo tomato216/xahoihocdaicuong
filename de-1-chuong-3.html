@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Phương pháp nghiên cứu xã hội học</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Bộ đề 1. Chương 3</h1>
+        <p>Phương pháp nghiên cứu xã hội học</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Phương pháp nghiên cứu xã hội học</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-6.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-6.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Một trong các chức năng của xã hội học là cung cấp các thông tin thực nghiệm nhằm mục đích gì?", opts: { A: "Sáng tạo ra các quy luật xã hội mới", B: "Phát triển các tri thức khoa học xã hội học", C: "Loại bỏ các nghiên cứu định tính", D: "Định hướng hành vi của cá nhân" }, ans: "B", exp: "Một trong các chức năng của xã hội học là cung cấp các thông tin thực nghiệm nhằm phát triển các tri thức khoa học xã hội học." },
+        { q: "2. Dựa trên mục đích của nghiên cứu, nghiên cứu xã hội học được chia thành những loại nào?", opts: { A: "Nghiên cứu tổng thể, nghiên cứu chọn mẫu, nghiên cứu trường hợp", B: "Nghiên cứu định tính, nghiên cứu định lượng", C: "Nghiên cứu khám phá, nghiên cứu mô tả, nghiên cứu giải thích", D: "Nghiên cứu xác suất, nghiên cứu phi xác suất" }, ans: "C", exp: "Mục đích của nghiên cứu có: nghiên cứu khám phá, nghiên cứu mô tả, nghiên cứu giải thích. (Ngoài ra còn có nghiên cứu đánh giá)." },
+        { q: "3. Loại nghiên cứu nào thường hướng đến trả lời câu hỏi “Cái gì” và cung cấp thông tin cho các nghiên cứu trong tương lai?", opts: { A: "Nghiên cứu giải thích", B: "Nghiên cứu đánh giá", C: "Nghiên cứu mô tả", D: "Nghiên cứu khám phá" }, ans: "D", exp: "Nghiên cứu khám phá thường hướng đến trả lời câu hỏi “Cái gì” và cung cấp thông tin cho các nghiên cứu trong tương lai." },
+        { q: "4. Đặc điểm nổi bật của nghiên cứu mô tả là tập trung trả lời các câu hỏi liên quan đến điều gì?", opts: { A: "Vì sao, nguyên nhân nào", B: "Ai, cái gì, ở đâu, khi nào, như thế nào, bao nhiêu", C: "Có nên tiếp tục hay từ bỏ chương trình", D: "Hiệu quả của dự án là gì" }, ans: "B", exp: "Tất cả các nghiên cứu mô tả đều tập trung trả lời câu hỏi liên quan đến ai, cái gì, ở đâu, khi nào, như thế nào, bao nhiêu." },
+        { q: "5. Khi chúng ta gặp một vấn đề mới, đã nhận diện và mô tả được vấn đề đó, chúng ta sẽ tự đặt câu hỏi “Vì sao”. Đây là hướng đi của loại nghiên cứu nào?", opts: { A: "Nghiên cứu giải thích", B: "Nghiên cứu khám phá", C: "Nghiên cứu mô tả", D: "Nghiên cứu đánh giá" }, ans: "A", exp: "Khi chúng ta gặp một vấn đề mới, đã nhận diện và mô tả được vấn đề đó, chúng ta sẽ tự đặt câu hỏi “Vì sao”. Đây chính là hướng đi của các nghiên cứu giải thích." },
+        { q: "6. Loại nghiên cứu nào được sử dụng để đo lường xem một chương trình hay một dự án có đạt được mục đích nghiên cứu đề ra từ ban đầu hay không?", opts: { A: "Nghiên cứu giải thích", B: "Nghiên cứu khám phá", C: "Nghiên cứu mô tả", D: "Nghiên cứu đánh giá" }, ans: "D", exp: "Nghiên cứu đánh giá được sử dụng để đo lường xem một chương trình hay một dự án có đạt được mục đích nghiên cứu đề ra từ ban đầu hay không." },
+        { q: "7. Dựa trên số lượng trường hợp được lựa chọn để điều tra, nghiên cứu xã hội học được chia thành các loại nào?", opts: { A: "Nghiên cứu định tính và nghiên cứu định lượng", B: "Nghiên cứu tổng thể, nghiên cứu chọn mẫu, nghiên cứu trường hợp", C: "Nghiên cứu khám phá và nghiên cứu mô tả", D: "Phân tích tài liệu và quan sát" }, ans: "B", exp: "Các loại nghiên cứu xã hội học dựa trên số lượng trường hợp được lựa chọn để điều tra, nghiên cứu gồm: Nghiên cứu tổng thể, nghiên cứu chọn mẫu, nghiên cứu trường hợp." },
+        { q: "8. Nghiên cứu được thực hiện trên tất cả các khách thể của điểm nghiên cứu được gọi là gì?", opts: { A: "Nghiên cứu chọn mẫu", B: "Nghiên cứu trường hợp", C: "Nghiên cứu tổng thể", D: "Nghiên cứu khám phá" }, ans: "C", exp: "Nghiên cứu tổng thể là dạng nghiên cứu được thực hiện trên tất cả các khách thể của điểm nghiên cứu." },
+        { q: "9. Vì sao trong nhiều trường hợp, người nghiên cứu cần đến nghiên cứu chọn mẫu thay vì nghiên cứu tổng thể?", opts: { A: "Vì nghiên cứu tổng thể không có tính đại diện cao", B: "Vì người nghiên cứu không đảm bảo các điều kiện về nguồn lực", C: "Vì nghiên cứu tổng thể không mang lại ý nghĩa cho quá trình hoạch định chính sách", D: "Vì nghiên cứu chọn mẫu lấy được ý kiến của tất cả mọi người" }, ans: "B", exp: "Trong nhiều trường hợp người nghiên cứu không đảm bảo các điều kiện về nguồn lực, vì thế cần đến nghiên cứu chọn mẫu nhằm thu thập hiệu quả nhất các thông tin trong thực tế." },
+        { q: "10. Cách chọn mẫu nào mà tất cả các đơn vị trong tổng thể đều có khả năng được lựa chọn vào mẫu nghiên cứu?", opts: { A: "Chọn mẫu phi xác suất", B: "Chọn mẫu xác suất", C: "Chọn mẫu thuận tiện", D: "Chọn mẫu tự nguyện" }, ans: "B", exp: "Trong cách chọn mẫu xác suất, tất cả các đơn vị trong tổng thể đều có khả năng được lựa chọn vào mẫu nghiên cứu." },
+        { q: "11. Kỹ thuật chọn mẫu yêu cầu thiết lập một khung chọn mẫu, sau đó sử dụng bảng số ngẫu nhiên hoặc rút thăm để chọn ra một lượng n từ tổng thể N được gọi là gì?", opts: { A: "Chọn ngẫu nhiên hệ thống", B: "Chọn mẫu phân tầng", C: "Chọn mẫu cụm", D: "Chọn ngẫu nhiên đơn giản" }, ans: "D", exp: "Chọn ngẫu nhiên đơn giản cần thiết lập một khung chọn mẫu cho nghiên cứu. Sau đó, gắn cho mỗi đơn vị trong tổng thể một số thứ tự, lựa chọn ra một lượng n từ tổng thể điều tra N dựa trên bảng số ngẫu nhiên hay rút thăm theo danh sách." },
+        { q: "12. Công thức tính bước chọn k (k = N/n) được sử dụng trong cách chọn mẫu nào?", opts: { A: "Chọn mẫu cụm", B: "Chọn ngẫu nhiên đơn giản", C: "Chọn ngẫu nhiên hệ thống", D: "Chọn mẫu phân tầng" }, ans: "C", exp: "Chọn ngẫu nhiên hệ thống tiến hành lập khung mẫu và tính toán bước chọn k (k = N/n). Sau đó, trên danh sách các đơn vị của tổng thể, cứ một khoảng cách k, ta chọn một đơn vị để khảo sát." },
+        { q: "13. Phân chia khung mẫu thành các tầng/dạng khác nhau (theo giới tính, tuổi, học vấn...) sau đó sử dụng cách chọn ngẫu nhiên để chọn các đơn vị điều tra là kỹ thuật gì?", opts: { A: "Chọn mẫu cụm", B: "Chọn mẫu phân tầng", C: "Chọn mẫu phán đoán", D: "Chọn ngẫu nhiên hệ thống" }, ans: "B", exp: "Chọn mẫu phân tầng là cách chọn mẫu ngẫu nhiên trong đó người nghiên cứu xác định các tầng/đặc điểm của tổng thể (thường phân theo giới tính, tuổi, học vấn, hôn nhân, nghề nghiệp), phân chia khung mẫu thành các tầng/dạng khác nhau sau đó sử dụng cách chọn ngẫu nhiên để chọn các đơn vị điều tra." },
+        { q: "14. Cách chọn mẫu nào thường được thiết kế theo khu vực địa lý và có thể được tiến hành theo nhiều giai đoạn?", opts: { A: "Chọn mẫu cụm", B: "Chọn mẫu phân tầng", C: "Chọn ngẫu nhiên đơn giản", D: "Chọn mẫu tăng nhanh" }, ans: "A", exp: "Chọn mẫu cụm thường được thiết kế theo khu vực địa lý. Mẫu cụm có thể được tiến hành theo nhiều giai đoạn." },
+        { q: "15. Loại hình nghiên cứu nào tập trung vào một hay một nhóm các trường hợp, tập trung vào các chi tiết và đặc điểm bản chất cũng như bối cảnh?", opts: { A: "Nghiên cứu chọn mẫu", B: "Nghiên cứu tổng thể", C: "Nghiên cứu trường hợp", D: "Nghiên cứu đánh giá" }, ans: "C", exp: "Nghiên cứu trường hợp thường tập trung vào một hay một nhóm các trường hợp, tập trung vào các chi tiết và đặc điểm bản chất cũng như bối cảnh." },
+        { q: "16. Các phương pháp nghiên cứu định tính được phát triển và sử dụng đầu tiên trong ngành nào?", opts: { A: "Tâm lý học", B: "Xã hội học", C: "Triết học", D: "Nhân chủng học" }, ans: "D", exp: "Các phương pháp nghiên cứu định tính được phát triển và sử dụng đầu tiên trong các nghiên cứu ngành Nhân chủng học." },
+        { q: "17. Để kiểm định thực nghiệm mối quan hệ giữa các nhân tố nhất định dựa vào việc phân tích các con số thống kê cụ thể, ta nên sử dụng phương pháp nào?", opts: { A: "Nghiên cứu định lượng", B: "Nghiên cứu định tính", C: "Phỏng vấn sâu", D: "Quan sát tham dự" }, ans: "A", exp: "Nếu bạn cần kiểm định thực nghiệm mối quan hệ giữa các nhân tố nhất định, bạn sẽ dựa vào việc phân tích các con số thống kê cụ thể, đây là đặc trưng của nghiên cứu định lượng." },
+        { q: "18. Mục đích của nghiên cứu định tính là gì?", opts: { A: "Nhằm xác định tỷ lệ giữa các quan điểm khác nhau từ dung lượng mẫu được chọn.", B: "Nhằm xác định số lượng dữ liệu và tổng hợp kết quả để suy rộng ra toàn thể.", C: "Nhằm đạt được sự hiểu biết về những nguyên nhân sâu xa, những động cơ.", D: "Thường bao hàm việc kiểm định giả thuyết." }, ans: "C", exp: "Mục đích của nghiên cứu định tính là nhằm đạt được sự hiểu biết về những nguyên nhân sâu xa, những động cơ; cung cấp sự hiểu biết sâu về một vấn đề." },
+        { q: "19. Việc phân tích dữ liệu của nghiên cứu định tính có đặc điểm gì?", opts: { A: "Được đo lường rõ ràng, mang tính thống kê.", B: "Dữ liệu không mang tính thống kê, chủ yếu là các ngôn từ được thu thập.", C: "Tập trung vào các biến số nhằm đo lường.", D: "Thường được phân tích bằng các phép tính toán xác suất." }, ans: "B", exp: "Phân tích dữ liệu trong nghiên cứu định tính: Dữ liệu không mang tính thống kê, chủ yếu là các ngôn từ được thu thập từ các câu hỏi mở, từ các cuộc phỏng vấn, thông qua quan sát, từ các nguồn tài liệu." },
+        { q: "20. Bước đầu tiên của quy trình tiến hành một nghiên cứu xã hội học là gì?", opts: { A: "Lựa chọn phương pháp nghiên cứu", B: "Tổng quan tài liệu", C: "Xác định mục đích nghiên cứu", D: "Xác định vấn đề nghiên cứu và đặt tên đề tài" }, ans: "D", exp: "Mọi nghiên cứu đều bắt đầu từ việc xác định vấn đề nghiên cứu. Công việc chủ yếu trong bước lựa chọn chủ đề nghiên cứu là xác định được đối tượng nghiên cứu, từ đó đặt tên đề tài. Đây là mục 2.1 của các bước tiến hành." },
+        { q: "21. Theo Phạm Văn Quyết và Nguyễn Quý Thanh, khi xác định đối tượng nghiên cứu, cần đảm bảo điều kiện nào sau đây?", opts: { A: "Vấn đề chỉ có duy nhất một cách giải thích", B: "Vấn đề không cần thu hút sự quan tâm của người nghiên cứu", C: "Có ít nhất 2 cách giải thích trở lên đối với vấn đề xã hội đó", D: "Vấn đề đó không thể nghiên cứu được" }, ans: "C", exp: "Khi xác định đối tượng nghiên cứu, người nghiên cứu cần đảm bảo các điều kiện sau: (i) Là vấn đề xã hội có thể nghiên cứu được, (ii) Có ít nhất 2 cách giải thích trở lên đối với vấn đề xã hội đó, và (iii) thu hút sự quan tâm của người nghiên cứu." },
+        { q: "22. Bước tiếp theo của quy trình nghiên cứu thường là gì sau khi một chủ đề nghiên cứu đã được nhận diện?", opts: { A: "Viết báo cáo", B: "Xử lý thông tin", C: "Tổng quan tài liệu", D: "Lựa chọn mẫu" }, ans: "C", exp: "Một khi chủ đề nghiên cứu đã được nhận diện, bước tiếp theo của quy trình nghiên cứu thường là tổng quan tài liệu." },
+        { q: "23. Vai trò của tổng quan tài liệu đối với người nghiên cứu là gì?", opts: { A: "Tránh được việc phạm phải những sai sót của những nhà nghiên cứu đi trước.", B: "Thay thế hoàn toàn cho việc thu thập dữ liệu thực tế.", C: "Xác định số lượng mẫu cần khảo sát.", D: "Giúp bỏ qua bước lập giả thuyết nghiên cứu." }, ans: "A", exp: "Tổng quan tài liệu ở giai đoạn đầu có thể tránh được việc phạm phải những sai sót của những nhà nghiên cứu đi trước; giúp biết được câu hỏi nghiên cứu đặt ra đã từng được giải đáp hay chưa." },
+        { q: "24. Trong cuốn Xã hội học của Anthony Giddens, loại câu hỏi nào dùng để tìm hiểu về thực trạng các sự vật, hiện tượng?", opts: { A: "Câu hỏi so sánh", B: "Câu hỏi lý luận", C: "Câu hỏi phát triển", D: "Câu hỏi thực tế" }, ans: "D", exp: "Câu hỏi thực tế (factual question): tìm hiểu về thực trạng các sự vật, hiện tượng." },
+        { q: "25. Câu hỏi phát triển (developmental question) nhằm mục đích gì?", opts: { A: "Tìm hiểu thực trạng sự vật", B: "Tìm hiểu sự khác biệt giữa các xã hội", C: "Tìm hiểu sự biến đổi của các hiện tượng xã hội trải qua các thời kỳ khác nhau", D: "Tìm hiểu nền tảng, cơ sở của các sự vật hiện tượng" }, ans: "C", exp: "Câu hỏi phát triển (developmental question): tìm hiểu sự biến đổi của các hiện tượng xã hội trải qua các thời kỳ khác nhau." },
+        { q: "26. Trong phương pháp định lượng, biến số chịu tác động của biến số khác được gọi là gì?", opts: { A: "Biến số phụ thuộc", B: "Biến số độc lập", C: "Biến số can thiệp", D: "Biến số kiểm soát" }, ans: "A", exp: "Biến số độc lập là biến số gây ra một sự thay đổi hay một hệ quả, trong khi biến số phụ thuộc là biến số chịu tác động của biến số độc lập." },
+        { q: "27. Giả thuyết nào nhằm thiết lập trạng thái thực tế của các sự kiện, các hiện tượng xã hội và thường được biểu thị bằng con số %?", opts: { A: "Giả thuyết giải thích", B: "Giả thuyết mô tả", C: "Giả thuyết xu hướng", D: "Giả thuyết nhân quả" }, ans: "B", exp: "Giả thuyết mô tả là loại giả thuyết nhằm thiết lập trạng thái thực tế của các sự kiện, các hiện tượng xã hội. Loại giả thuyết này thường được biểu thị bằng con số % khi mô tả về các hiện tượng được nghiên cứu." },
+        { q: "28. 'Tài liệu là đồ vật, phim ảnh, băng hình hoặc chữ viết, ký tự... nhằm cung cấp thông tin cho người nghiên cứu' là định nghĩa của phương pháp nào?", opts: { A: "Quan sát", B: "Phỏng vấn sâu", C: "Phân tích tài liệu", D: "Thảo luận nhóm" }, ans: "C", exp: "Khái niệm phân tích tài liệu: Tài liệu là đồ vật, phim ảnh, băng hình hoặc chữ viết, ký tự... nhằm cung cấp thông tin cho người nghiên cứu." },
+        { q: "29. Ưu điểm của phương pháp phân tích tài liệu là gì?", opts: { A: "Luôn tìm được nguyên nhân, mối quan hệ của các dấu hiệu", B: "Sử dụng những tài liệu có sẵn nên ít tốn kém về công sức, thời gian, kinh phí", C: "Số liệu thống kê luôn được phân bổ theo đúng các cấp, loại mà nghiên cứu cần", D: "Phân tích được ngay ấn tượng trực tiếp về hành vi con người" }, ans: "B", exp: "Ưu điểm của phương pháp phân tích tài liệu: Do sử dụng những tài liệu có sẵn nên ít tốn kém về công sức, thời gian, kinh phí mà không cần sử dụng nhiều người." },
+        { q: "30. Loại phân tích tài liệu nào là việc tìm hiểu bản chất của tư liệu được phân tích, cho phép hiểu được nội dung của tài liệu, nguồn gốc và lôgic lập luận?", opts: { A: "Phân tích hình thức hóa (phân tích định lượng)", B: "Phân tích truyền thống (phân tích định tính)", C: "Phân tích nội dung", D: "Phân tích thống kê" }, ans: "B", exp: "Phân tích truyền thống (phân tích định tính) là việc tìm hiểu bản chất của tư liệu được phân tích, cho phép hiểu được nội dung của tài liệu, nguồn gốc và lôgic lập luận của những ý tưởng được đưa ra trong tài liệu." },
+        { q: "31. Phương pháp thu thập thông tin thực nghiệm thông qua các tri giác nghe, nhìn, để thu thập thông tin và các quá trình, các hiện tượng xã hội là phương pháp gì?", opts: { A: "Điều tra bằng bảng hỏi", B: "Thảo luận nhóm", C: "Phỏng vấn sâu", D: "Quan sát" }, ans: "D", exp: "Khái niệm Quan sát là một phương pháp thu thập thông tin thực nghiệm thông qua các tri giác nghe, nhìn, để thu thập thông tin và các quá trình, các hiện tượng xã hội." },
+        { q: "32. Loại quan sát mà trong đó người quan sát đã sớm xác định được những yếu tố của khách thể nghiên cứu có ý nghĩa nhất cho cuộc nghiên cứu được gọi là gì?", opts: { A: "Quan sát không chuẩn mực", B: "Quan sát có tham dự", C: "Quan sát có chuẩn mực", D: "Quan sát không tham dự" }, ans: "C", exp: "Quan sát có chuẩn mực là quan sát mà trong đó người quan sát đã sớm xác định được những yếu tố của khách thể nghiên cứu có ý nghĩa nhất cho cuộc nghiên cứu để tập trung sự chú ý của mình vào đó." },
+        { q: "33. Ưu điểm của phương pháp quan sát là gì?", opts: { A: "Dễ bị ảnh hưởng bởi tính chủquan của người quan sát", B: "Khó có thể nghiên cứu được số đông các đơn vị", C: "Biết được sự biến đổi khác nhau của đối tượng nghiên cứu", D: "Sử dụng cho nghiên cứu những sự kiện hiện tại và quá khứ" }, ans: "C", exp: "Ưu điểm của quan sát là biết được sự biến đổi khác nhau của đối tượng nghiên cứu; phát hiện bản chất nội tại; đạt được ngay ấn tượng trực tiếp về sự thể hiện hành vi." },
+        { q: "34. Người dẫn dắt cuộc phỏng vấn sâu sử dụng công cụ gì để thu thập thông tin?", opts: { A: "Bảng hỏi đóng", B: "Các câu hỏi mở", C: "Phép tính xác suất", D: "Bảng số ngẫu nhiên" }, ans: "B", exp: "Trong phương pháp phỏng vấn sâu, người phỏng vấn tự do dẫn dắt cuộc phỏng vấn bằng các câu hỏi mở." },
+        { q: "35. Một trong những yêu cầu đối với một cuộc phỏng vấn sâu là gì?", opts: { A: "Người đi phỏng vấn cần thể hiện rõ thành kiến cá nhân", B: "Chọn địa điểm, tình huống, thời gian phỏng vấn phù hợp", C: "Không cần ghi chép trung thực", D: "Có thể bỏ qua yếu tố giới tính, lứa tuổi của người phỏng vấn" }, ans: "B", exp: "Yêu cầu đối với một cuộc phỏng vấn: Cần chọn địa điểm, tình huống, thời gian phỏng vấn cho phù hợp; Ghi chép phải trung thực; Người đi phỏng vấn cần loại bỏ thành kiến cá nhân..." },
+        { q: "36. Thảo luận nhóm tập trung chủ yếu bao gồm bao nhiêu người?", opts: { A: "Từ 2 - 5 người", B: "Từ 6 - 12 người", C: "Từ 15 - 20 người", D: "Trên 30 người" }, ans: "B", exp: "Nhóm thảo luận tập trung chủ yếu từ 6 - 12 người, cùng có những đặc điểm đồng nhất và có sự tương tác, trao đổi ý kiến, quan điểm với nhau." },
+        { q: "37. Điểm mạnh của thảo luận nhóm tập trung là gì?", opts: { A: "Người phỏng vấn thay vì chỉ biết một ý kiến trả lời tại một thời điểm, thì có thể được nhiều ý kiến khác nhau cùng lúc.", B: "Người tham gia dễ bị ảnh hưởng bởi quan điểm của người khác.", C: "Có thể tạo ra áp lực cho người trả lời.", D: "Thu thập được những thông tin định lượng chính xác tuyệt đối." }, ans: "A", exp: "Điểm mạnh của thảo luận nhóm tập trung là người phỏng vấn thay vì chỉ biết một ý kiến trả lời tại một thời điểm trong phỏng vấn sâu, thì trong thảo luận nhóm, người phỏng vấn cùng một lúc có thể được nhiều ý kiến khác nhau." },
+        { q: "38. Bảng hỏi là công cụ thu thập thông tin của loại hình nghiên cứu nào?", opts: { A: "Nghiên cứu định tính", B: "Nghiên cứu định lượng", C: "Phân tích nội dung truyền thống", D: "Quan sát không chuẩn mực" }, ans: "B", exp: "Bảng hỏi là công cụ thu thập thông tin định lượng trong các nghiên cứu xã hội học. Bảng hỏi là tổ hợp các câu hỏi chứa đựng nội dung về hành vi, thái độ/niềm tin..." },
+        { q: "39. Bảng hỏi thường được cấu trúc thành mấy phần?", opts: { A: "2 phần", B: "3 phần", C: "4 phần", D: "5 phần" }, ans: "B", exp: "Bảng hỏi thường được cấu trúc thành 3 phần: Phần 1: Mở đầu; Phần 2: Nội dung; Phần 3: Kết thúc." },
+        { q: "40. Phần mở đầu của bảng hỏi thường chứa thông tin gì?", opts: { A: "Các câu hỏi về nhân khẩu học", B: "Phần phân chia theo nhóm các nội dung", C: "Lời giới thiệu của người nghiên cứu về đề tài, cam kết bảo mật thông tin", D: "Các câu hỏi đóng nhiều lựa chọn" }, ans: "C", exp: "Phần 1: Mở đầu: là lời giới thiệu của người nghiên cứu về đề tài, sự cam kết của người nghiên cứu về tính bảo mật của thông tin, tính khuyết danh cho người trả lời..." },
+        { q: "41. Theo Neuman (2011), nguyên tắc nào sau đây CẦN TRÁNH khi xây dựng bảng hỏi?", opts: { A: "Sử dụng ngôn từ rõ ràng", B: "Không dùng câu hỏi định hướng", C: "Dùng từ lóng, từ viết tắt", D: "Đặt câu hỏi phù hợp với người trả lời" }, ans: "C", exp: "Các nguyên tắc cần phải tránh khi xây dựng bảng hỏi gồm: Không dùng từ lóng, từ viết tắt; Không dùng các từ ngữ gây sự hiểu lầm; Không dùng câu hỏi định hướng..." },
+        { q: "42. 'Là câu đã có sẵn các phương án trả lời khác nhau, người được phỏng vấn chỉ cần đánh dấu vào phương án nào phù hợp với suy nghĩ của mình' là khái niệm của loại câu hỏi nào?", opts: { A: "Câu hỏi đóng", B: "Câu hỏi mở", C: "Câu hỏi kiểm tra", D: "Câu hỏi lọc" }, ans: "A", exp: "Câu hỏi đóng là câu đã có sẵn các phương án trả lời khác nhau, người được phỏng vấn chỉ cần đánh dấu vào phương án nào phù hợp với suy nghĩ của mình." },
+        { q: "43. Câu hỏi đóng lựa chọn có đặc điểm gì?", opts: { A: "Không có phương án trả lời sẵn", B: "Cho phép người trả lời đưa ra cách trả lời riêng", C: "Có các phương án trả lời loại trừ nhau", D: "Người trả lời có thể chọn tất cả các phương án" }, ans: "C", exp: "Câu hỏi đóng lựa chọn: là câu hỏi mà có các phương án trả lời loại trừ nhau. Vì thế, người trả lời chỉ được lựa chọn một phương án." },
+        { q: "44. Câu hỏi 'Vì sao anh/chị lựa chọn khoa Xã hội học khi đăng ký nộp hồ sơ thi Đại học?' với các phương án có sẵn kèm theo mục 'Lý do khác.... (xin anh/chị ghi rõ)' thuộc loại câu hỏi nào?", opts: { A: "Câu hỏi mở", B: "Câu hỏi đóng “Có – Không”", C: "Câu hỏi lọc", D: "Câu hỏi hỗn hợp" }, ans: "D", exp: "Câu hỏi hỗn hợp (Vừa đóng vừa mở) là câu hỏi có một số phương án trả lời có sẵn và một phương án để trống cho người trả lời tự do đưa ra phương án của mình. Ví dụ đã cho là điển hình của câu hỏi hỗn hợp." },
+        { q: "45. Loại câu hỏi nào là dạng câu hỏi theo chức năng, nhằm phân chia ra các nhóm đối tượng riêng biệt, từ đó người nghiên cứu sẽ có các câu hỏi cụ thể dành cho từng nhóm?", opts: { A: "Câu hỏi kiểm tra", B: "Câu hỏi hỗn hợp", C: "Câu hỏi lọc", D: "Câu hỏi mở" }, ans: "C", exp: "Câu hỏi lọc là dạng câu hỏi theo chức năng, nhằm phân chia ra các nhóm đối tượng riêng biệt, từ đó người nghiên cứu sẽ có các câu hỏi cụ thể dành cho từng nhóm đối tượng này." },
+        { q: "46. Câu hỏi nhằm kiểm tra tính xác thực và sự khách quan của thông tin mà người trả lời cung cấp trước đó được gọi là gì?", opts: { A: "Câu hỏi lọc", B: "Câu hỏi kiểm tra", C: "Câu hỏi tùy chọn", D: "Câu hỏi đóng lựa chọn" }, ans: "B", exp: "Câu hỏi kiểm tra: là câu hỏi chức năng nhằm kiểm tra tính xác thực và sự khách quan của thông tin mà người trả lời cung cấp trước đó." },
+        { q: "47. Điểm mạnh của câu hỏi mở là gì?", opts: { A: "Dễ dàng tiến hành trả lời", B: "Các phương án trả lời dễ mã hóa", C: "Người trả lời có thể đưa ra các phương án sáng tạo và chi tiết", D: "Dễ dàng so sánh phương án trả lời của người tham gia" }, ans: "C", exp: "Điểm mạnh của câu hỏi mở bao gồm: Người trả lời có thể đưa ra các phương án sáng tạo và chi tiết; Giúp người nghiên cứu phát hiện những điều không định trước." },
+        { q: "48. Điểm yếu của câu hỏi đóng là gì?", opts: { A: "Việc thống kê, so sánh các kết quả sẽ khó khăn", B: "Khó mã hóa phương án trả lời", C: "Hạn chế sự sáng tạo của người trả lời", D: "Các câu trả lời không liên quan hoặc gây khó hiểu" }, ans: "C", exp: "Điểm yếu của câu hỏi đóng là hạn chế sự sáng tạo của người trả lời; người trả lời nếu không có ý kiến hoặc tri thức sẽ khó tìm được phương án trả lời." },
+        { q: "49. Trong đạo đức nghiên cứu, nguyên tắc về sự đồng ý của đối tượng nghiên cứu yêu cầu điều gì?", opts: { A: "Được phép lừa dối đối tượng tham gia", B: "Cung cấp thông tin về việc tham gia cuộc nghiên cứu cần được hỏi trước khi tiến hành thu thập dữ liệu", C: "Không cần phải xin phép nếu thu thập bằng bảng hỏi", D: "Có thể ép buộc đối tượng tham gia nếu nghiên cứu quan trọng" }, ans: "B", exp: "Sự đồng ý của đối tượng nghiên cứu và cung cấp thông tin về việc tham gia cuộc nghiên cứu cần được hỏi trước khi tiến hành thu thập dữ liệu từ họ." },
+        { q: "50. Các nhà xã hội học có trách nhiệm bảo vệ hợp lý những lợi ích của những người tham gia như thế nào?", opts: { A: "Báo cáo kết quả theo hướng có lợi cho bản thân", B: "Sử dụng dữ liệu sai mục đích", C: "Bảo vệ họ khỏi bị ảnh hưởng bởi công việc của họ, và báo cáo kết quả chính xác và trung thực", D: "Xuyên tạc số liệu để bài báo cáo được đánh giá cao" }, ans: "C", exp: "Các nhà xã hội học có trách nhiệm bảo vệ hợp lý những lợi ích của những người tham gia hoặc bị ảnh hưởng bởi công việc của họ, và báo cáo kết quả chính xác và trung thực." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
