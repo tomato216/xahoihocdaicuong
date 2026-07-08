@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chương 7: Lệch chuẩn, tuân thủ và kiểm soát xã hội - Xã Hội Học Đại Cương</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a0a0c;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Phần Tiêu đề trang */
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #ffffff;
+            background: linear-gradient(135deg, #ffffff 60%, #b388ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+
+        .subtitle {
+            color: #b3b3b8;
+            font-size: 1.1rem;
+            font-weight: 300;
+        }
+
+        /* Lưới hiển thị linh hoạt tự động xếp hàng */
+        .grid-container {
+            display: grid;
+            /* Tự động căn chỉnh: cột tối thiểu 280px, nếu màn hình rộng sẽ dàn ra */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
+            gap: 20px;
+        }
+
+        /* Thiết kế từng ô lựa chọn */
+        .grid-item {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            background-color: #121216;
+            border: 1px solid #3a2366; /* Viền tím tối */
+            border-radius: 12px;
+            padding: 30px 20px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .grid-item .bo-de {
+            color: #b388ff;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            transition: color 0.3s ease;
+        }
+
+        .grid-item .ten-tac-gia {
+            color: #ffffff;
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        /* Hiệu ứng rê chuột vào ô */
+        .grid-item:hover {
+            background-color: rgba(111, 66, 193, 0.1);
+            border-color: #6f42c1;
+            transform: translateY(-4px);
+            box-shadow: 0 8px 25px rgba(111, 66, 193, 0.25);
+        }
+
+        .grid-item:hover .bo-de {
+            color: #ffffff;
+        }
+
+        /* Nút quay lại */
+        .back-nav {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .back-link {
+            color: #8c8c93;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border: 1px solid #8c8c93;
+            border-radius: 8px;
+        }
+
+        .back-link:hover {
+            color: #ffffff;
+            border-color: #ffffff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        /* Tối ưu cho màn hình điện thoại */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.8rem;
+            }
+            .grid-item {
+                padding: 25px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <h1>Chương 7: Lệch chuẩn, tuân thủ và kiểm soát xã hội</h1>
+            <p class="subtitle">Chọn một bộ đề để ôn tập</p>
+        </div>
+        
+        <div class="grid-container">
+            <a href="de-1-chuong-7.html" class="grid-item">
+                <span class="bo-de">Bộ đề 1</span>
+            </a>
+
+            <a href="de-2-chuong-7.html" class="grid-item">
+                <span class="bo-de">Bộ đề 2</span>
+            </a>
+
+            <a href="de-3-chuong-7.html" class="grid-item">
+                <span class="bo-de">Bộ đề 3</span>
+            </a>
+        <div class="back-nav">
+            <a href="lua-chon.html?mode=chuong" class="back-link">← Quay lại danh sách chương</a>
+        </div>
+    </div>
+
+</body>
+</html>
