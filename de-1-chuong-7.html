@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Chương 7</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 1. Chương 7</h1>
+        <p>Lệch chuẩn, tuân thủ và kiểm soát xã hội</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Lệch chuẩn, tuân thủ và kiểm soát xã hội</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-7.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-7.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Lệch chuẩn xã hội có thể được hiểu đơn giản là gì?", opts: { A: "Là những hành vi luôn gây tổn hại nghiêm trọng đến tài sản của người khác.", B: "Là những hành vi đi chệch với sự mong đợi của số đông, hay sự vi phạm các chuẩn mực xã hội.", C: "Là những hành vi luôn bị pháp luật trừng trị bằng các hình phạt nghiêm khắc.", D: "Là những hành vi mang tính bẩm sinh và không thể thay đổi." }, ans: "B", exp: "Lệch chuẩn xã hội có thể được hiểu đơn giản là những hành vi đi chệch với sự mong đợi của số đông, hay sự vi phạm các chuẩn mực xã hội." },
+        { q: "2. Theo Bilton và các đồng sự (1993), định nghĩa về lệch chuẩn xã hội được mở rộng như thế nào?", opts: { A: "Lệch chuẩn là sự vi phạm các điều luật đã được nhà nước ban hành.", B: "Lệch chuẩn là sự vi phạm các chuẩn mực được chấp nhận hoặc các quy tắc xã hội của một nhóm hay của xã hội.", C: "Lệch chuẩn là những hành vi chắc chắn mang lại hậu quả xấu cho sự phát triển kinh tế.", D: "Lệch chuẩn là những biểu hiện bất thường về mặt tâm sinh lý của cá nhân." }, ans: "B", exp: "Bilton và các đồng sự (1993) mở rộng định nghĩa lệch chuẩn xã hội là sự vi phạm các chuẩn mực được chấp nhận hoặc các quy tắc xã hội của một nhóm hay của xã hội, hay về một người lệch lạc như một kẻ vi phạm các tiêu chuẩn đã được coi là được thừa nhận." },
+        { q: "3. Một trong những hiểu lầm phổ biến nhất về bản chất của lệch chuẩn là gì?", opts: { A: "Đánh giá lệch chuẩn dựa trên bối cảnh chính trị, kinh tế.", B: "Quy việc đánh giá lệch chuẩn vào hai cặp tiêu chuẩn: đúng/sai, tốt/xấu.", C: "Lệch chuẩn phụ thuộc rất nhiều vào thời điểm lịch sử cụ thể.", D: "Lệch chuẩn là một bộ phận không thể thiếu của một cơ thể xã hội khỏe mạnh." }, ans: "B", exp: "Một trong những hiểu lầm phổ biến nhất là quy việc đánh giá lệch chuẩn vào hai cặp tiêu chuẩn: đúng/sai, tốt/xấu. Cụ thể, các hành vi lệch chuẩn thường được coi là các hành vi sai lệch, xấu, gây hại cho xã hội. Nhưng điều này không nhất thiết đúng." },
+        { q: "4. Việc Hoàng Hoa Thám được coi là tội phạm bị truy nã ở triều Nguyễn cuối thế kỷ XIX, nhưng lại được coi là một trong những anh hùng dân tộc ở thời hiện đại minh chứng cho điều gì về lệch chuẩn?", opts: { A: "Lệch chuẩn phụ thuộc rất nhiều vào bối cảnh chính trị, kinh tế, văn hóa của một xã hội cụ thể trong một thời điểm lịch sử cụ thể.", B: "Lệch chuẩn luôn là hành vi sai, xấu, gây hại cho xã hội ở mọi thời đại.", C: "Lệch chuẩn là hiện tượng có tính bệnh lý của xã hội.", D: "Hành vi lệch chuẩn do yếu tố sinh học quyết định." }, ans: "A", exp: "Thế nào là lệch chuẩn phụ thuộc rất nhiều vào bối cảnh chính trị, kinh tế, văn hóa của một xã hội cụ thể trong một thời điểm lịch sử cụ thể. Ví dụ, Hoàng Hoa Thám được coi là tội phạm bị truy nã ở triều Nguyễn cuối thế kỷ XIX, nhưng lại được coi là một trong những anh hùng dân tộc ở thời hiện đại." },
+        { q: "5. Hiện tượng người Mường, người Dao có tập tục cướp vợ và kết hôn từ 13 tuổi (vi phạm luật pháp do người Kinh đặt ra nhưng lại được chấp nhận trong văn hóa của họ) cho thấy điều gì?", opts: { A: "Người Mường và người Dao không có chuẩn mực xã hội.", B: "Lệch chuẩn mang tính khách quan và áp dụng chung cho mọi cộng đồng.", C: "Tính tương đối của lệch chuẩn, phụ thuộc vào văn hóa của từng nhóm xã hội.", D: "Đây là hiện tượng bất bình thường và có tính bệnh lý cao." }, ans: "C", exp: "Quan hệ tình dục với trẻ em gái từ 13 tuổi trở xuống được coi là phạm pháp ở Việt Nam, và đa số người dân tộc Kinh đồng thuận với vấn đề này. Nhưng người Dao và người Mường lại có tập tục cướp vợ và kết hôn từ 13 tuổi. Theo luật pháp thì là vi phạm, nhưng trong văn hóa của người Dao và người Mường thì việc đó lại là chấp nhận được." },
+        { q: "6. Theo Emile Durkheim, tội phạm nói riêng và lệch chuẩn nói chung có tính chất gì đối với xã hội?", opts: { A: "Tính bệnh lý và bất bình thường.", B: "Tính bình thường.", C: "Tính di truyền.", D: "Tính tiêu cực tuyệt đối." }, ans: "B", exp: "Theo Emile Durkheim, tính bình thường của tội phạm nói riêng và lệch chuẩn nói chung thể hiện ở chỗ, bất cứ xã hội nào, ở bất cứ giai đoạn lịch sử nào, cũng có tội phạm và lệch chuẩn." },
+        { q: "7. Theo Durkheim, hiện tượng tội phạm và lệch chuẩn chỉ trở thành bất bình thường và có tính bệnh lý khi nào?", opts: { A: "Khi tỷ lệ tội phạm và lệch chuẩn tại xã hội đó, hoặc ở giai đoạn lịch sử đó quá cao, hoặc quá thấp.", B: "Khi chúng gây ra thiệt hại về kinh tế cho giai cấp thống trị.", C: "Khi có sự can thiệp của các cơ quan kiểm soát xã hội chính thức.", D: "Khi nó đi ngược lại với các giá trị đạo đức truyền thống." }, ans: "A", exp: "Hiện tượng tội phạm và lệch chuẩn ở một xã hội hoặc một giai đoạn lịch sử nhất định chỉ thành bất bình thường và có tính bệnh lý khi tỷ lệ tội phạm và lệch chuẩn tại xã hội đó, hoặc ở giai đoạn lịch sử đó quá cao, hoặc quá thấp." },
+        { q: "8. Theo quan điểm của chức năng luận (Emile Durkheim và James Henslin), lệch chuẩn thực hiện những chức năng tích cực nào đối với xã hội?", opts: { A: "Vạch ra các giới hạn đạo đức; thúc đẩy đoàn kết xã hội; tạo điều kiện cho biến đổi xã hội.", B: "Xóa bỏ sự bất bình đẳng; loại bỏ người yếu kém; duy trì quyền lực của giới cầm quyền.", C: "Củng cố sức mạnh quân sự; phát triển kinh tế; mở rộng giao lưu văn hóa.", D: "Phân biệt giai cấp; tạo ra luật pháp; giám sát cá nhân." }, ans: "A", exp: "Emile Durkheim và các nhà xã hội học theo trường phái chức năng luận cho rằng tội phạm và lệch chuẩn là một bộ phận không thể thiếu của một cơ thể xã hội khỏe mạnh, và chỉ ra những chức năng tích cực bao gồm: (1) vạch ra các giới hạn đạo đức và củng cố các chuẩn mực; (2) thúc đẩy đoàn kết xã hội và (3) tạo điều kiện cho biến đổi xã hội." },
+        { q: "9. Sự xuất hiện của một gia đình vi phạm chuẩn mực về đạo hiếu (con cái mắng chửi bố mẹ già) khiến cộng đồng lên án, từ đó ý thức về đạo hiếu trở nên mạnh mẽ hơn. Đây là ví dụ cho chức năng nào của lệch chuẩn?", opts: { A: "Tạo điều kiện cho biến đổi xã hội.", B: "Phá vỡ cấu trúc tổ chức xã hội.", C: "Củng cố, tăng cường các giá trị, chuẩn mực xã hội.", D: "Tăng cường tính đoàn kết hay tinh thần tập thể." }, ans: "C", exp: "Lệch chuẩn xã hội góp phần củng cố, tăng cường các giá trị, chuẩn mực xã hội. Giống như màu trắng sẽ nổi bật nếu để cạnh màu đen, sự xuất hiện của một gia đình vi phạm chuẩn mực về đạo hiếu sẽ khiến cộng đồng trở nên ý thức mạnh mẽ hơn về đạo hiếu." },
+        { q: "10. Chính sách khoán hộ của Bí thư Kim Ngọc tại tỉnh Vĩnh Phúc vào những năm 1960 được xem như một lệch chuẩn nhưng lại là tiền đề cho cuộc Đổi mới trong nông nghiệp. Đây là minh chứng cho chức năng nào của lệch chuẩn?", opts: { A: "Thúc đẩy đoàn kết xã hội.", B: "Dự báo hay/và đem lại một sự thay đổi cho xã hội.", C: "Củng cố chuẩn mực đạo đức.", D: "Làm suy giảm niềm tin vào công bằng xã hội." }, ans: "B", exp: "Lệch chuẩn xã hội có thể dự báo hay/và đem lại một sự thay đổi cho xã hội. Một số lệch chuẩn lại có thể đem lại cho xã hội những thay đổi tích cực, cần thiết cho sự phát triển. Ví dụ chính sách khoán hộ của Bí thư Kim Ngọc có thể được xem như một lệch chuẩn nhưng chính sách này lại là tiền đề cho cuộc Đổi mới." },
+        { q: "11. Theo trường phái chức năng luận, một trong những hệ quả tiêu cực của lệch chuẩn đối với xã hội là gì?", opts: { A: "Phá vỡ hoặc thay đổi cấu trúc tổ chức xã hội.", B: "Làm cho xã hội phát triển quá nhanh không kiểm soát được.", C: "Tạo ra sự đồng thuận tuyệt đối trong mọi tầng lớp.", D: "Xóa bỏ hoàn toàn các văn hóa phụ." }, ans: "A", exp: "Hệ quả thứ nhất là việc phá vỡ hoặc thay đổi cấu trúc tổ chức xã hội. Ví dụ, nạn cướp giật vào ban đêm sẽ khiến người dân ít dám ra đường vào buổi tối, khiến các hoạt động xã hội bị kìm hãm." },
+        { q: "12. Hiện tượng nhiều người vượt đèn đỏ nhưng bị coi là chuyện bình thường, chấp nhận được, sẽ dẫn đến hệ quả tiêu cực nào?", opts: { A: "Gây ra tình trạng bùng nổ dân số.", B: "Làm suy giảm niềm tin xã hội vào công bằng, lẽ phải, sự đúng sai.", C: "Làm tăng cường sự gắn kết giữa các thành viên.", D: "Kích thích nỗ lực hoàn thiện tổ chức xã hội." }, ans: "B", exp: "Sự hiện diện của hiện tượng lệch chuẩn và tội phạm cũng làm suy giảm niềm tin xã hội vào công bằng, lẽ phải, sự đúng sai. Hiện tượng vượt đèn đỏ lại khiến một bộ phận dân cư coi là chuyện bình thường, chấp nhận được, làm suy giảm niềm tin này." },
+        { q: "13. Theo Emile Durkheim, sự suy giảm niềm tin xã hội vừa là hệ quả, vừa là yếu tố thúc đẩy trạng thái nào?", opts: { A: "Trạng thái đoàn kết hữu cơ.", B: "Trạng thái vô chuẩn (anomie).", C: "Trạng thái kiểm soát chính thức.", D: "Trạng thái đồng thuận." }, ans: "B", exp: "Sự suy giảm niềm tin này, như Emile Durkheim phân tích, vừa là hệ quả của tình trạng vô chuẩn (anomie), vừa là yếu tố thúc đẩy trạng thái vô chuẩn." },
+        { q: "14. Nhà thần kinh học nào đã đưa ra Lý thuyết về cơ thể học, cho rằng có mối quan hệ tương thích giữa hình thể con người và tính cách/tội phạm?", opts: { A: "William Sheldon.", B: "Sigmund Freud.", C: "Cesare Lombroso.", D: "Emile Durkheim." }, ans: "C", exp: "Lý thuyết về cơ thể học do Cesare Lombroso, nhà thần kinh học, chuyên gia nghiên cứu về tội phạm học người Italia đưa ra. Tác giả này cho rằng giữa hình thể con người và tính cách của họ có mối quan hệ tương thích." },
+        { q: "15. Theo nhà nhân chủng học William Sheldon, tạng người nào chiếm ưu thế trong số những người có sự phạm tội?", opts: { A: "Ốm yếu gầy còm.", B: "Lùn mập.", C: "Cơ bắp rắn chắc.", D: "Cân đối hoàn hảo." }, ans: "C", exp: "Tác giả này phân cấu trúc cơ thể người thành 3 loại: ốm yếu gầy còm, lùn mập và cơ bắp rắn chắc. Ông cho rằng có liên kết giữa sự phạm tội và tạng người cơ bắp rắn chắc." },
+        { q: "16. Lý thuyết phân tâm học về nguồn gốc của lệch chuẩn do ai đưa ra?", opts: { A: "Cesare Lombroso.", B: "Sigmund Freud.", C: "Howard Becker.", D: "Karl Marx." }, ans: "B", exp: "Lý thuyết phân tâm học do nhà tâm lý học người Áo Sigmund Freud đưa ra. Lý thuyết này cho rằng tội phạm là sự biểu hiện của bản năng và thiên hướng bẩm sinh nằm sâu trong tâm lý con người." },
+        { q: "17. Theo lý thuyết phân tâm học, các hành vi lệch chuẩn được xem là sản phẩm của điều gì?", opts: { A: "Sự bất lực tâm lý của cá nhân khi không đáp ứng được các yêu cầu về xã hội hóa của xã hội.", B: "Sự tương tác giữa các nhóm có lợi ích đối kháng nhau trong xã hội.", C: "Sự dán nhãn của những người có quyền lực đối với người yếu thế.", D: "Sự chênh lệch giữa mục tiêu văn hóa và phương tiện hợp pháp." }, ans: "A", exp: "Các tác giả theo trường phái này cho rằng hành vi lệch chuẩn là sản phẩm của sự bất lực tâm lý của cá nhân khi không đáp ứng được các yêu cầu về xã hội hóa của xã hội." },
+        { q: "18. Nội dung cơ bản của thuyết nhân chủng học về tội phạm (đại diện là Đức E. Kretromen) là gì?", opts: { A: "Tội phạm phát sinh do sự bất bình đẳng kinh tế.", B: "Tội phạm phát sinh là do các yếu tố bên trong con người có tính bản năng, bất biến và không thể cải tạo hay giáo dục.", C: "Tội phạm là kết quả của quá trình học hỏi từ bạn bè đồng trang lứa.", D: "Tội phạm phát sinh do sự xung đột giữa nền văn hóa chính thống và văn hóa phụ." }, ans: "B", exp: "Nội dung cơ bản của thuyết này nêu rõ tội phạm phát sinh là do các yếu tố bên trong con người có tính bản năng, bất biến và không thể cải tạo hay giáo dục." },
+        { q: "19. Điểm hạn chế chung của các lý thuyết về nguồn gốc tâm sinh lý của lệch chuẩn là gì?", opts: { A: "Chỉ tập trung vào yếu tố kinh tế mà bỏ qua yếu tố di truyền.", B: "Không giải thích được sự khác biệt giữa tội phạm và lệch chuẩn.", C: "Liên hệ một cách máy móc hành động xã hội của con người với cấu trúc sinh học, không tính đến sự tác động của môi trường xã hội.", D: "Quá đề cao vai trò của sự dán nhãn từ cộng đồng đối với cá nhân." }, ans: "C", exp: "Thuyết này không được thừa nhận rộng rãi bởi nó đã liên hệ một cách máy móc hành động xã hội của con người với cấu trúc sinh học của cơ thể họ, không tính đến sự tác động có tính chất quyết định của môi trường xã hội đối với tâm lý và hành động của con người." },
+        { q: "20. Theo quan điểm của trường phái cấu trúc - chức năng, lệch chuẩn là những hành vi như thế nào?", opts: { A: "Chỉ mang lại tác động tiêu cực, phá hoại trật tự xã hội.", B: "Là những hành vi phổ biến trong xã hội và có tác động cả tích cực lẫn tiêu cực đối với sự ổn định của xã hội.", C: "Là kết quả của sự dán nhãn từ những người có quyền lực.", D: "Là sự biểu hiện của bản năng sinh học bất biến." }, ans: "B", exp: "Theo các nhà cấu trúc chức năng, lệch chuẩn là những hành vi phổ biến trong xã hội và có tác động cả tích cực lẫn tiêu cực đối với sự ổn định của xã hội." },
+        { q: "21. Theo R. Merton, lệch chuẩn là kết quả của điều gì?", opts: { A: "Một khoảng trống giữa các mục tiêu của văn hóa với các phương tiện được chấp nhận để có thể đáp ứng được các mục tiêu đó.", B: "Sự áp bức của giai cấp tư sản đối với giai cấp vô sản.", C: "Những đặc trưng sinh học định hình tính cách con người.", D: "Sự thiếu hụt các cơ quan kiểm soát xã hội chính thức." }, ans: "A", exp: "Merton cho rằng lệch chuẩn là kết quả của một khoảng trống giữa các mục tiêu của văn hóa với các phương tiện được chấp nhận để có thể đáp ứng được các mục tiêu đó." },
+        { q: "22. R. Merton đã chỉ ra bao nhiêu kiểu loại lệch chuẩn xã hội trong điều kiện của sự chấp nhận hay phản đối các mục đích và phương tiện?", opts: { A: "3 kiểu.", B: "4 kiểu.", C: "5 kiểu.", D: "6 kiểu." }, ans: "C", exp: "Merton đã chỉ ra 5 kiểu loại lệch chuẩn xã hội trong điều kiện của sự chấp nhận hay phản đối các mục đích xã hội và sự thiết chế hóa các phương tiện để đạt được những mục đích ấy." },
+        { q: "23. Trong 5 kiểu loại của Merton, \"những người tuân thủ\" được định nghĩa như thế nào?", opts: { A: "Chấp nhận các mục đích chung nhưng không sử dụng những phương tiện được thừa nhận chung.", B: "Chấp nhận mục đích của xã hội cũng như sử dụng các phương tiện được chấp nhận để đạt tới các mục đích ấy.", C: "Không đạt được mục đích chung nhưng vẫn tuân thủ việc áp dụng các phương tiện được chấp nhận.", D: "Từ bỏ cả mục đích lẫn phương tiện chung của xã hội để tự tạo mục đích, phương tiện riêng." }, ans: "B", exp: "Những người tuân thủ - là những người chấp nhận mục đích của xã hội cũng như sử dụng các phương tiện được chấp nhận để đạt tới các mục đích ấy, ví như một giáo viên dạy học để kiếm tiền." },
+        { q: "24. Theo Merton, một quan chức làm giàu bằng cách tham nhũng thuộc vào kiểu loại nào?", opts: { A: "Những người tuân thủ.", B: "Những người đổi mới.", C: "Những người hình thức chủ nghĩa.", D: "Những kẻ nổi loạn." }, ans: "B", exp: "Những người đổi mới - là những người chấp nhận các mục đích chung của xã hội nhưng không sử dụng những phương tiện được thừa nhận chung để đạt tới mục đích, ví như một quan chức làm giàu bằng cách tham nhũng." },
+        { q: "25. \"Những người không đạt được những mục đích chung của xã hội nhưng vẫn tuân thủ thông qua việc áp dụng các phương tiện được chấp nhận\" là nhóm người nào theo phân loại của Merton?", opts: { A: "Những người đổi mới.", B: "Những người hình thức chủ nghĩa.", C: "Những người rút lui.", D: "Những kẻ nổi loạn." }, ans: "B", exp: "Những người hình thức chủ nghĩa - là những người không đạt được những mục đích chung của xã hội nhưng vẫn tuân thủ thông qua việc áp dụng các phương tiện được chấp nhận." },
+        { q: "26. Theo Merton, những người thực hiện những hành vi lệch chuẩn để đạt được những điều họ muốn, đi ngược lại với chuẩn mực chung của xã hội, được gọi là gì?", opts: { A: "Những người đổi mới.", B: "Những người hình thức chủ nghĩa.", C: "Những người rút lui (tội phạm thực sự vì họ thường thực hiện những hành vi lệch chuẩn để đạt được những điều họ muốn).", D: "Những kẻ nổi loạn." }, ans: "C", exp: "Merton coi đây là những tội phạm thực sự vì họ thường thực hiện những hành vi lệch chuẩn để đạt được những điều họ muốn, đi ngược lại với chuẩn mực chung của xã hội. Mục (4) trong giáo trình đề cập đến nhóm này (Rút lui)." },
+        { q: "27. Theo lý thuyết xung đột, ai là người định hình ra quy tắc, pháp luật và quyết định ai là người có hay không có tội?", opts: { A: "Toàn thể cộng đồng thông qua sự đồng thuận.", B: "Những cá nhân, nhóm có quyền lực trong xã hội.", C: "Những người thuộc tầng lớp đáy của xã hội.", D: "Các nhà xã hội học." }, ans: "B", exp: "Các nhà xung đột cho rằng những cá nhân, nhóm có quyền lực trong xã hội có thể định hình ra quy tắc, pháp luật và quyết định ai là người có hay không có tội." },
+        { q: "28. Lý thuyết nào cho rằng hành vi lệch chuẩn là kết quả hành động của những người thuộc nhóm xã hội phụ mà sự chi phối bởi hệ thống giá trị mà chuẩn mực mà nền văn hóa phụ của họ lấy làm cơ sở?", opts: { A: "Lý thuyết cấu trúc chức năng.", B: "Lý thuyết xung đột.", C: "Lý thuyết về nền văn hóa phụ.", D: "Lý thuyết dán nhãn." }, ans: "C", exp: "Theo Lý thuyết về nền văn hóa phụ, hành vi lệch chuẩn là kết quả hành động của những người thuộc những nhóm xã hội phụ thuộc này gây ra. Họ hoạt động do sự chi phối bởi hệ thống giá trị mà chuẩn mực mà nền văn hóa phụ của họ lấy làm cơ sở." },
+        { q: "29. Nguồn gốc của những hành vi lệch chuẩn, theo quan điểm của lý thuyết về nền văn hóa phụ là gì?", opts: { A: "Xung đột giữa các giá trị và chuẩn mực của các nhóm xã hội này với nền văn hóa chính thống.", B: "Sự nghèo đói và thiếu giáo dục của cá nhân.", C: "Sự dán nhãn bất công từ phía cảnh sát.", D: "Sự thiếu hụt các phương tiện hợp pháp để đạt mục tiêu kinh tế." }, ans: "A", exp: "Xung đột giữa các giá trị và chuẩn mực của các nhóm xã hội này với nền văn hóa chính thống là nguồn gốc của những hành vi lệch chuẩn." },
+        { q: "30. Theo một số nhà xã hội học thuộc lý thuyết dán nhãn, sở dĩ trong xã hội xuất hiện các hành vi lệch chuẩn là do đâu?", opts: { A: "Do cấu trúc sinh học bẩm sinh của con người.", B: "Do sự bất bình đẳng về thu nhập.", C: "Do sự dán nhãn của xã hội.", D: "Do sự suy đồi đạo đức của thế hệ trẻ." }, ans: "C", exp: "Lý thuyết dán nhãn: một số nhà xã hội học cho rằng, sở dĩ trong xã hội xuất hiện các hành vi lệch chuẩn là do sự dán nhãn của xã hội." },
+        { q: "31. Nhà xã hội học Howard Becker đã phát biểu câu nói nổi tiếng nào liên quan đến lý thuyết dán nhãn?", opts: { A: "\"Tội phạm là hiện tượng bình thường của xã hội.\"", B: "\"Hành vi làm lệch chuẩn là hành vi mà người ta gán nhãn như thế.\"", C: "\"Lệch chuẩn là sự vi phạm các chuẩn mực xã hội.\"", D: "\"Lệch chuẩn phát sinh từ sự chênh lệch giữa mục tiêu và phương tiện.\"" }, ans: "B", exp: "Nhà xã hội học Howard Becker – một tác giả tiêu biểu của trường phái này – đã phát biểu \"hành vi làm lệch chuẩn là hành vi mà người ta gán nhãn như thế\"." },
+        { q: "32. Theo quan điểm của chủ nghĩa Mác - Lênin, các luật pháp, tôn giáo của chủ nghĩa tư bản thực chất là gì?", opts: { A: "Là những quy chuẩn khách quan áp dụng chung cho mọi giai cấp.", B: "Phân tích và nhận xét những chuẩn mực đạo đức, luật pháp, tôn giáo của chủ nghĩa tư bản như một công cụ bảo vệ lợi ích của giai cấp thống trị.", C: "Là hiện tượng tất yếu để duy trì trật tự xã hội.", D: "Là sự phản ánh ý muốn của toàn thể nhân dân." }, ans: "B", exp: "Mác và Ăng-ghen đã phân tích và nhận xét những chuẩn mực đạo đức, luật pháp, tôn giáo của chủ nghĩa tư bản. Mác nhận xét rằng việc phân loại trong pháp luật một hành động nào đó là được phép hay lệch chuẩn phải do những tiêu chuẩn khách quan của nó quy định (nhưng thực chất mang tính giai cấp)." },
+        { q: "33. Sự khác biệt cơ bản nhất để phân biệt giữa tội phạm và lệch chuẩn là gì?", opts: { A: "Tội phạm là sự vi phạm các chuẩn mực xã hội, còn lệch chuẩn là vi phạm pháp luật.", B: "Tội phạm là hành vi vi phạm pháp luật, còn lệch chuẩn là sự vi phạm các chuẩn mực xã hội.", C: "Tội phạm gây hậu quả nghiêm trọng hơn lệch chuẩn rất nhiều.", D: "Tội phạm do nam giới thực hiện, còn lệch chuẩn do nữ giới thực hiện." }, ans: "B", exp: "Cách định nghĩa này cũng dễ trong việc phân biệt tội phạm với lệch chuẩn: Tội phạm là hành vi vi phạm pháp luật, còn lệch chuẩn là sự vi phạm các chuẩn mực xã hội." },
+        { q: "34. Nhà xã hội học John Hagan (1997) phân biệt các dạng lệch chuẩn và tội phạm dựa vào mấy chiều cạnh?", opts: { A: "2 chiều cạnh.", B: "3 chiều cạnh.", C: "4 chiều cạnh.", D: "5 chiều cạnh." }, ans: "B", exp: "Nhà xã hội học John Hagan (1997) phân biệt kỹ hơn các dạng lệch chuẩn và tội phạm dựa vào ba chiều cạnh gắn với những hành vi này: (1) Tính nghiêm khắc của các phản ứng xã hội; (2) Mức độ đồng thuận của xã hội; và (3) Đánh giá về tổn thất xã hội." },
+        { q: "35. Dạng thứ nhất trong phân loại của Hagan là \"khác biệt xã hội\" (social diversion). Đặc điểm của dạng này là gì?", opts: { A: "Là những hành vi vi phạm pháp luật nghiêm trọng, bị trừng phạt khắc nghiệt.", B: "Là những hành vi vi phạm các chuẩn mực ít quan trọng, thường được coi là vô hại.", C: "Là những hành vi vi phạm chuẩn mực nghiêm trọng hơn, nhận được sự trừng phạt có tính thiết chế.", D: "Là những hành vi bị chính quyền định nghĩa là tội phạm nhưng xã hội vẫn xung đột về tính lệch chuẩn của nó." }, ans: "B", exp: "Dạng thứ nhất là các khác biệt xã hội, là những hành vi vi phạm các chuẩn mực ít quan trọng. Những hành vi như vậy thường được coi là vô hại, nhưng vẫn nhận được sự không tán đồng của mọi người trong cộng đồng thông qua các phản ứng như cười cợt, chế giễu, hoặc chỉ trích." },
+        { q: "36. Ví dụ \"một người phụ nữ 60 tuổi nhưng vẫn thích mặc váy trắng, cài hoa và trang điểm đậm\" thuộc dạng lệch chuẩn nào theo Hagan?", opts: { A: "Khác biệt xã hội.", B: "Sai lệch xã hội.", C: "Tội phạm - xung đột.", D: "Tội phạm - đồng thuận." }, ans: "A", exp: "Dạng thứ nhất là các khác biệt xã hội, là những hành vi vi phạm các chuẩn mực ít quan trọng, ví dụ như người phụ nữ 60 tuổi nhưng vẫn thích mặc váy trắng, cài hoa và trang điểm đậm ở Việt Nam được coi là lệch chuẩn." },
+        { q: "37. Học sinh có thái độ vô lễ với thầy cô bị phạt viết bản kiểm điểm là ví dụ cho dạng lệch chuẩn nào theo Hagan?", opts: { A: "Khác biệt xã hội.", B: "Sai lệch xã hội.", C: "Tội phạm - xung đột.", D: "Tội phạm - đồng thuận." }, ans: "B", exp: "Dạng thứ hai là sai lệch xã hội, là các hành vi vi phạm các chuẩn mực nghiêm trọng hơn... Ví dụ, học sinh có thái độ vô lễ với thầy cô bị phạt viết bản kiểm điểm." },
+        { q: "38. Quan điểm về cách dạy con \"yêu cho roi cho vọt\" có thể bị pháp luật coi là bạo hành trẻ em, nhưng nhiều người coi là biện pháp giáo dục. Đây là ví dụ của dạng lệch chuẩn nào theo Hagan?", opts: { A: "Khác biệt xã hội.", B: "Sai lệch xã hội.", C: "Tội phạm - xung đột.", D: "Tội phạm - đồng thuận." }, ans: "C", exp: "Dạng thứ 3, Hagan gọi là tội phạm - xung đột, chỉ những hành vi lệch chuẩn mà chính quyền định nghĩa là vi phạm pháp luật, nhưng xã hội vẫn tồn tại các cách nhìn xung đột về tính lệch chuẩn của hành vi đó. Ví dụ quan điểm \"yêu cho roi cho vọt\"." },
+        { q: "39. Tội giết người là một ví dụ điển hình cho dạng tội phạm nào theo Hagan?", opts: { A: "Tội phạm - xung đột.", B: "Khác biệt xã hội.", C: "Sai lệch xã hội.", D: "Tội phạm - đồng thuận." }, ans: "D", exp: "Dạng thứ 4 là tội phạm – đồng thuận, là những dạng hành vi mà đa số thành viên trong cộng đồng nhất trí là xấu, và nhất trí về tính nghiêm trọng... Ví dụ như tội giết người là một dạng tội phạm – đồng thuận." },
+        { q: "40. Khái niệm \"kiểm soát xã hội\" được hiểu là gì?", opts: { A: "Là quá trình các cá nhân đấu tranh giành quyền lực trong nhóm.", B: "Là một phương thức nhằm điều chỉnh hành vi của các cá nhân trong một xã hội nhất định thông qua những giá trị, chuẩn mực đã được thừa nhận.", C: "Là hệ thống các nhà tù và lực lượng cảnh sát trong một quốc gia.", D: "Là sự ép buộc các nền văn hóa nhỏ phải tuân theo nền văn hóa lớn." }, ans: "B", exp: "Kiểm soát xã hội là một phương thức nhằm điều chỉnh hành vi của các cá nhân trong một xã hội nhất định thông qua những giá trị, chuẩn mực đã được thừa nhận." },
+        { q: "41. Nếu mọi cá nhân đều được tự do hành động theo điều kiện, năng lực và sở thích của mình mà không có sự kiểm soát, điều gì sẽ xảy ra?", opts: { A: "Xã hội sẽ trở nên dân chủ tuyệt đối.", B: "Xã hội sẽ phát triển kinh tế mạnh mẽ.", C: "Xã hội sẽ trở nên rối loạn.", D: "Xã hội sẽ đạt được sự đồng thuận cao nhất." }, ans: "C", exp: "Các cá nhân trong xã hội khác biệt về năng lực, điều kiện hoàn cảnh và tính cách, nếu mọi cá nhân đều được tự do hành động theo điều kiện, năng lực và sở thích của mình, xã hội sẽ trở nên rối loạn." },
+        { q: "42. Việc điều chỉnh các phương tiện giao thông trên đường có thể là ví dụ sinh động cho tầm quan trọng của cái gì?", opts: { A: "Tính độc lập cá nhân.", B: "Kiểm soát xã hội.", C: "Trạng thái vô chuẩn.", D: "Đấu tranh giai cấp." }, ans: "B", exp: "Điều khiển các phương tiện giao thông trên đường có thể là một ví dụ sinh động và dễ hiểu cho việc minh chứng tầm quan trọng của kiểm soát xã hội." },
+        { q: "43. Kiểm soát xã hội thể hiện tầm quan trọng đặc biệt của nó ở mấy khía cạnh cơ bản?", opts: { A: "2 khía cạnh.", B: "3 khía cạnh.", C: "4 khía cạnh.", D: "5 khía cạnh." }, ans: "B", exp: "Có thể nói, kiểm soát xã hội thể hiện tầm quan trọng đặc biệt của nó ở ba khía cạnh cơ bản. Thứ nhất, nó giúp duy trì những trật tự xã hội đang tồn tại. Thứ hai, giúp điều chỉnh hành vi của các cá nhân. Thứ ba, giúp đánh giá những điều chỉnh văn hóa chưa phù hợp." },
+        { q: "44. Mục đích cuối cùng của kiểm soát xã hội là gì?", opts: { A: "Trừng phạt những người vi phạm pháp luật.", B: "Loại bỏ hoàn toàn sự khác biệt cá nhân.", C: "Điều chỉnh lợi ích của các cá nhân và nhóm sao cho hài hòa, đem lại sự đồng thuận và tuân thủ trong nhóm hay cộng đồng hoặc toàn thể xã hội.", D: "Đảm bảo mọi người đều có mức thu nhập bằng nhau." }, ans: "C", exp: "Mục đích cuối cùng của kiểm soát xã hội là điều chỉnh lợi ích của các cá nhân và nhóm sao cho hài hòa, đem lại sự đồng thuận và tuân thủ trong nhóm hay cộng đồng hoặc toàn thể xã hội." },
+        { q: "45. Có mấy dạng chính trong phân loại kiểm soát xã hội rất phổ biến trong xã hội học?", opts: { A: "Hình thức và Nội dung.", B: "Chủ quan và Khách quan.", C: "Chính thức và Phi chính thức.", D: "Trực tiếp và Gián tiếp." }, ans: "C", exp: "Có nhiều cách phân loại kiểm soát xã hội. Một trong những cách phân chia cơ chế kiểm soát xã hội rất phổ biến trong xã hội học là phân thành hai dạng: chính thức và phi chính thức." },
+        { q: "46. Kiểm soát chính thức được thực thi bởi ai/cơ quan nào?", opts: { A: "Các nhóm xã hội sơ cấp, người thân trong gia đình.", B: "Các thiết chế xã hội như luật pháp, nhà nước, giáo dục hay các thiết chế có tính pháp lý khác.", C: "Các phong tục, truyền thống, tập lệ và tôn giáo.", D: "Dư luận xã hội và các thành viên trong xóm giềng." }, ans: "B", exp: "Kiểm soát chính thức có thể được thực thi bởi các thiết chế xã hội như luật pháp, nhà nước, giáo dục hay các thiết chế có tính pháp lý khác." },
+        { q: "47. Đặc điểm nổi bật của kiểm soát chính thức là gì?", opts: { A: "Dựa trên tình cảm và sự gần gũi giữa các thành viên.", B: "Sử dụng các chế tài như nụ cười, cái gật đầu, sự phê bình.", C: "Bao giờ cũng thực hiện dựa trên các quy tắc được soạn thảo thành văn bản.", D: "Được duy trì chủ yếu thông qua quá trình xã hội hóa trong gia đình." }, ans: "C", exp: "Kiểm soát chính thức bao giờ cũng thực hiện dựa trên các quy tắc được soạn thảo thành văn bản." },
+        { q: "48. Chế tài tích cực của kiểm soát phi chính thức có thể bao gồm những hành động nào?", opts: { A: "Bắt giữ, phạt tiền, đuổi việc.", B: "Một nụ cười, một cái gật đầu khích lệ, lời khen hay phần thưởng hoặc sự thăng tiến nào đó.", C: "Phê bình, chỉ trích, đe dọa, khinh bỉ.", D: "Xa lánh hay trừng phạt về tâm - sinh lý." }, ans: "B", exp: "Chế tài tích cực của kiểm soát phi chính thức có thể là một nụ cười, một cái gật đầu khích lệ, lời khen hay phần thưởng hoặc sự thăng tiến nào đó." },
+        { q: "49. \"Kiểm soát nội tâm\" được định nghĩa là gì?", opts: { A: "Là cách thức xã hội dùng các công cụ quản lý và các thiết chế để kiểm soát cá nhân.", B: "Là cách thức mà trong đó xã hội thực hiện việc kiểm tra, giám sát của mình bằng cách giúp cá nhân lĩnh hội và thực thi một cách tự giác những chuẩn mực.", C: "Là việc cảnh sát theo dõi tội phạm một cách bí mật.", D: "Là sự ép buộc cá nhân phải tuân thủ pháp luật thông qua hình phạt tù." }, ans: "B", exp: "Kiểm soát bên trong, hay kiểm soát nội tâm, là cách thức mà trong đó xã hội thực hiện việc kiểm tra, giám sát của mình bằng cách giúp cá nhân lĩnh hội và thực thi một cách tự giác những chuẩn mực và biến nó thành cơ sở cho hành vi của các cá nhân." },
+        { q: "50. Sự kết hợp linh hoạt giữa các loại kiểm soát (chính thức, phi chính thức, bên trong, bên ngoài) sẽ đem lại hiệu quả gì?", opts: { A: "Gây ra tình trạng vô chuẩn (anomie) trong xã hội.", B: "Làm cho các cá nhân mất hoàn toàn quyền tự do.", C: "Đem lại hiệu quả kiểm soát xã hội cao nhất, định hướng duy trì và ổn định trật tự xã hội.", D: "Xóa bỏ hoàn toàn hiện tượng lệch chuẩn và tội phạm." }, ans: "C", exp: "Các loại kiểm soát khác nhau đều có tầm quan trọng nhất định trong duy trì và ổn định trật tự xã hội, sự phối kết hợp linh hoạt giữa các loại kiểm soát này sẽ đem lại hiệu quả kiểm soát xã hội cao nhất." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
