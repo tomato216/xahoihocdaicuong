@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bộ đề 1. Chương 8</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background-color: #0a0a0c; color: #ffffff; line-height: 1.6; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; }
+
+        #setup-screen { background-color: #121216; border: 2px solid #6f42c1; border-radius: 16px; padding: 40px; text-align: center; margin-top: 10vh; box-shadow: 0 8px 32px rgba(111, 66, 193, 0.2); }
+        #setup-screen h1 { color: #b388ff; margin-bottom: 10px; }
+        #setup-screen p { color: #b3b3b8; margin-bottom: 30px; }
+        .setting-group { display: flex; align-items: center; justify-content: space-between; background: #1a1a24; padding: 15px 20px; border-radius: 8px; margin-bottom: 15px; border: 1px solid #3a2366; text-align: left; }
+        input[type="number"] { width: 70px; padding: 8px; background: #0a0a0c; color: white; border: 1px solid #6f42c1; border-radius: 6px; text-align: center; }
+        input[type="checkbox"] { width: 20px; height: 20px; accent-color: #6f42c1; cursor: pointer; }
+        .btn-start { display: inline-block; width: 100%; background-color: #6f42c1; color: white; font-size: 1.2rem; font-weight: 600; padding: 15px; border: none; border-radius: 8px; margin-top: 20px; cursor: pointer; }
+        
+        #quiz-screen { display: none; padding-bottom: 50px; }
+        .quiz-header { position: sticky; top: 0; background-color: rgba(10, 10, 12, 0.95); padding: 15px 0; border-bottom: 1px solid #3a2366; display: flex; justify-content: space-between; align-items: center; z-index: 100; }
+        .timer { font-size: 1.2rem; font-weight: 700; color: #ff5252; }
+        
+        .btn-nav { display: inline-block; background: #3a2366; color: white; padding: 10px 20px; text-decoration: none; border-radius: 6px; margin: 10px 0; font-weight: 500; transition: 0.3s;}
+        .btn-nav:hover { background: #5a32a3; }
+        
+        .settings-info { background: #1a1a24; padding: 10px 15px; border-radius: 8px; margin-bottom: 20px; font-size: 0.9rem; border: 1px solid #3a2366; color: #b3b3b8; }
+        
+        .question-card { background-color: #121216; border: 1px solid #3a2366; border-radius: 12px; padding: 25px; margin-top: 25px; }
+        .options { display: flex; flex-direction: column; gap: 12px; margin-top: 15px; }
+        .option-label { display: flex; align-items: center; gap: 15px; background: #1a1a24; padding: 15px; border-radius: 8px; border: 1px solid #2a2a36; cursor: pointer; transition: 0.2s; }
+        .option-label.selected { border-color: #b388ff; background: rgba(111, 66, 193, 0.2); }
+        .option-label.correct { border-color: #00e676; background: rgba(0, 230, 118, 0.2); }
+        .option-label.wrong { border-color: #ff5252; background: rgba(255, 82, 82, 0.2); }
+        .option-label.disabled { cursor: default; }
+        .explanation { margin-top: 20px; padding: 15px; background: rgba(111, 66, 193, 0.1); border-left: 4px solid #b388ff; border-radius: 4px; font-size: 0.95rem; display: none; }
+        .btn-submit { display: block; width: 100%; max-width: 300px; margin: 40px auto 0; background-color: #00e676; color: #000; font-weight: 700; padding: 15px; border: none; border-radius: 8px; cursor: pointer; transition: 0.3s;}
+        .btn-submit:hover { background-color: #00c853; }
+        #result-box { text-align: center; padding: 30px; margin-top: 30px; background: #121216; border: 2px solid #00e676; border-radius: 12px; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="setup-screen">
+        <h1>Đề 1. Chương 8</h1>
+        <p>Văn hoá</p>
+        <div class="setting-group">
+            <span>Tính thời gian làm bài</span>
+            <div><input type="checkbox" id="enable-timer"> <input type="number" id="time-limit" value="30" disabled> phút</div>
+        </div>
+        <div class="setting-group">
+            <span>Hiển thị đáp án ngay sau khi chọn</span>
+            <input type="checkbox" id="instant-feedback" checked>
+        </div>
+        <button class="btn-start" onclick="startQuiz()">VÀO LÀM BÀI</button>
+    </div>
+
+    <div id="quiz-screen">
+        <div class="quiz-header">
+            <h2>Đề 1. Văn hoá</h2>
+            <div class="timer" id="timer-display"></div>
+        </div>
+        
+        <a href="chuong-8.html" class="btn-nav">← Quay lại Menu</a>
+        <div id="settings-summary" class="settings-info"></div>
+        
+        <div id="questions-container"></div>
+        
+        <button id="submit-btn" class="btn-submit" onclick="submitQuiz()">NỘP BÀI</button>
+        <a href="chuong-8.html" class="btn-nav" style="display: block; text-align: center; margin-top: 20px;">← Quay lại Menu</a>
+        
+        <div id="result-box">
+            <h2 style="color: #00e676; margin-bottom: 10px;">Hoàn thành!</h2>
+            <p id="score-details" style="font-size: 1.2rem; font-weight: bold;"></p>
+            <button id="redo-btn" class="btn-submit" style="background-color: #ff9800; margin-top: 20px;" onclick="redoWrongQuestions()">Làm lại những câu sai</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsData = [
+        { q: "1. Nghiên cứu để hiểu được con người và xã hội loài người, cũng như cách thức mà con người sáng tạo ra cuộc sống chính là đi tìm câu trả lời cho yếu tố nào mà con người hướng tới?", opts: { A: "Những quy luật sinh học thuần túy", B: "Những động cơ văn hóa", C: "Các biến động kinh tế toàn cầu", D: "Những quy luật vật lý tự nhiên" }, ans: "B", exp: "Nghiên cứu để hiểu được con người và xã hội loài người, cũng như cách thức mà con người sáng tạo ra cuộc sống chính là đi tìm câu trả lời cho những động cơ văn hóa mà con người hướng tới." },
+        { q: "2. Theo ý kiến của Trần Quốc Vượng, nghiên cứu để hiểu được con người và xã hội loài người chính là đi tìm câu trả lời cho yếu tố nào?", opts: { A: "Những quy luật sinh học thuần túy chi phối hành vi.", B: "Những động cơ văn hóa mà con người hướng tới.", C: "Sự phát triển của các công cụ sản xuất cơ khí.", D: "Các biến động kinh tế và chính trị toàn cầu." }, ans: "B", exp: "Nghiên cứu để hiểu được con người và xã hội loài người chính là đi tìm câu trả lời cho những động cơ văn hóa mà con người hướng tới." },
+        { q: "3. Dưới góc độ xã hội học, ngoài việc là thành viên của một nhóm hay một xã hội, con người còn được nhìn nhận như thế nào?", opts: { A: "Là một sinh vật hoạt động hoàn toàn độc lập với môi trường.", B: "Là sản phẩm của các thiết chế văn hóa và xã hội của mình.", C: "Là thực thể chỉ chịu sự quyết định của các yếu tố di truyền sinh học.", D: "Là chủ thể không chịu ảnh hưởng của các quy chuẩn cộng đồng." }, ans: "B", exp: "Con người không chỉ được nhìn nhận với tư cách là thành viên của một nhóm, của một xã hội nào đó với những mối quan hệ và những mô hình ứng xử giữa các thành viên trong nhóm, mà còn được coi là sản phẩm của các thiết chế văn hóa và xã hội của mình." },
+        { q: "4. Theo các nhà xã hội học, hành động và ứng xử của con người dựa trên hệ thống nào đã được tiếp nhận từ gia đình và xã hội?", opts: { A: "Hệ thống pháp luật quốc tế.", B: "Hệ giá trị - chuẩn mực.", C: "Bản năng sinh học tự nhiên.", D: "Các phản xạ vô điều kiện." }, ans: "B", exp: "Con người hành động và ứng xử dựa trên hệ giá trị - chuẩn mực đã được tiếp nhận từ trong gia đình, ngoài xã hội và chịu ảnh hưởng bởi các nhóm, các tầng lớp, các tập đoàn xã hội." },
+        { q: "5. Những hành động mang tính bản năng, phản xạ tự nhiên của con người khi gặp một sự kiện hay tình huống cụ thể còn được gọi là gì?", opts: { A: "Phần người.", B: "Phần con.", C: "Phần xã hội.", D: "Phần văn hóa." }, ans: "B", exp: "Con người có những hành động mang tính bản năng đôi lúc nảy sinh trong mỗi con người, đó thường là những phản xạ tự nhiên mà con người thể hiện hay còn gọi là phần con trong mỗi con người." },
+        { q: "6. Những hành động, phản ứng của mỗi cá nhân phụ thuộc vào điều gì mà cá nhân đó tiếp nhận từ môi trường nơi mình sinh ra, lớn lên và học tập?", opts: { A: "Các quy luật tiến hóa tự nhiên của thế giới sinh vật.", B: "Khí hậu và vị trí địa lý của vùng miền nơi sinh sống.", C: "Hệ giá trị - chuẩn mực mà cá nhân đó tiếp nhận được.", D: "Cấu trúc gen di truyền đặc trưng của gia đình." }, ans: "C", exp: "Những hành động, phản ứng của cá nhân phụ thuộc vào hệ giá trị - chuẩn mực mà cá nhân đó tiếp nhận được từ trong môi trường nơi mình đã sinh ra và lớn lên, học tập và sinh sống." },
+        { q: "7. Văn hóa đóng vai trò là phương tiện ứng xử của con người, đồng thời là đặc trưng của đối tượng nào?", opts: { A: "Chỉ riêng những cá nhân có địa vị cao trong bộ máy nhà nước.", B: "Các cá nhân, nhóm xã hội trong một cộng đồng, quốc gia cụ thể.", C: "Chỉ các nhóm xã hội sở hữu nguồn lực kinh tế vượt trội.", D: "Toàn bộ giới tự nhiên bao gồm cả con người và động vật." }, ans: "B", exp: "Văn hóa là phương tiện ứng xử của con người, là đặc trưng của cá nhân, nhóm xã hội trong một cộng đồng, quốc gia cụ thể." },
+        { q: "8. Quá trình đào thải các giá trị văn hóa lỗi thời diễn ra như thế nào giữa các xã hội và cộng đồng?", opts: { A: "Diễn ra đồng bộ và hoàn toàn giống nhau ở mọi địa vực xã hội.", B: "Không giống nhau ở những xã hội, cộng đồng, địa vực hay nhóm xã hội khác nhau.", C: "Diễn ra tức thời chỉ sau một vài năm biến động kinh tế.", D: "Diễn ra theo một chu kỳ cố định chung cho toàn nhân loại." }, ans: "B", exp: "Quá trình đào thải các giá trị văn hóa lỗi thời không giống nhau ở những xã hội, cộng đồng, địa vực hay nhóm xã hội khác nhau." },
+        { q: "9. Khi điều kiện kinh tế và xã hội thay đổi, những yếu tố văn hóa nào đòi hỏi phải có sự chuyển đổi trong con người?", opts: { A: "Chỉ cần thay đổi ngôn ngữ viết chính thức.", B: "Chỉ cần thay đổi các công cụ và phương thức sản xuất vật chất.", C: "Sự chuyển đổi trong cả tiềm thức, thái độ và hành vi có tính khuôn mẫu.", D: "Không cần thay đổi bất cứ yếu tố nào vì văn hóa mang tính bất biến." }, ans: "C", exp: "Những thay đổi có tính kỹ thuật trong phương thức sản xuất và phương thức sống đòi hỏi những yếu tố văn hóa phải chuyển đổi trong cả tiềm thức, thái độ và hành vi có tính khuôn mẫu của con người." },
+        { q: "10. Trong đời sống giao tiếp thông thường hàng ngày, thuật ngữ \"văn hóa\" thường được sử dụng rộng rãi để chỉ điều gì?", opts: { A: "Hệ thống các quy luật sinh học chi phối cơ thể con người.", B: "Trình độ học vấn, lối sống, cách ứng xử lành mạnh, sự lịch lãm, lễ độ, khiêm nhường.", C: "Toàn bộ cơ sở hạ tầng giao thông và các tòa nhà đô thị.", D: "Sự phát triển tự nhiên của các loài động thực vật hoang dã." }, ans: "B", exp: "Trong đời sống thông thường, thuật ngữ văn hóa được sử dụng với nhiều cách hiểu khác nhau để chỉ những hoạt động xã hội của con người như: trình độ học vấn, lối sống, cách ứng xử lành mạnh, sự lịch lãm, lễ độ, khiêm nhường, sự hoàn thiện về phẩm chất đạo đức, sự phong phú về tri thức và kinh nghiệm sống." },
+        { q: "11. Thuật ngữ nào dùng để chỉ những giá trị tinh thần do những người có tài, có đức sáng tạo ra, nhằm phân biệt với văn minh hay văn vật?", opts: { A: "Văn hiến.", B: "Văn trị.", C: "Văn phong.", D: "Văn tự." }, ans: "A", exp: "Thuật ngữ văn hiến chỉ những giá trị tinh thần do những người có tài, có đức sáng tạo ra." },
+        { q: "12. Thuật ngữ \"văn minh\" thường dùng để chỉ điều gì của một xã hội?", opts: { A: "Những công trình, hiện vật có giá trị lịch sử và nghệ thuật cổ xưa.", B: "Lối ứng xử lịch lãm, lễ độ và khiêm nhường của một cá nhân cụ thể.", C: "Trình độ phát triển cao về tri thức, khoa học kỹ thuật, đô thị hóa và khả năng làm chủ tự nhiên.", D: "Các tập tục thờ cúng và niềm tin tâm linh truyền thống của bộ lạc." }, ans: "C", exp: "Văn minh chỉ các xã hội đạt đến một trình độ phát triển cao về tri thức, khoa học kỹ thuật, về trình độ đô thị hóa và khả năng con người làm chủ lực lượng tự nhiên và mang tính quốc tế." },
+        { q: "13. Thuật ngữ \"văn vật\" dùng để chỉ đối tượng nào sau đây?", opts: { A: "Những giá trị tinh thần do người hiền tài sáng tạo qua các triều đại.", B: "Những công trình, hiện vật có giá trị nghệ thuật và lịch sử hoặc thiên về các giá trị vật chất.", C: "Trình độ phát triển của hệ thống thông tin liên lạc hiện đại.", D: "Khả năng tư duy trừu tượng và ngôn ngữ nói của loài người." }, ans: "B", exp: "Văn vật chỉ những công trình, hiện vật có giá trị nghệ thuật và lịch sử hoặc thiên về các giá trị vật chất." },
+        { q: "14. Ở các nước châu Âu, châu Mỹ và châu Đại Dương, thuật ngữ văn hóa bắt nguồn từ chữ Latinh nào?", opts: { A: "Socius.", B: "Cultus.", C: "Civitas.", D: "Nomos." }, ans: "B", exp: "Tại châu Âu, sau đó là Châu Mỹ và châu Đại Dương, thuật ngữ văn hóa đều bắt nguồn từ chữ Latinh Cultus." },
+        { q: "15. Nghĩa gốc của cụm từ \"Cultus Animi\" trong tiếng Latinh là gì?", opts: { A: "Gieo trồng ruộng đất.", B: "Gieo trồng tinh thần, tức là sự giáo dục bồi dưỡng tâm hồn con người.", C: "Xây dựng các đền đài thờ phụng thần linh.", D: "Chế tạo các loại vũ khí và công cụ săn bắn." }, ans: "B", exp: "Theo nghĩa gốc, Cultus Agri là gieo trồng ruộng đất và Cultus Animi là gieo trồng tinh thần tức là sự giáo dục bồi dưỡng tâm hồn con người." },
+        { q: "16. Ở xã hội phương Tây, đặc thù văn hóa nào được đề cao hơn tính tập thể, giúp cho quá trình hội nhập và giao lưu văn hóa diễn ra dễ dàng hơn?", opts: { A: "Tính cộng đồng xã hội.", B: "Tính tôn giáo sâu sắc.", C: "Tính cá nhân.", D: "Tính thứ bậc gia đình." }, ans: "C", exp: "Ở phương Tây, đặc thù văn hóa là tính cá nhân được đề cao hơn tính tập thể, nhờ vào tính cá nhân này mà sự hội nhập giao lưu văn hóa giữa con người với con người các vùng miền trở nên dễ dàng, thuận lợi hơn." },
+        { q: "17. Đâu là một trong ba khía cạnh căn bản được nhấn mạnh trong các quan niệm về văn hóa?", opts: { A: "Văn hóa là sự triệt tiêu toàn bộ các yếu tố truyền thống cổ xưa.", B: "Văn hóa với tư cách là sự phát triển của cá nhân trong xã hội.", C: "Văn hóa là sự đồng nhất tuyệt đối về lối sống của mọi quốc gia trên thế giới.", D: "Văn hóa chỉ bao gồm hệ thống luật pháp và tòa án của quốc gia." }, ans: "B", exp: "Có ba khía cạnh căn bản được nhấn mạnh bao gồm: Văn hóa với tư cách là sự phát triển của cá nhân trong xã hội; Văn hóa là đặc thù của mỗi xã hội đối với môi trường xã hội nhất định; Văn hóa là cái có thể hòa hợp, đan xen, thâm nhập lẫn nhau giữa các môi trường văn hóa khác nhau." },
+        { q: "18. Khoa học chung về văn hóa bắt đầu được hình thành vào khoảng thời gian nào ở Tây Âu?", opts: { A: "Khoảng đầu thế kỷ XVII.", B: "Khoảng giữa thế kỷ XIX.", C: "Khoảng cuối thế kỷ XX.", D: "Khoảng đầu thế kỷ XXI." }, ans: "B", exp: "Khoảng giữa thế kỷ XIX tại Tây Âu, khoa học chung về văn hóa bắt đầu được hình thành." },
+        { q: "19. Công trình tiêu biểu gồm 2 tập mang tên \"Khoa học về văn hóa\" xuất hiện vào năm 1855 là của học giả nào?", opts: { A: "E.B.Tylor.", B: "L.White.", C: "Klemm.", D: "C.Lévi-Strauss." }, ans: "C", exp: "Đến giữa thế kỷ XX, nhiều công trình chuyên về văn hóa xuất hiện với công trình tiêu biểu 2 tập mang tên: Khoa học về văn hóa (1855) của Klemm người Đức." },
+        { q: "20. Tác phẩm nổi tiếng \"Văn hóa nguyên thủy\" (1871) do nhà nghiên cứu nào viết?", opts: { A: "E.B.Tylor.", B: "L.White.", C: "M.Weber.", D: "E.Durkheim." }, ans: "A", exp: "Thuật ngữ văn hóa được sử dụng phổ biến hơn với những tác phẩm như: Văn hóa nguyên thủy (1871) của E.B.Tylor." },
+        { q: "21. Theo định nghĩa cổ điển của B.Tylor, văn hóa bao gồm những yếu tố nào mà con người thu nhận được với tư cách là một thành viên của xã hội?", opts: { A: "Chỉ bao gồm các kỹ năng lao động chân tay và sản xuất nông nghiệp.", B: "Tổng thể phức tạp gồm các hiểu biết, niềm tin, nghệ thuật, đạo đức, luật pháp, thói quen và bất kỳ một năng lực, thói quen nào khác.", C: "Các phản xạ tự nhiên của cơ thể có sẵn ngay khi sinh ra.", D: "Chỉ gồm các công trình xây dựng kiên cố và đô thị hóa." }, ans: "B", exp: "B.Taylor đã đưa ra định nghĩa cổ điển về văn hóa: Văn hóa là tổng thể phức tạp bao gồm các hiểu biết, niềm tin, nghệ thuật, đạo đức, luật pháp, thói quen và bất kỳ một năng lực, thói quen nào khác mà con người thu nhận được với tư cách là một thành viên của xã hội." },
+        { q: "22. Theo Joseph H.Fichter, văn hóa là hình thái toàn diện của những định chế mà con người cùng có chung trong xã hội. Hình thái này liên quan đến điều gì?", opts: { A: "Những biến đổi sinh học.", B: "Môi trường, khuôn mẫu hoặc hệ thống.", C: "Những quy luật tự nhiên.", D: "Những công cụ sản xuất vật chất." }, ans: "B", exp: "Văn hóa là hình thái toàn diện của những định chế mà con người cùng có chung trong xã hội. Hình thái này liên quan đến môi trường, khuôn mẫu hoặc hệ thống." },
+        { q: "23. Trong sơ đồ hệ thống bốn chức năng \"AGIL\" nổi tiếng của T.Parsons, tiểu hệ thống duy trì khuôn mẫu lặn (L) bao gồm những cơ cấu nào?", opts: { A: "Chỉ gồm các lực lượng vũ trang và cảnh sát quốc gia.", B: "Hệ thống gia đình, nhà trường, tôn giáo, khoa học, nghệ thuật và tiểu hệ thống văn hóa.", C: "Hệ thống phân phối hàng hóa và tài chính ngân hàng.", D: "Hệ thống các cơ quan lập pháp và hành pháp trung ương." }, ans: "B", exp: "Sơ đồ hệ thống bốn chức năng nổi tiếng AGIL của R.Parsons đề cập tới tiểu hệ thống duy trì khuôn mẫu lặn (gọi tắt là L), bao gồm các tiểu hệ thống gia đình, nhà trường, tôn giáo, khoa học, nghệ thuật và tiểu hệ thống văn hóa." },
+        { q: "24. Theo phân tích của Erving Goffman về nhóm và tổ chức xã hội, cách tiếp cận thứ tư về \"văn hóa\" chú trọng chủ yếu vào điều gì?", opts: { A: "Năng suất lao động và cơ giới hóa sản xuất.", B: "Hệ các giá trị, đạo đức, các chuẩn mực, thị hiếu chi phối hoạt động tổ chức.", C: "Sự phân tầng giai cấp và khoảng cách giàu nghèo trong xã hội.", D: "Cơ cấu tổ chức hành chính và phân chia quyền lực pháp lý." }, ans: "B", exp: "Erving Goffman cho rằng cách tiếp cận thứ tư về văn hóa chú trọng tới hệ các giá trị, đạo đức, các chuẩn mực, thị hiếu chi phối hoạt động tổ chức." },
+        { q: "25. Định nghĩa năm 1982 của UNESCO xác định văn hóa bao gồm những yếu tố nào ngoài nghệ thuật, văn chương, lối sống và các quyền cơ bản của con người?", opts: { A: "Toàn bộ các hiện tượng thời tiết và biến đổi khí hậu tự nhiên.", B: "Những hệ thống các giá trị, những tập tục và những tín ngưỡng.", C: "Các đặc tính di truyền học của từng chủng tộc người.", D: "Chỉ các công cụ sản xuất bằng kim loại của các nền văn minh cổ." }, ans: "B", exp: "Theo UNESCO, văn hóa bao gồm nghệ thuật và văn chương, những lối sống, những quyền cơ bản của con người, những hệ thống các giá trị, những tập tục và những tín ngưỡng." },
+        { q: "26. Theo UNESCO, di sản văn hóa hữu hình (tangible) bao gồm những ví dụ nào sau đây?", opts: { A: "Âm nhạc, ngôn ngữ, nghi thức thờ cúng.", B: "Phong tục tập quán, lễ hội truyền thống, các công nghệ cổ.", C: "Đình, chùa, lăng mộ, nhà sàn, các công trình kiến trúc.", D: "Các quan niệm đạo đức và triết lý sống của cộng đồng." }, ans: "C", exp: "Di sản hữu hình (tangible) bao gồm các công trình vật chất cụ thể như đình, chùa, lăng mộ, nhà sàn, các công trình kiến trúc." },
+        { q: "27. Theo UNESCO, di sản văn hóa vô hình (intangible) bao gồm những biểu trưng nào?", opts: { A: "Lăng mộ, đền đài cổ kính được xây dựng bằng gạch đá.", B: "Đình, chùa và các ngôi nhà sàn cổ của người dân tộc thiểu số.", C: "Âm nhạc, ngôn ngữ, nghi thức, phong tục tập quán, lễ hội, quy trình công nghệ của các nghề truyền thống.", D: "Các hiện vật khảo cổ học được trưng bày tại các bảo tàng lớn." }, ans: "C", exp: "Di sản vô hình (intangible) gồm những biểu trưng không nhìn thấy được như âm nhạc, ngôn ngữ, nghi thức, phong tục tập quán, lễ hội, quy trình công nghệ của các nghề truyền thống." },
+        { q: "28. Dưới góc độ xã hội học, ngay từ khi mới sinh ra, con người đã phải làm gì đối với các giá trị văn hóa của gia đình và cộng đồng?", opts: { A: "Tự tạo dựng một hệ giá trị độc lập hoàn toàn để không chịu ảnh hưởng.", B: "Tiếp thu những giá trị văn hóa để tồn tại và phát triển trong xã hội đó.", C: "Từ chối học tập các chuẩn mực cũ để tiếp nhận lối sống hiện đại ngay lập tức.", D: "Yêu cầu thay đổi toàn bộ phong tục tập quán của cha mẹ và dòng họ." }, ans: "B", exp: "Ngay từ khi mới sinh ra, con người đã phải tiếp thu những giá trị văn hóa của gia đình, cộng đồng, xã hội và để tồn tại phát triển trong xã hội đó." },
+        { q: "29. Đâu là một trong các đặc trưng cơ bản của văn hóa?", opts: { A: "Tính phi lịch sử và tính nhất thời.", B: "Tính giá trị.", C: "Tính di truyền sinh học tuyệt đối.", D: "Tính tách biệt hoàn toàn giữa các quốc gia." }, ans: "B", exp: "Đặc trưng cơ bản của văn hóa bao gồm tính giá trị, tính nhân sinh, tính lịch sử, tính chỉnh thể, hệ thống, tính dân tộc, là kết quả của học tập và tính lưu truyền." },
+        { q: "30. Giá trị đạo đức truyền thống \"Uống nước nhớ nguồn\" của người Việt Nam là ví dụ điển hình cho đặc trưng nào của văn hóa?", opts: { A: "Tính chỉnh thể.", B: "Tính giá trị.", C: "Tính dân tộc.", D: "Tính lịch sử." }, ans: "B", exp: "Giá trị là một thành tố của văn hóa mang ý nghĩa định hướng các chuẩn mực của xã hội, ví dụ giá trị đạo đức truyền thống \"Uống nước nhớ nguồn\" định hướng và dẫn dắt nền văn hóa Việt Nam." },
+        { q: "31. Đặc trưng \"tính nhân sinh\" của văn hóa cho phép con người làm được điều gì?", opts: { A: "Phân biệt các giá trị tự nhiên với các giá trị văn hóa do con người sáng tạo ra.", B: "Đồng nhất hoàn toàn hành vi của con người với các loài động vật hoang dã.", C: "Triệt tiêu toàn bộ các hoạt động sản xuất nông nghiệp thủ công.", D: "Thờ cúng các thế lực tự nhiên mà không cần lao động sáng tạo." }, ans: "A", exp: "Tính nhân sinh của con người cho phép họ phân biệt các giá trị tự nhiên với giá trị văn hóa - một hiện tượng, sự kiện xã hội do con người sáng tạo ra." },
+        { q: "32. Ví dụ nào sau đây thể hiện việc con người tác động vào thế giới tự nhiên để tạo nên các giá trị văn hóa vật chất?", opts: { A: "Sự xuất hiện của các trận bão, lũ lụt lớn vào mùa mưa.", B: "Các hoạt động tạc đá, luyện quặng gang thép, đẽo gỗ thành các vật dụng hữu ích.", C: "Sự sinh trưởng tự nhiên của cây cối trong các khu rừng già.", D: "Sự di chuyển theo mùa của các đàn thú hoang dã." }, ans: "B", exp: "Con người tác động vào tự nhiên tạo ra các giá trị văn hóa vật chất như tạc đá, luyện quặng gang thép, đẽo gỗ." },
+        { q: "33. Theo phong tục của người Tây Nguyên, các pho tượng gỗ được làm ra và đặt trong ngôi nhà mồ nhằm mục đích gì?", opts: { A: "Làm cột mốc xác định ranh giới lãnh thổ giữa các buôn làng kề cận.", B: "Phục vụ cho lễ bỏ mả hay cuộc chia tay, cuộc vui cuối cùng của người sống và người chết.", C: "Làm vật phẩm thương mại để mang đi trao đổi lấy nông sản ở vùng xuôi.", D: "Xua đuổi thú dữ không cho xâm nhập vào khu nghĩa trang của bộ tộc." }, ans: "B", exp: "Những pho tượng được làm ra và đặt trong ngôi nhà mồ nhằm phục vụ cho lễ bỏ mả hay cuộc chia tay, cuộc vui cuối cùng của người sống và người chết." },
+        { q: "34. Trong văn hóa tâm linh nhà mồ cổ xưa ở Tây Nguyên, người hầu hay tù binh chiến tranh của bộ tộc Giarai và Bana được tạc tượng với tên gọi lần lượt là gì?", opts: { A: "Người Giarai là đích, người Bana là hlun.", B: "Người Giarai là hlun, người Bana là đích.", C: "Người Giarai là samurai, người Bana là seppuku.", D: "Người Giarai là hlun, người Bana là mông." }, ans: "B", exp: "Người Tây Nguyên tạc những tượng mồ để những người đó hầu người chết ở thế giới bên kia, được coi như những người hầu (tiếng Giarai là hlun, tiếng Bana là đích)." },
+        { q: "35. Đặc trưng \"tính chỉnh thể, hệ thống\" của văn hóa mang ý nghĩa gì?", opts: { A: "Văn hóa là sự liên kết lỏng lẻo của các yếu tố hoàn toàn độc lập, không ảnh hưởng lẫn nhau.", B: "Văn hóa là một hệ thống chỉnh thể bao gồm nhiều bộ phận có quan hệ mật thiết, khăng khít với nhau.", C: "Văn hóa chỉ bao gồm hệ thống các văn bản luật pháp do nhà nước ban hành.", D: "Văn hóa là một cấu trúc cố định từ thời cổ đại và không bao giờ tiếp nhận yếu tố mới." }, ans: "B", exp: "Văn hóa là một hệ thống chỉnh thể bao gồm nhiều bộ phận có quan hệ mật thiết, khăng khít với nhau, thể hiện sự thâm nhập vào nhau, tác động lẫn nhau." },
+        { q: "36. Trước thềm World Cup 2002 tổ chức tại Nhật Bản và Hàn Quốc, cơ quan quản lý bóng đá thế giới (FIFA) đã đưa ra khuyến cáo nào đối với chính phủ Hàn Quốc liên quan đến ẩm thực?", opts: { A: "Khuyến cáo người dân tăng cường ăn thịt chó để quảng bá đặc sản quốc gia.", B: "Khuyến cáo chính phủ không được giết và ăn thịt chó trong suốt thời gian diễn ra sự kiện thể thao này.", C: "Khuyến cáo cấm hoàn toàn việc bán đồ ăn nhanh tại các sân vận động thể thao.", D: "Khuyến cáo thay thế toàn bộ các món ăn truyền thống bằng thực đơn phương Tây." }, ans: "B", exp: "FIFA đã khuyến cáo chính phủ Hàn Quốc là không được giết và ăn thịt chó trong suốt thời gian diễn ra sự kiện World Cup 2002." },
+        { q: "37. Đặc trưng \"tính lịch sử\" của văn hóa chủ yếu được tích lũy và truyền lại qua các thế hệ bằng phương thức nào?", opts: { A: "Di truyền qua hệ thống mã gen sinh học tự nhiên.", B: "Truyền thống (những kinh nghiệm tập thể) được tích lũy và tái tạo qua không gian và thời gian.", C: "Các văn bản luật hành chính hiện đại của chính quyền đô thị.", D: "Sự biến đổi tự phát của môi trường địa lý và khí hậu tự nhiên." }, ans: "B", exp: "Tính lịch sử của văn hóa được duy trì bằng truyền thống (những kinh nghiệm tập thể) được tích lũy và tái tạo trong cộng đồng người qua không gian và thời gian." },
+        { q: "38. Ngôi nhà truyền thống của đồng bào H'Mông thường tuân thủ khuôn mẫu xây dựng nào đã tồn tại lâu đời?", opts: { A: "Nhà sàn cao năm gian hoàn chỉnh, có một lối ra vào duy nhất hướng Nam.", B: "Nhà ba gian, hai chái - một cửa chính, một cửa phụ và ít nhất là hai cửa sổ trở lên.", C: "Nhà một gian tròn bằng lá cây, không thiết kế cửa sổ để giữ hơi ấm.", D: "Nhà cao tầng kiên cố bằng bê tông cốt thép theo phong cách đô thị hiện đại." }, ans: "B", exp: "Dù to hay nhỏ, nhà của người H’Mông đều theo một khuôn mẫu: Ba gian, hai chái - một cửa chính, một cửa phụ và ít nhất là hai cửa sổ trở lên." },
+        { q: "39. Tính dân tộc của một nền văn hóa cụ thể thường được hình thành dựa trên cơ sở nào?", opts: { A: "Sự sao chép nguyên mẫu các giá trị của một quốc gia lân cận.", B: "Điều kiện tự nhiên (địa lý, khí hậu...) và điều kiện sinh hoạt vật chất của con người trong tiến trình lịch sử.", C: "Chỉ dựa vào các nghị quyết chính thức của các tổ chức quốc tế như Liên hợp quốc.", D: "Hệ thống gen sinh học đồng nhất của cư dân sống trong cùng khu vực." }, ans: "B", exp: "Mỗi một nền văn hóa cụ thể thường được hình thành dựa trên điều kiện tự nhiên (địa lý, khí hậu...) và điều kiện sinh hoạt vật chất của con người trong quá trình tương tác theo tiến trình lịch sử." },
+        { q: "40. Nghi thức \"seppuku\" tự mổ bụng của các võ sĩ đạo samurai Nhật Bản thể hiện rõ nét giá trị văn hóa nào của quốc gia này?", opts: { A: "Tinh thần chuộng hòa bình và không muốn tham gia chiến tranh.", B: "Khí đạo đức nhằm bảo vệ danh dự, khí tiết của võ sĩ.", C: "Nghi thức múa lễ hội cầu mong vụ mùa lúa gạo bội thu.", D: "Trò chơi giải trí dân gian vào các dịp đầu năm mới." }, ans: "B", exp: "Nghi thức seppuku - tự mổ bụng là một minh chứng rõ nét cho tinh thần samurai, không đơn thuần là việc tự sát mà còn là nghi thức thể hiện khí đạo đức nhằm bảo vệ danh dự, khí tiết của võ sĩ." },
+        { q: "41. Tại sao khẳng định \"văn hóa là kết quả của học tập\" thay vì là một đặc tính tự nhiên có sẵn?", opts: { A: "Vì văn hóa được mã hóa sẵn trong cấu trúc gen của con người từ khi phôi thai.", B: "Vì văn hóa không di truyền qua gen sinh học mà được hình thành trong quá trình con người tham gia vào các quan hệ xã hội, lao động và tương tác.", C: "Vì chỉ có những học sinh, sinh viên được đến trường lớp chính quy mới có văn hóa.", D: "Vì văn hóa tự động xuất hiện trong trí não con người thông qua các phản xạ sinh học vô điều kiện." }, ans: "B", exp: "Văn hóa không ngẫu nhiên khi sinh ra đã có được, mà nó chính là kết quả được hình thành trong quá trình học tập khi con người tham gia vào hệ thống các quan hệ xã hội, lao động và tương tác." },
+        { q: "42. Ở Việt Nam và Nhật Bản, thói quen ăn uống truyền thống có nét văn hóa chung nào thể hiện tính kết nối và chia sẻ giữa các thành viên?", opts: { A: "Mỗi thành viên tự ngồi ăn một góc riêng tư và sử dụng dao kéo cá nhân.", B: "Ngồi cùng mâm, cùng mời nhau trước khi ăn và sử dụng đũa.", C: "Ăn bốc bằng tay trực tiếp từ các khay chứa đồ ăn chung đặt trên sàn nhà.", D: "Chỉ ăn các món ăn nhanh được chế biến và đóng gói sẵn theo chuẩn phương Tây." }, ans: "B", exp: "Ở Việt Nam, Nhật Bản..., trước khi ăn, mọi người ngồi chung mâm cùng mời nhau ăn và dùng đũa, thể hiện sự chia sẻ những giá trị, chuẩn mực chung, kết nối các thành viên." },
+        { q: "43. Trong thời kỳ hiện đại, phương thức truyền bá và lưu truyền văn hóa nào ngày càng phát triển rộng rãi hơn so với phương thức truyền miệng truyền thống?", opts: { A: "Sử dụng các tín hiệu khói và âm thanh trống ở khoảng cách xa.", B: "Lưu truyền qua chữ viết, các phương tiện truyền thông đại chúng, internet, kỹ thuật số.", C: "Chạm khắc các ký hiệu bí ẩn lên các phiến đá tự nhiên ở hang động.", D: "Không cần bất cứ phương thức nào vì văn hóa tự động lan truyền qua không khí." }, ans: "B", exp: "Ngày nay văn hóa có khả năng lưu truyền rộng rãi và xuyên quốc gia nhờ các phương thức hiện đại như chữ viết, các phương tiện truyền thông và internet." },
+        { q: "44. Theo quan điểm của Macionis về cấu trúc văn hóa, văn hóa gồm hai thành tố cơ bản nào?", opts: { A: "Văn hóa nhận thức và văn hóa tổ chức cộng đồng.", B: "Văn hóa vật chất và văn hóa phi vật chất (văn hóa tinh thần).", C: "Văn hóa ứng xử tự nhiên và văn hóa ứng xử xã hội.", D: "Tiểu văn hóa và phản văn hóa nhóm." }, ans: "B", exp: "Quan điểm này coi cấu trúc của văn hóa gồm hai thành tố cơ bản: văn hóa vật chất và văn hóa phi vật chất." },
+        { q: "45. Theo phân loại của Giáo sư Trần Ngọc Thêm, cấu trúc văn hóa bao gồm mấy thành tố chính?", opts: { A: "Hai thành tố.", B: "Ba thành tố.", C: "Bốn thành tố.", D: "Năm thành tố." }, ans: "C", exp: "Cấu trúc văn hóa bao gồm bốn thành tố: Văn hóa nhận thức, văn hóa tổ chức cộng đồng, văn hóa ứng xử với môi trường tự nhiên và văn hóa ứng xử với môi trường xã hội." },
+        { q: "46. Trong các thành tố cơ bản của văn hóa, khái niệm \"chuẩn mực\" được hiểu là gì?", opts: { A: "Những quan niệm trừu tượng của cá nhân về cái đẹp và sự hoàn mỹ.", B: "Những quy tắc, quy phạm mà con người buộc phải tuân theo để hướng dẫn và lựa chọn hành động.", C: "Các công trình xây dựng bằng đá có kích thước chuẩn xác về mặt kỹ thuật.", D: "Toàn bộ các tài sản vật chất và tiền tệ có giá trị cao trong nền kinh tế." }, ans: "B", exp: "Chuẩn mực là những quy tắc, quy phạm mà con người buộc phải tuân theo vì thế nó thường mang sắc thái tình cảm và được chia sẻ trong một cộng đồng xã hội." },
+        { q: "47. Thành tố nào được coi là biểu tượng cơ bản nhất để phân biệt loài người với các loài động vật khác trong đời sống văn hóa?", opts: { A: "Công cụ lao động bằng sắt.", B: "Ngôn ngữ.", C: "Trang phục nghi lễ.", D: "Nhà ở kiên cố." }, ans: "B", exp: "Ngôn ngữ là một trong những biểu hiện cơ bản nhất để phân biệt giữa người và các loại động vật khác, nhờ ngôn ngữ mà tư duy của con người được lưu truyền và chia sẻ." },
+        { q: "48. \"Lối sống\" dưới góc độ văn hóa được định nghĩa như thế nào?", opts: { A: "Chỉ là phong cách chi tiêu và mua sắm các mặt hàng xa xỉ của giới thượng lưu.", B: "Phạm trù xã hội khái quát toàn bộ hoạt động sống của các cá nhân, nhóm xã hội trong các lĩnh vực của đời sống.", C: "Quy trình kỹ thuật vận hành máy móc nhà máy trong sản xuất công nghiệp.", D: "Các phản xạ tự vệ sinh học của con người trước các tác động thời tiết." }, ans: "B", exp: "Lối sống là một phạm trù xã hội khái quát toàn bộ hoạt động sống của các dân tộc, các giai cấp, các nhóm xã hội, các cá nhân trong những điều kiện của một hình thái kinh tế xã hội nhất định và biểu hiện trên các lĩnh vực của đời sống." },
+        { q: "49. Khái niệm \"tiểu văn hóa\" được dùng để chỉ đối tượng nào?", opts: { A: "Văn hóa của một nhóm xã hội có những sắc thái riêng nhưng về cơ bản vẫn không khác biệt lớn với nền văn hóa chung của xã hội.", B: "Nền văn hóa lỗi thời của các bộ lạc hoang dã đã hoàn toàn biến mất khỏi thế giới.", C: "Sự du nhập hoàn toàn của văn hóa nước ngoài làm xóa nhòa văn hóa bản địa.", D: "Toàn bộ các hoạt động giải trí có quy mô nhỏ của học sinh, sinh viên." }, ans: "A", exp: "Tiểu văn hóa là văn hóa của các cộng đồng xã hội có những sắc thái riêng nhưng về cơ bản vẫn không khác với nền văn hóa chung của toàn xã hội." },
+        { q: "50. Theo các nhà xã hội học, chức năng nào được coi là quan trọng nhất và then chốt nhất của văn hóa đối với con người?", opts: { A: "Chức năng giải trí và tiêu dùng nghệ thuật đại chúng.", B: "Chức năng giáo dục.", C: "Chức năng phân phối sản phẩm kinh tế.", D: "Chức năng kiểm soát hành chính nhà nước." }, ans: "B", exp: "Chức năng quan trọng nhất và then chốt nhất của văn hóa là chức năng giáo dục nhằm giáo dục và hoàn thiện con người trong môi trường xã hội." }
+    ];
+
+    let isInstantFeedback = true;
+    let totalScore = 0;
+    let timerInterval;
+
+    document.getElementById('enable-timer').addEventListener('change', e => document.getElementById('time-limit').disabled = !e.target.checked);
+
+    function startTimer(duration) {
+        let timer = duration, minutes, seconds;
+        const display = document.getElementById('timer-display');
+        display.style.color = '#ff5252';
+        
+        if (timerInterval) clearInterval(timerInterval);
+        
+        timerInterval = setInterval(function () {
+            minutes = parseInt(timer / 60, 10);
+            seconds = parseInt(timer % 60, 10);
+
+            minutes = minutes < 10 ? "0" + minutes : minutes;
+            seconds = seconds < 10 ? "0" + seconds : seconds;
+
+            display.textContent = minutes + ":" + seconds;
+
+            if (--timer < 0) {
+                clearInterval(timerInterval);
+                alert("Hết giờ làm bài! Hệ thống tự động nộp bài.");
+                submitQuiz();
+            }
+        }, 1000);
+    }
+
+    function startQuiz() {
+        isInstantFeedback = document.getElementById('instant-feedback').checked;
+        const enableTimer = document.getElementById('enable-timer').checked;
+        const timeVal = parseInt(document.getElementById('time-limit').value) || 30;
+
+        document.getElementById('settings-summary').innerHTML = `
+            <strong>Thiết lập:</strong> ${enableTimer ? 'Thời gian: ' + timeVal + ' phút' : 'Không giới hạn thời gian'} | 
+            <strong>Đáp án:</strong> ${isInstantFeedback ? 'Hiện ngay' : 'Hiện sau khi nộp bài'}
+        `;
+
+        document.getElementById('setup-screen').style.display = 'none';
+        document.getElementById('quiz-screen').style.display = 'block';
+        
+        renderQuestions();
+        
+        if (enableTimer && timeVal > 0) {
+            startTimer(timeVal * 60);
+        } else {
+            document.getElementById('timer-display').textContent = "Không giới hạn";
+            document.getElementById('timer-display').style.color = "#00e676";
+        }
+    }
+
+    function renderQuestions() {
+        const container = document.getElementById('questions-container');
+        container.innerHTML = "";
+        questionsData.forEach((q, index) => {
+            container.innerHTML += `
+                <div class="question-card" id="q-${index}">
+                    <div class="question-title">${q.q}</div>
+                    <div class="options">
+                        ${Object.keys(q.opts).map(key => `
+                            <label class="option-label" onclick="handleOptionClick(${index}, '${key}', this)">
+                                <input type="radio" name="q${index}" value="${key}" style="display:none">
+                                <span><b>${key}.</b> ${q.opts[key]}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="explanation" id="exp-${index}"><b>Giải thích:</b> ${q.exp}</div>
+                </div>
+            `;
+        });
+    }
+
+    window.handleOptionClick = function(qIndex, selectedAns, labelElement) {
+        const qCard = document.getElementById(`q-${qIndex}`);
+        if (qCard.classList.contains('answered')) return;
+
+        labelElement.querySelector('input').checked = true;
+
+        const allLabels = qCard.querySelectorAll('.option-label');
+        
+        if (isInstantFeedback) {
+            qCard.classList.add('answered');
+            const correctAns = questionsData[qIndex].ans;
+            
+            if (selectedAns === correctAns) {
+                labelElement.classList.add('correct');
+            } else {
+                labelElement.classList.add('wrong');
+                allLabels.forEach(lbl => {
+                    if (lbl.querySelector('input').value === correctAns) lbl.classList.add('correct');
+                });
+            }
+            document.getElementById(`exp-${qIndex}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+        } else {
+            allLabels.forEach(l => l.classList.remove('selected'));
+            labelElement.classList.add('selected');
+        }
+    }
+
+    window.submitQuiz = function() {
+        if (timerInterval) clearInterval(timerInterval);
+        totalScore = 0;
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const qCard = document.getElementById(`q-${index}`);
+            const allLabels = qCard.querySelectorAll('.option-label');
+            
+            qCard.classList.add('answered');
+            document.getElementById(`exp-${index}`).style.display = 'block';
+            allLabels.forEach(l => l.classList.add('disabled'));
+
+            if (selected) {
+                if (selected.value === q.ans) {
+                    selected.parentElement.classList.add('correct');
+                    totalScore++;
+                } else {
+                    selected.parentElement.classList.add('wrong');
+                    allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+                }
+            } else {
+                allLabels.forEach(l => { if (l.querySelector('input').value === q.ans) l.classList.add('correct'); });
+            }
+        });
+        
+        showFinalResult();
+        document.getElementById('submit-btn').style.display = 'none';
+    }
+
+    function showFinalResult() {
+        document.getElementById('result-box').style.display = 'block';
+        document.getElementById('score-details').innerText = `Bạn đã trả lời đúng ${totalScore} / ${questionsData.length} câu.`;
+        
+        if (totalScore < questionsData.length) {
+            document.getElementById('redo-btn').style.display = 'inline-block';
+        } else {
+            document.getElementById('redo-btn').style.display = 'none';
+        }
+        
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    }
+
+    window.redoWrongQuestions = function() {
+        document.getElementById('result-box').style.display = 'none';
+        document.getElementById('submit-btn').style.display = 'block';
+
+        questionsData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const isCorrect = selected && selected.value === q.ans;
+            const qCard = document.getElementById(`q-${index}`);
+
+            if (isCorrect) {
+                qCard.style.display = 'none';
+            } else {
+                qCard.style.display = 'block';
+                qCard.classList.remove('answered');
+                
+                const allLabels = qCard.querySelectorAll('.option-label');
+                allLabels.forEach(l => {
+                    l.classList.remove('disabled', 'correct', 'wrong', 'selected');
+                    l.querySelector('input').checked = false;
+                });
+                
+                document.getElementById(`exp-${index}`).style.display = 'none';
+            }
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+</script>
+</body>
+</html>
